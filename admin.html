@@ -43,6 +43,7 @@
       <div class="tabs">
         <button class="tab active" onclick="switchAdminTab('students', this)">受講生管理</button>
         <button class="tab" onclick="switchAdminTab('lessons', this)">レッスン管理</button>
+        <button class="tab" onclick="switchAdminTab('progress', this)">進捗管理</button>
         <button class="tab" onclick="switchAdminTab('reports', this)">成果報告一覧</button>
       </div>
 
@@ -154,6 +155,19 @@
           </div>
         </div>
 
+      </div>
+
+      <!-- ── 進捗管理 ── -->
+      <div id="admin-tab-progress" style="display:none;">
+        <div class="card">
+          <div class="admin-row-header">
+            <div class="card-title" style="margin-bottom:0;">受講生の進捗一覧</div>
+            <button class="btn btn-outline btn-sm" onclick="loadProgress()">更新</button>
+          </div>
+          <div id="progress-list">
+            <div class="loading-center"><div class="spinner"></div></div>
+          </div>
+        </div>
       </div>
 
       <!-- ── 成果報告一覧 ── -->
@@ -416,13 +430,60 @@
         </div>`;
     }
 
+    async function loadProgress() {
+      const container = document.getElementById('progress-list');
+      container.innerHTML = '<div class="loading-center"><div class="spinner"></div></div>';
+
+      const usersSnap = await db.collection('users').where('setupDone', '==', true).orderBy('createdAt', 'desc').get();
+      if (usersSnap.empty) {
+        container.innerHTML = '<div class="empty-state">まだ受講生がいません</div>';
+        return;
+      }
+
+      // 全コース共通レッスン数を取得
+      const commonSnap = await db.collection('courses').doc('common').collection('lessons').get();
+      const commonCount = commonSnap.size;
+
+      const rows = await Promise.all(usersSnap.docs.map(async userDoc => {
+        const u = userDoc.data();
+
+        // そのコースのレッスン数
+        const courseSnap = await db.collection('courses').doc(u.course).collection('lessons').get();
+        const total = courseSnap.size + commonCount;
+
+        // 視聴済み数
+        const completedSnap = await db.collection('progress').doc(userDoc.id).collection('completed').get();
+        const done = completedSnap.size;
+
+        const pct = total > 0 ? Math.round(done / total * 100) : 0;
+        const pctColor = pct >= 80 ? 'var(--success)' : pct >= 40 ? '#f59e0b' : 'var(--primary)';
+
+        return `
+          <div style="padding:16px 0;border-bottom:1px solid var(--border);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <div>
+                <span style="font-weight:700;font-size:15px;color:var(--text);">${u.name}</span>
+                <span style="margin-left:8px;font-size:12px;color:var(--text-muted);">${COURSE_LABELS[u.course] || u.course}</span>
+              </div>
+              <span style="font-size:13px;font-weight:700;color:var(--text);">${done} / ${total} 本 (${pct}%)</span>
+            </div>
+            <div style="background:var(--border);border-radius:99px;height:8px;overflow:hidden;">
+              <div style="height:100%;width:${pct}%;background:${pctColor};border-radius:99px;transition:width .3s;"></div>
+            </div>
+          </div>`;
+      }));
+
+      container.innerHTML = rows.join('');
+    }
+
     function switchAdminTab(tab, btn) {
-      ['students','lessons','reports'].forEach(t => {
+      ['students','lessons','progress','reports'].forEach(t => {
         document.getElementById('admin-tab-' + t).style.display = t === tab ? 'block' : 'none';
       });
       document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      if (tab === 'reports') loadReports();
+      if (tab === 'reports')  loadReports();
+      if (tab === 'progress') loadProgress();
     }
   </script>
 </body>
