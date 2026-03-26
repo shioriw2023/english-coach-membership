@@ -15,16 +15,11 @@
       <h1 class="login-title">管理パネル</h1>
       <p class="login-subtitle">コーチ専用ページです</p>
       <div class="form-group">
-        <label class="form-label">名前</label>
-        <input type="text" id="admin-name-input" class="form-input" placeholder="名前を入力"
-          onkeydown="if(event.key==='Enter') checkAdminPw()">
-      </div>
-      <div class="form-group">
         <label class="form-label">パスワード</label>
         <input type="password" id="admin-pw-input" class="form-input" placeholder="パスワードを入力"
           onkeydown="if(event.key==='Enter') checkAdminPw()">
       </div>
-      <div id="admin-gate-error" class="alert alert-error" style="display:none;">名前またはパスワードが違います</div>
+      <div id="admin-gate-error" class="alert alert-error" style="display:none;">パスワードが違います</div>
       <button class="btn btn-primary btn-full" onclick="checkAdminPw()">ログイン</button>
     </div>
   </div>
@@ -197,13 +192,11 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="js/config.js"></script>
   <script>
-    const ADMIN_NAME     = '和島しおり';
     const ADMIN_PASSWORD = 'coach2026';
 
     function checkAdminPw() {
-      const name = document.getElementById('admin-name-input').value.trim();
-      const pw   = document.getElementById('admin-pw-input').value;
-      if (name === ADMIN_NAME && pw === ADMIN_PASSWORD) {
+      const pw = document.getElementById('admin-pw-input').value;
+      if (pw === ADMIN_PASSWORD) {
         document.getElementById('admin-gate').style.display = 'none';
         document.getElementById('admin-main').style.display = 'block';
         loadStudents();
