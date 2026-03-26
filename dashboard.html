@@ -8,6 +8,20 @@
 </head>
 <body>
 
+  <!-- 管理者プレビューバー -->
+  <div id="preview-bar" style="display:none;background:#1e293b;color:#fff;padding:10px 0;">
+    <div class="container" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <span style="font-size:13px;font-weight:700;white-space:nowrap;">👁 管理者プレビュー：</span>
+      <button class="btn btn-sm" id="prev-btn-keizokusei" onclick="switchPreviewCourse('keizokusei')"
+        style="background:#334155;color:#fff;border:1px solid #475569;">継続生コース</button>
+      <button class="btn btn-sm" id="prev-btn-0ki" onclick="switchPreviewCourse('0ki')"
+        style="background:#334155;color:#fff;border:1px solid #475569;">0期生</button>
+      <button class="btn btn-sm" id="prev-btn-1ki" onclick="switchPreviewCourse('1ki')"
+        style="background:#334155;color:#fff;border:1px solid #475569;">1期生</button>
+      <a href="admin.html" style="margin-left:auto;color:#94a3b8;font-size:12px;">← 管理者ページへ戻る</a>
+    </div>
+  </div>
+
   <header class="header">
     <div class="container header-inner">
       <div class="header-logo">
@@ -18,7 +32,7 @@
       <div class="header-right">
         <span class="header-user" id="header-name"></span>
         <div class="avatar" id="header-avatar"></div>
-        <button class="logout-btn" onclick="handleLogout()">ログアウト</button>
+        <button class="logout-btn" id="logout-btn" onclick="handleLogout()">ログアウト</button>
       </div>
     </div>
   </header>
@@ -216,6 +230,29 @@
     let currentLessonId = null;
     const achieveRatings = { confBefore:0, confAfter:0, freqBefore:0, freqAfter:0, speakBefore:0, speakAfter:0 };
 
+    // 管理者プレビューモード
+    const previewCourse = new URLSearchParams(location.search).get('preview');
+    if (previewCourse) {
+      document.getElementById('preview-bar').style.display = 'block';
+      document.getElementById('logout-btn').style.display = 'none';
+      userData = { name: 'プレビュー', course: previewCourse };
+      userDocId = '__preview__';
+      document.getElementById('loading').style.display = 'none';
+      initPage();
+      highlightPreviewBtn(previewCourse);
+    }
+
+    function highlightPreviewBtn(course) {
+      ['keizokusei','0ki','1ki'].forEach(c => {
+        const btn = document.getElementById('prev-btn-' + c);
+        if (btn) btn.style.background = c === course ? '#3b82f6' : '#334155';
+      });
+    }
+
+    async function switchPreviewCourse(course) {
+      window.location.href = 'dashboard.html?preview=' + course;
+    }
+
     // 1時間操作なしで自動ログアウト
     const TIMEOUT_MS = 60 * 60 * 1000;
     const STORAGE_KEY = 'lastActivity';
@@ -240,18 +277,20 @@
     updateActivity();
     setInterval(checkInactivity, 60 * 1000);
 
-    auth.onAuthStateChanged(async user => {
-      if (!user) { window.location.href = 'index.html'; return; }
-      try {
-        const snap = await db.collection('users').where('email', '==', user.email).limit(1).get();
-        if (snap.empty) { await auth.signOut(); window.location.href = 'index.html'; return; }
-        userDocId = snap.docs[0].id;
-        userData = snap.docs[0].data();
-        initPage();
-      } catch(e) {
-        window.location.href = 'index.html';
-      }
-    });
+    if (!previewCourse) {
+      auth.onAuthStateChanged(async user => {
+        if (!user) { window.location.href = 'index.html'; return; }
+        try {
+          const snap = await db.collection('users').where('email', '==', user.email).limit(1).get();
+          if (snap.empty) { await auth.signOut(); window.location.href = 'index.html'; return; }
+          userDocId = snap.docs[0].id;
+          userData = snap.docs[0].data();
+          initPage();
+        } catch(e) {
+          window.location.href = 'index.html';
+        }
+      });
+    }
 
     async function initPage() {
       document.getElementById('header-name').textContent = userData.name;
