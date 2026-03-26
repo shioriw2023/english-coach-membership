@@ -301,10 +301,15 @@
       document.getElementById('prof-course').textContent = COURSE_LABELS[userData.course] || '';
 
       await loadLessons();
-      await loadProgress();
-      await loadAchievement();
-      await loadMemoHistory();
-      buildRatingRows();
+      if (!previewCourse) {
+        await loadProgress();
+        await loadAchievement();
+        await loadMemoHistory();
+        buildRatingRows();
+      } else {
+        renderLessons();
+        updateProgressBar();
+      }
 
       document.getElementById('loading').style.display = 'none';
       document.getElementById('content').style.display = 'block';
