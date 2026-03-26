@@ -14,6 +14,11 @@
       <h1 class="login-title">英語コーチング<br>受講生マイページ</h1>
       <p class="login-subtitle">メールアドレスでログインしてください</p>
 
+      <!-- タイムアウトメッセージ -->
+      <div id="timeout-msg" class="alert alert-info" style="display:none;margin-bottom:16px;">
+        しばらく操作がなかったためログアウトしました。再度ログインしてください。
+      </div>
+
       <!-- Step 1: メアド＋パスワードログイン -->
       <div id="step-login">
         <div class="form-group">
@@ -74,6 +79,9 @@
 
     // URL setup パラメータ処理
     window.addEventListener('load', async () => {
+      if (new URLSearchParams(location.search).get('timeout')) {
+        document.getElementById('timeout-msg').style.display = 'block';
+      }
       const params = new URLSearchParams(location.search);
       const setupId = params.get('setup');
       if (!setupId) return;
