@@ -354,8 +354,9 @@
             <span class="badge ${badgeCls}">${badgeLabel}</span>
             <div class="lesson-admin-info">
               <div style="font-weight:600;font-size:14px;color:var(--text);">${l.title}</div>
-              <div style="font-size:12px;color:var(--text-muted);">${l.youtubeId || l.docUrl || ''}</div>
             </div>
+            ${l.youtubeId ? `<a href="https://www.youtube.com/watch?v=${l.youtubeId}" target="_blank" class="btn btn-outline btn-sm" style="white-space:nowrap;">▶ 見る</a>` : ''}
+            ${l.docUrl    ? `<a href="${l.docUrl}" target="_blank" class="btn btn-outline btn-sm" style="white-space:nowrap;">↗ 開く</a>` : ''}
             <button class="delete-btn" onclick="deleteLesson('${course}','${d.id}','${l.title}')">🗑</button>
           </div>`;
       }).join('');
