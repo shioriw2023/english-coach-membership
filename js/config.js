@@ -11,8 +11,6 @@ firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
 const auth = firebase.auth();
-const storage = firebase.storage();
-
 const COURSE_LABELS = {
   keizokusei: '継続生コース',
   '0ki': '0期生',
