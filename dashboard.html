@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>英語コーチング | マイページ</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header-inner">
+      <div class="header-logo">
+        <span class="header-logo-dot"></span>
+        英語コーチング
+        <span class="header-course-badge" id="header-course"></span>
+      </div>
+      <div class="header-right">
+        <span class="header-user" id="header-name"></span>
+        <div class="avatar" id="header-avatar"></div>
+        <button class="logout-btn" onclick="handleLogout()">ログアウト</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container page">
+
+    <div id="loading" class="loading-center"><div class="spinner"></div></div>
+
+    <div id="content" style="display:none;" class="fade-in">
+
+      <!-- プロフィールバー -->
+      <div class="profile-bar">
+        <div class="profile-avatar-lg" id="prof-avatar"></div>
+        <div class="profile-info">
+          <div class="profile-name" id="prof-name"></div>
+          <div class="profile-meta" id="prof-course"></div>
+          <div class="progress-wrap">
+            <div class="progress-label-row">
+              <span>レッスン進捗</span>
+              <span id="progress-text">0 / 0 本</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="progress-bar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- タブ -->
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('lessons', this)">レッスン</button>
+        <button class="tab" onclick="switchTab('progress', this)">進捗</button>
+        <button class="tab" onclick="switchTab('achievement', this)">成果報告</button>
+      </div>
+
+      <!-- ── レッスンタブ ── -->
+      <div id="tab-lessons">
+        <div id="lessons-list">
+          <div class="loading-center"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+      <!-- ── 進捗タブ ── -->
+      <div id="tab-progress" style="display:none;">
+        <div class="card">
+          <div class="card-title">チェックリスト</div>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">視聴したレッスンにチェックを入れましょう</p>
+          <div id="checklist-list">
+            <div class="loading-center"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">進捗メモ</div>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">今日の学びや気づきを記録しましょう</p>
+          <textarea class="memo-area" id="memo-input" placeholder="例：今日は自己紹介のフレーズを練習した。最初は緊張したけど、3回繰り返したら自然に言えるようになった！"></textarea>
+          <div class="memo-footer">
+            <button class="btn btn-primary btn-sm" onclick="saveMemo()">メモを保存</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">過去のメモ</div>
+          <div id="memo-history">
+            <div class="empty-state">まだメモがありません</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 成果報告タブ ── -->
+      <div id="tab-achievement" style="display:none;">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:4px;">成果報告</div>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:24px;">受講前と今を比べて、どれくらい変わりましたか？</p>
+
+          <div id="achievement-submitted-msg" style="display:none;">
+            <div class="submitted-badge">✓ 提出済み — 内容を修正して再送信できます</div>
+          </div>
+
+          <!-- Q1 -->
+          <div class="mb-16">
+            <div class="question-title">英語で話すことへの自信</div>
+            <div class="question-hint">1＝全く自信がない　5＝とても自信がある</div>
+            <div class="compare-grid">
+              <div class="compare-box">
+                <div class="compare-label">受講前</div>
+                <div class="rating-row" id="conf-before-row"></div>
+              </div>
+              <div class="compare-box">
+                <div class="compare-label">今（受講後）</div>
+                <div class="rating-row" id="conf-after-row"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Q2 -->
+          <div class="mb-16">
+            <div class="question-title">英語を実際に使う頻度</div>
+            <div class="question-hint">1＝ほぼ使わない　5＝毎日使っている</div>
+            <div class="compare-grid">
+              <div class="compare-box">
+                <div class="compare-label">受講前</div>
+                <div class="rating-row" id="freq-before-row"></div>
+              </div>
+              <div class="compare-box">
+                <div class="compare-label">今（受講後）</div>
+                <div class="rating-row" id="freq-after-row"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Q3 -->
+          <div class="mb-16">
+            <div class="question-title">スピーキングへの苦手意識</div>
+            <div class="question-hint">1＝とても苦手　5＝苦手意識がなくなった</div>
+            <div class="compare-grid">
+              <div class="compare-box">
+                <div class="compare-label">受講前</div>
+                <div class="rating-row" id="speak-before-row"></div>
+              </div>
+              <div class="compare-box">
+                <div class="compare-label">今（受講後）</div>
+                <div class="rating-row" id="speak-after-row"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="form-group">
+            <div class="question-title mb-8">具体的にできるようになったこと</div>
+            <textarea class="form-input form-textarea" id="ach-accomplish"
+              placeholder="例：外国人の同僚に英語でメールを送れるようになった。電話会議で発言できるようになった。など"></textarea>
+          </div>
+
+          <div class="form-group">
+            <div class="question-title mb-8">受講前の自分と比べて、一番変わったこと</div>
+            <textarea class="form-input form-textarea" id="ach-biggest-change"
+              placeholder="例：「間違えてもいい」と思えるようになり、積極的に話せるようになった。など"></textarea>
+          </div>
+
+          <div class="form-group">
+            <div class="question-title mb-8">コーチへのメッセージ</div>
+            <textarea class="form-input form-textarea" id="ach-message"
+              placeholder="感想、嬉しかったこと、これからの目標など、自由にどうぞ"></textarea>
+          </div>
+
+          <div id="achievement-error" class="alert alert-error" style="display:none;"></div>
+          <div id="achievement-success" class="alert alert-success" style="display:none;">
+            成果報告を送信しました！コーチに届きます。
+          </div>
+          <button class="btn btn-primary btn-full" onclick="submitAchievement()">成果報告を送信する →</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 動画モーダル -->
+  <div class="overlay" id="video-overlay" style="display:none;" onclick="closeVideo(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span class="modal-title" id="video-title"></span>
+        <button class="close-btn" onclick="closeVideoModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="video-wrap">
+          <iframe id="video-iframe" src="" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+        </div>
+        <p id="video-desc" style="font-size:14px;color:var(--text-muted);line-height:1.8;"></p>
+        <div class="complete-btn-wrap">
+          <button class="btn btn-primary btn-sm" id="complete-btn" onclick="markComplete()">
+            視聴完了にする
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="js/config.js"></script>
+  <script>
+    let userData = null;
+    let userDocId = null;
+    let allLessons = [];
+    let completedSet = new Set();
+    let currentLessonId = null;
+    const achieveRatings = { confBefore:0, confAfter:0, freqBefore:0, freqAfter:0, speakBefore:0, speakAfter:0 };
+
+    auth.onAuthStateChanged(async user => {
+      if (!user) { window.location.href = 'index.html'; return; }
+      try {
+        const emailLocal = user.email.replace('@ec.coaching', '');
+        const docSnap = await db.collection('users').doc(emailLocal).get();
+        if (!docSnap.exists) { await auth.signOut(); window.location.href = 'index.html'; return; }
+        userDocId = docSnap.id;
+        userData = docSnap.data();
+        initPage();
+      } catch(e) {
+        window.location.href = 'index.html';
+      }
+    });
+
+    async function initPage() {
+      document.getElementById('header-name').textContent = userData.name;
+      document.getElementById('header-course').textContent = COURSE_LABELS[userData.course] || '';
+      document.getElementById('header-avatar').textContent = userData.name[0];
+      document.getElementById('prof-avatar').textContent = userData.name[0];
+      document.getElementById('prof-name').textContent = userData.name + ' さん';
+      document.getElementById('prof-course').textContent = COURSE_LABELS[userData.course] || '';
+
+      await loadLessons();
+      await loadProgress();
+      await loadAchievement();
+      await loadMemoHistory();
+      buildRatingRows();
+
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+    }
+
+    async function loadLessons() {
+      const [courseSnap, commonSnap] = await Promise.all([
+        db.collection('courses').doc(userData.course).collection('lessons').orderBy('order').get(),
+        db.collection('courses').doc('common').collection('lessons').orderBy('order').get()
+      ]);
+      const courseLessons = courseSnap.docs.map(d => ({ id: d.id, ...d.data(), isCommon: false }));
+      const commonLessons = commonSnap.docs.map(d => ({ id: 'common_' + d.id, _docId: d.id, ...d.data(), isCommon: true }));
+      allLessons = [...courseLessons, ...commonLessons];
+    }
+
+    async function loadProgress() {
+      const snap = await db.collection('progress').doc(userDocId).collection('completed').get();
+      completedSet = new Set(snap.docs.map(d => d.id));
+      renderLessons();
+      renderChecklist();
+      updateProgressBar();
+    }
+
+    function renderLessons() {
+      const container = document.getElementById('lessons-list');
+      if (allLessons.length === 0) {
+        container.innerHTML = '<div class="empty-state">まだレッスンが追加されていません</div>';
+        return;
+      }
+      const myLessons  = allLessons.filter(l => !l.isCommon && l.type === 'lesson');
+      const myGroups   = allLessons.filter(l => !l.isCommon && l.type === 'group_coaching');
+      const myManuals  = allLessons.filter(l => !l.isCommon && l.type === 'manual');
+      const commonAll  = allLessons.filter(l => l.isCommon);
+
+      let html = '';
+      if (myLessons.length > 0) {
+        html += '<div class="section-label">レッスン動画</div>';
+        myLessons.forEach((l, i) => html += lessonCardHTML(l, i + 1, completedSet.has(l.id)));
+      }
+      if (myGroups.length > 0) {
+        html += '<div class="section-label">グルコンアーカイブ</div>';
+        myGroups.forEach((l, i) => html += lessonCardHTML(l, i + 1, completedSet.has(l.id), 'group'));
+      }
+      if (myManuals.length > 0) {
+        html += '<div class="section-label">マニュアル</div>';
+        myManuals.forEach((l, i) => html += lessonCardHTML(l, i + 1, completedSet.has(l.id), 'manual'));
+      }
+      if (commonAll.length > 0) {
+        html += '<div class="section-label">全コース共通コンテンツ</div>';
+        commonAll.forEach((l, i) => {
+          const t = l.type === 'manual' ? 'manual' : l.type === 'group_coaching' ? 'group' : 'common';
+          html += lessonCardHTML(l, i + 1, completedSet.has(l.id), t);
+        });
+      }
+      container.innerHTML = html;
+    }
+
+    function lessonCardHTML(lesson, num, done, type = 'lesson') {
+      const badgeMap = {
+        group:  { cls: 'badge-group',  label: 'グルコン' },
+        common: { cls: 'badge-common', label: '共通' },
+        manual: { cls: 'badge-manual', label: 'マニュアル' },
+        lesson: { cls: 'badge-lesson', label: 'レッスン' }
+      };
+      const badge = badgeMap[type] || badgeMap.lesson;
+      const isManual = type === 'manual';
+      const onclick = isManual ? `openManual('${lesson.id}')` : `openVideo('${lesson.id}')`;
+      return `
+        <div class="lesson-card ${done ? 'completed' : ''}" onclick="${onclick}">
+          <div class="lesson-num">${done ? '✓' : num}</div>
+          <div class="lesson-info">
+            <div class="lesson-title">${lesson.title}${isManual ? ' <span style="font-size:11px;opacity:0.5;">↗</span>' : ''}</div>
+            ${lesson.description ? `<div class="lesson-desc">${lesson.description}</div>` : ''}
+          </div>
+          <span class="badge ${badge.cls}">${badge.label}</span>
+          ${done ? '<span class="check-icon">✓</span>' : ''}
+        </div>`;
+    }
+
+    function openManual(lessonId) {
+      const lesson = allLessons.find(l => l.id === lessonId);
+      if (!lesson || !lesson.docUrl) return;
+      window.open(lesson.docUrl, '_blank');
+      if (!completedSet.has(lessonId)) toggleComplete(lessonId);
+    }
+
+    function renderChecklist() {
+      const container = document.getElementById('checklist-list');
+      if (allLessons.length === 0) {
+        container.innerHTML = '<div class="empty-state">レッスンがまだありません</div>';
+        return;
+      }
+      container.innerHTML = allLessons.map(l => {
+        const done = completedSet.has(l.id);
+        return `
+          <div class="checklist-item ${done ? 'checked' : ''}" onclick="toggleComplete('${l.id}')">
+            <div class="checkbox-box">${done ? '✓' : ''}</div>
+            <span class="checklist-item-title">${l.title}</span>
+            <span class="badge ${l.type === 'group_coaching' ? 'badge-group' : 'badge-lesson'}">${l.type === 'group_coaching' ? 'グルコン' : 'レッスン'}</span>
+          </div>`;
+      }).join('');
+    }
+
+    function updateProgressBar() {
+      const total = allLessons.length;
+      const done  = completedSet.size;
+      const pct   = total > 0 ? Math.round(done / total * 100) : 0;
+      document.getElementById('progress-text').textContent = `${done} / ${total} 本`;
+      document.getElementById('progress-bar').style.width = pct + '%';
+    }
+
+    async function toggleComplete(lessonId) {
+      const ref = db.collection('progress').doc(userDocId).collection('completed').doc(lessonId);
+      if (completedSet.has(lessonId)) {
+        completedSet.delete(lessonId);
+        await ref.delete();
+      } else {
+        completedSet.add(lessonId);
+        await ref.set({ completedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      }
+      renderChecklist();
+      renderLessons();
+      updateProgressBar();
+    }
+
+    function openVideo(lessonId) {
+      const lesson = allLessons.find(l => l.id === lessonId);
+      if (!lesson || !lesson.youtubeId) return;
+      currentLessonId = lessonId;
+      document.getElementById('video-title').textContent = lesson.title;
+      document.getElementById('video-desc').textContent  = lesson.description || '';
+      document.getElementById('video-iframe').src = `https://www.youtube.com/embed/${lesson.youtubeId}?rel=0`;
+      const done = completedSet.has(lessonId);
+      document.getElementById('complete-btn').textContent = done ? '✓ 視聴済み' : '視聴完了にする';
+      document.getElementById('video-overlay').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeVideoModal() {
+      document.getElementById('video-overlay').style.display = 'none';
+      document.getElementById('video-iframe').src = '';
+      document.body.style.overflow = '';
+      currentLessonId = null;
+    }
+
+    function closeVideo(e) {
+      if (e.target === document.getElementById('video-overlay')) closeVideoModal();
+    }
+
+    async function markComplete() {
+      if (!currentLessonId) return;
+      if (!completedSet.has(currentLessonId)) await toggleComplete(currentLessonId);
+      document.getElementById('complete-btn').textContent = '✓ 視聴済み';
+    }
+
+    async function saveMemo() {
+      const text = document.getElementById('memo-input').value.trim();
+      if (!text) return;
+      await db.collection('memos').doc(userDocId).collection('entries').add({
+        text,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      document.getElementById('memo-input').value = '';
+      await loadMemoHistory();
+    }
+
+    async function loadMemoHistory() {
+      const snap = await db.collection('memos').doc(userDocId).collection('entries')
+        .orderBy('createdAt', 'desc').limit(20).get();
+      const container = document.getElementById('memo-history');
+      if (snap.empty) { container.innerHTML = '<div class="empty-state">まだメモがありません</div>'; return; }
+      container.innerHTML = snap.docs.map(d => {
+        const data = d.data();
+        const ts = data.createdAt?.toDate();
+        const dateStr = ts ? ts.toLocaleString('ja-JP', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '';
+        return `
+          <div class="activity-item">
+            <div class="activity-text">${escapeHtml(data.text)}</div>
+            <div class="activity-time">${dateStr}</div>
+          </div>`;
+      }).join('');
+    }
+
+    function buildRatingRows() {
+      const pairs = [
+        ['conf-before-row','confBefore'],['conf-after-row','confAfter'],
+        ['freq-before-row','freqBefore'],['freq-after-row','freqAfter'],
+        ['speak-before-row','speakBefore'],['speak-after-row','speakAfter']
+      ];
+      pairs.forEach(([rowId, key]) => {
+        const row = document.getElementById(rowId);
+        for (let i = 1; i <= 5; i++) {
+          const btn = document.createElement('button');
+          btn.className = 'rating-btn';
+          btn.textContent = i;
+          btn.onclick = () => selectRating(rowId, key, i);
+          row.appendChild(btn);
+        }
+      });
+    }
+
+    function selectRating(rowId, key, val) {
+      achieveRatings[key] = val;
+      document.getElementById(rowId).querySelectorAll('.rating-btn').forEach((btn, i) => {
+        btn.classList.toggle('selected', i + 1 === val);
+      });
+    }
+
+    async function loadAchievement() {
+      const snap = await db.collection('achievements').doc(userDocId).collection('reports')
+        .orderBy('submittedAt', 'desc').limit(1).get();
+      if (snap.empty) return;
+      const data = snap.docs[0].data();
+      document.getElementById('achievement-submitted-msg').style.display = 'block';
+      const fields = [
+        ['conf-before-row','confBefore'],['conf-after-row','confAfter'],
+        ['freq-before-row','freqBefore'],['freq-after-row','freqAfter'],
+        ['speak-before-row','speakBefore'],['speak-after-row','speakAfter']
+      ];
+      fields.forEach(([rowId, key]) => {
+        if (data[key]) setRating(rowId, key, data[key]);
+      });
+      if (data.accomplish)    document.getElementById('ach-accomplish').value = data.accomplish;
+      if (data.biggestChange) document.getElementById('ach-biggest-change').value = data.biggestChange;
+      if (data.message)       document.getElementById('ach-message').value = data.message;
+    }
+
+    function setRating(rowId, key, val) {
+      achieveRatings[key] = val;
+      const row = document.getElementById(rowId);
+      if (!row) return;
+      row.querySelectorAll('.rating-btn').forEach((btn, i) => {
+        btn.classList.toggle('selected', i + 1 === val);
+      });
+    }
+
+    async function submitAchievement() {
+      if (Object.values(achieveRatings).some(v => v === 0)) {
+        document.getElementById('achievement-error').textContent = '全ての評価を選択してください';
+        document.getElementById('achievement-error').style.display = 'block';
+        return;
+      }
+      document.getElementById('achievement-error').style.display = 'none';
+      await db.collection('achievements').doc(userDocId).collection('reports').add({
+        ...achieveRatings,
+        accomplish:    document.getElementById('ach-accomplish').value,
+        biggestChange: document.getElementById('ach-biggest-change').value,
+        message:       document.getElementById('ach-message').value,
+        submittedAt:   firebase.firestore.FieldValue.serverTimestamp(),
+        userName: userData.name,
+        course:   userData.course
+      });
+      document.getElementById('achievement-submitted-msg').style.display = 'block';
+      document.getElementById('achievement-success').style.display = 'block';
+      setTimeout(() => document.getElementById('achievement-success').style.display = 'none', 4000);
+    }
+
+    function switchTab(tab, btn) {
+      ['lessons','progress','achievement'].forEach(t => {
+        document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none';
+      });
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    async function handleLogout() {
+      await auth.signOut();
+      window.location.href = 'index.html';
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+                .replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+    }
+  </script>
+</body>
+</html>

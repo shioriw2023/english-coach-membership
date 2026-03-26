@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>英語コーチング | 管理パネル</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- 管理者ログイン画面 -->
+  <div id="admin-gate" class="login-page">
+    <div class="login-card fade-in">
+      <span class="login-eyebrow">Admin</span>
+      <h1 class="login-title">管理パネル</h1>
+      <p class="login-subtitle">コーチ専用ページです</p>
+      <div class="form-group">
+        <label class="form-label">名前</label>
+        <input type="text" id="admin-name-input" class="form-input" placeholder="名前を入力"
+          onkeydown="if(event.key==='Enter') checkAdminPw()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">パスワード</label>
+        <input type="password" id="admin-pw-input" class="form-input" placeholder="パスワードを入力"
+          onkeydown="if(event.key==='Enter') checkAdminPw()">
+      </div>
+      <div id="admin-gate-error" class="alert alert-error" style="display:none;">名前またはパスワードが違います</div>
+      <button class="btn btn-primary btn-full" onclick="checkAdminPw()">ログイン</button>
+    </div>
+  </div>
+
+  <!-- 管理画面本体 -->
+  <div id="admin-main" style="display:none;">
+
+    <header class="header">
+      <div class="container header-inner">
+        <div class="header-logo">
+          <span class="header-logo-dot"></span>
+          英語コーチング
+          <span class="header-course-badge">管理パネル</span>
+        </div>
+        <button class="logout-btn" onclick="location.reload()">ログアウト</button>
+      </div>
+    </header>
+
+    <main class="container page">
+
+      <div class="tabs">
+        <button class="tab active" onclick="switchAdminTab('students', this)">受講生管理</button>
+        <button class="tab" onclick="switchAdminTab('lessons', this)">レッスン管理</button>
+        <button class="tab" onclick="switchAdminTab('reports', this)">成果報告一覧</button>
+      </div>
+
+      <!-- ── 受講生管理 ── -->
+      <div id="admin-tab-students">
+
+        <div class="card">
+          <div class="admin-row-header">
+            <div class="card-title" style="margin-bottom:0;">受講生を追加</div>
+          </div>
+          <div class="admin-two-col">
+            <div class="form-group">
+              <label class="form-label">お名前（フルネーム）</label>
+              <input type="text" id="new-student-name" class="form-input" placeholder="例：山田 花子">
+              <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">※ 名前はログインIDになります。重複不可。</p>
+            </div>
+            <div class="form-group">
+              <label class="form-label">コース</label>
+              <select id="new-student-course" class="form-input form-select">
+                <option value="keizokusei">継続生コース</option>
+                <option value="0ki">0期生</option>
+                <option value="1ki">1期生</option>
+              </select>
+            </div>
+          </div>
+          <div id="add-student-error" class="alert alert-error" style="display:none;"></div>
+          <div id="add-student-success" class="alert alert-success" style="display:none;"></div>
+          <button class="btn btn-primary" onclick="addStudent()">受講生を追加する</button>
+        </div>
+
+        <div class="card">
+          <div class="admin-row-header">
+            <div class="card-title" style="margin-bottom:0;">受講生一覧</div>
+            <button class="btn btn-outline btn-sm" onclick="loadStudents()">更新</button>
+          </div>
+          <div id="students-list">
+            <div class="loading-center"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── レッスン管理 ── -->
+      <div id="admin-tab-lessons" style="display:none;">
+
+        <div class="card">
+          <div class="card-title">レッスンを追加</div>
+          <div class="admin-two-col">
+            <div class="form-group">
+              <label class="form-label">コース</label>
+              <select id="new-lesson-course" class="form-input form-select">
+                <option value="keizokusei">継続生コース</option>
+                <option value="0ki">0期生</option>
+                <option value="1ki">1期生</option>
+                <option value="common">全コース共通</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">種類</label>
+              <select id="new-lesson-type" class="form-input form-select" onchange="toggleUrlField()">
+                <option value="lesson">レッスン動画</option>
+                <option value="group_coaching">グルコンアーカイブ</option>
+                <option value="manual">マニュアル</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">タイトル</label>
+            <input type="text" id="new-lesson-title" class="form-input" placeholder="例：Day1 自己紹介を英語で話す">
+          </div>
+          <div class="form-group" id="field-youtube">
+            <label class="form-label">YouTubeのURL</label>
+            <input type="text" id="new-lesson-youtube" class="form-input"
+              placeholder="例：https://www.youtube.com/watch?v=xxxx または https://youtu.be/xxxx">
+            <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">YouTubeのURLをそのまま貼り付けてOKです</p>
+          </div>
+          <div class="form-group" id="field-docurl" style="display:none;">
+            <label class="form-label">ドキュメントのURL</label>
+            <input type="text" id="new-lesson-docurl" class="form-input"
+              placeholder="例：GoogleドキュメントやスプレッドシートのURL、PDFのリンクなど">
+            <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">GoogleドキュメントのURL、PDFのリンクなどをそのまま貼り付けてOKです</p>
+          </div>
+          <div class="form-group">
+            <label class="form-label">説明文（任意）</label>
+            <textarea id="new-lesson-desc" class="form-input form-textarea" rows="2"
+              placeholder="このレッスンで学ぶこと、ポイントなど"></textarea>
+          </div>
+          <div id="add-lesson-error" class="alert alert-error" style="display:none;"></div>
+          <div id="add-lesson-success" class="alert alert-success" style="display:none;"></div>
+          <button class="btn btn-primary" onclick="addLesson()">レッスンを追加する</button>
+        </div>
+
+        <div class="card">
+          <div class="admin-row-header">
+            <div class="card-title" style="margin-bottom:0;">レッスン一覧</div>
+            <select id="view-course" class="form-input form-select" style="width:auto;padding:6px 32px 6px 12px;"
+              onchange="loadLessonList()">
+              <option value="keizokusei">継続生コース</option>
+              <option value="0ki">0期生</option>
+              <option value="1ki">1期生</option>
+              <option value="common">全コース共通</option>
+            </select>
+          </div>
+          <div id="lessons-admin-list">
+            <div class="loading-center"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── 成果報告一覧 ── -->
+      <div id="admin-tab-reports" style="display:none;">
+        <div class="card">
+          <div class="admin-row-header">
+            <div class="card-title" style="margin-bottom:0;">成果報告一覧</div>
+            <button class="btn btn-outline btn-sm" onclick="loadReports()">更新</button>
+          </div>
+          <div id="reports-list">
+            <div class="loading-center"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- セットアップURLモーダル -->
+  <div class="overlay" id="url-modal" style="display:none;" onclick="closeUrlModal(event)">
+    <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span class="modal-title">セットアップリンク</span>
+        <button class="close-btn" onclick="closeUrlModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:14px;color:var(--text-muted);margin-bottom:12px;">
+          このリンクを受講生に送ってください。受講生が初回パスワードを設定します。
+        </p>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px;word-break:break-all;font-size:13px;color:var(--text);margin-bottom:12px;" id="setup-url-display"></div>
+        <button class="btn btn-primary btn-full" onclick="copySetupUrl()">コピーする</button>
+        <div id="copy-done" class="alert alert-success mt-8" style="display:none;">コピーしました！</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="js/config.js"></script>
+  <script>
+    const ADMIN_NAME     = '和島しおり';
+    const ADMIN_PASSWORD = 'coach2026';
+
+    function checkAdminPw() {
+      const name = document.getElementById('admin-name-input').value.trim();
+      const pw   = document.getElementById('admin-pw-input').value;
+      if (name === ADMIN_NAME && pw === ADMIN_PASSWORD) {
+        document.getElementById('admin-gate').style.display = 'none';
+        document.getElementById('admin-main').style.display = 'block';
+        loadStudents();
+        loadLessonList();
+      } else {
+        document.getElementById('admin-gate-error').style.display = 'block';
+      }
+    }
+
+    async function addStudent() {
+      const name   = document.getElementById('new-student-name').value.trim();
+      const course = document.getElementById('new-student-course').value;
+      const errEl  = document.getElementById('add-student-error');
+      const sucEl  = document.getElementById('add-student-success');
+      errEl.style.display = 'none'; sucEl.style.display = 'none';
+      if (!name) { errEl.textContent = '名前を入力してください'; errEl.style.display = 'block'; return; }
+      const dup = await db.collection('users').where('name', '==', name).limit(1).get();
+      if (!dup.empty) { errEl.textContent = 'この名前はすでに登録されています'; errEl.style.display = 'block'; return; }
+      const docRef = await db.collection('users').add({
+        name, course,
+        setupDone: false,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      document.getElementById('new-student-name').value = '';
+      sucEl.textContent = `${name} さんを追加しました！セットアップリンクをコピーして送ってください。`;
+      sucEl.style.display = 'block';
+      await loadStudents();
+      showSetupUrl(docRef.id, name);
+    }
+
+    async function loadStudents() {
+      const container = document.getElementById('students-list');
+      const snap = await db.collection('users').orderBy('createdAt', 'desc').get();
+      if (snap.empty) { container.innerHTML = '<div class="empty-state">まだ受講生がいません</div>'; return; }
+      container.innerHTML = snap.docs.map(d => {
+        const u = d.data();
+        return `
+          <div class="student-row">
+            <div>
+              <div class="student-name">${u.name}</div>
+              <div class="student-meta">${COURSE_LABELS[u.course] || u.course}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="status-pill ${u.setupDone ? 'status-done' : 'status-pending'}">
+                ${u.setupDone ? '設定済み' : '未設定'}
+              </span>
+              ${!u.setupDone ? `<button class="copy-btn" onclick="showSetupUrl('${d.id}','${u.name}')">リンクをコピー</button>` : ''}
+              <button class="delete-btn" onclick="deleteStudent('${d.id}','${u.name}')">🗑</button>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    async function deleteStudent(docId, name) {
+      if (!confirm(`${name} さんを削除しますか？`)) return;
+      await db.collection('users').doc(docId).delete();
+      await loadStudents();
+    }
+
+    let currentSetupUrl = '';
+    function showSetupUrl(docId, name) {
+      const base = window.location.href.replace('admin.html', '');
+      currentSetupUrl = `${base}index.html?setup=${docId}`;
+      document.getElementById('setup-url-display').textContent = currentSetupUrl;
+      document.getElementById('url-modal').style.display = 'flex';
+      document.getElementById('copy-done').style.display = 'none';
+    }
+
+    function copySetupUrl() {
+      navigator.clipboard.writeText(currentSetupUrl).then(() => {
+        document.getElementById('copy-done').style.display = 'block';
+      });
+    }
+
+    function closeUrlModal(e) {
+      if (!e || e.target === document.getElementById('url-modal')) {
+        document.getElementById('url-modal').style.display = 'none';
+      }
+    }
+
+    function extractYoutubeId(input) {
+      input = input.trim();
+      if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
+      const short = input.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+      if (short) return short[1];
+      const long  = input.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+      if (long)  return long[1];
+      const embed = input.match(/embed\/([a-zA-Z0-9_-]{11})/);
+      if (embed) return embed[1];
+      return null;
+    }
+
+    function toggleUrlField() {
+      const isManual = document.getElementById('new-lesson-type').value === 'manual';
+      document.getElementById('field-youtube').style.display = isManual ? 'none' : 'block';
+      document.getElementById('field-docurl').style.display  = isManual ? 'block' : 'none';
+    }
+
+    async function addLesson() {
+      const course = document.getElementById('new-lesson-course').value;
+      const type   = document.getElementById('new-lesson-type').value;
+      const title  = document.getElementById('new-lesson-title').value.trim();
+      const desc   = document.getElementById('new-lesson-desc').value.trim();
+      const errEl  = document.getElementById('add-lesson-error');
+      const sucEl  = document.getElementById('add-lesson-success');
+      errEl.style.display = 'none'; sucEl.style.display = 'none';
+      if (!title) { errEl.textContent = 'タイトルを入力してください'; errEl.style.display = 'block'; return; }
+
+      let lessonData = { title, type, description: desc };
+      if (type === 'manual') {
+        const docUrl = document.getElementById('new-lesson-docurl').value.trim();
+        if (!docUrl) { errEl.textContent = 'ドキュメントのURLを入力してください'; errEl.style.display = 'block'; return; }
+        lessonData.docUrl = docUrl;
+      } else {
+        const youtubeId = extractYoutubeId(document.getElementById('new-lesson-youtube').value);
+        if (!youtubeId) { errEl.textContent = 'YouTubeのURLが正しくありません'; errEl.style.display = 'block'; return; }
+        lessonData.youtubeId = youtubeId;
+      }
+
+      const snap = await db.collection('courses').doc(course).collection('lessons')
+        .orderBy('order', 'desc').limit(1).get();
+      const maxOrder = snap.empty ? 0 : (snap.docs[0].data().order || 0);
+      await db.collection('courses').doc(course).collection('lessons').add({
+        ...lessonData,
+        order: maxOrder + 1,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      document.getElementById('new-lesson-title').value   = '';
+      document.getElementById('new-lesson-youtube').value = '';
+      document.getElementById('new-lesson-desc').value    = '';
+      sucEl.textContent = 'レッスンを追加しました！';
+      sucEl.style.display = 'block';
+      document.getElementById('view-course').value = course;
+      await loadLessonList();
+    }
+
+    async function loadLessonList() {
+      const course    = document.getElementById('view-course').value;
+      const container = document.getElementById('lessons-admin-list');
+      const snap = await db.collection('courses').doc(course).collection('lessons').orderBy('order').get();
+      if (snap.empty) { container.innerHTML = '<div class="empty-state">まだレッスンがありません</div>'; return; }
+      container.innerHTML = snap.docs.map(d => {
+        const l = d.data();
+        const badgeCls = l.type === 'group_coaching' ? 'badge-group' : l.type === 'manual' ? 'badge-manual' : 'badge-lesson';
+        const badgeLabel = l.type === 'group_coaching' ? 'グルコン' : l.type === 'manual' ? 'マニュアル' : 'レッスン';
+        return `
+          <div class="lesson-admin-row">
+            <span class="badge ${badgeCls}">${badgeLabel}</span>
+            <div class="lesson-admin-info">
+              <div style="font-weight:600;font-size:14px;color:var(--text);">${l.title}</div>
+              <div style="font-size:12px;color:var(--text-muted);">${l.youtubeId || l.docUrl || ''}</div>
+            </div>
+            <button class="delete-btn" onclick="deleteLesson('${course}','${d.id}','${l.title}')">🗑</button>
+          </div>`;
+      }).join('');
+    }
+
+    async function deleteLesson(course, docId, title) {
+      if (!confirm(`「${title}」を削除しますか？`)) return;
+      await db.collection('courses').doc(course).collection('lessons').doc(docId).delete();
+      await loadLessonList();
+    }
+
+    async function loadReports() {
+      const container = document.getElementById('reports-list');
+      const usersSnap = await db.collection('users').where('setupDone','==',true).get();
+      let allReports = [];
+      for (const userDoc of usersSnap.docs) {
+        const reportsSnap = await db.collection('achievements').doc(userDoc.id)
+          .collection('reports').orderBy('submittedAt','desc').limit(1).get();
+        if (!reportsSnap.empty) {
+          allReports.push({ user: userDoc.data(), report: reportsSnap.docs[0].data() });
+        }
+      }
+      if (allReports.length === 0) { container.innerHTML = '<div class="empty-state">まだ成果報告がありません</div>'; return; }
+      container.innerHTML = allReports.map(({ user, report }) => {
+        const ts = report.submittedAt?.toDate();
+        const dateStr = ts ? ts.toLocaleDateString('ja-JP') : '';
+        return `
+          <div style="padding:20px 0;border-bottom:1px solid var(--border);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+              <div>
+                <span style="font-weight:700;font-size:15px;color:var(--text);">${user.name}</span>
+                <span style="margin-left:10px;font-size:12px;color:var(--text-muted);">${COURSE_LABELS[user.course]}</span>
+              </div>
+              <span style="font-size:12px;color:var(--text-dim);">${dateStr}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;">
+              ${ratingChange('英語への自信', report.confBefore, report.confAfter)}
+              ${ratingChange('使う頻度', report.freqBefore, report.freqAfter)}
+              ${ratingChange('スピーキング', report.speakBefore, report.speakAfter)}
+            </div>
+            ${report.accomplish    ? `<div style="margin-bottom:8px;"><p style="font-size:12px;font-weight:700;color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">できるようになったこと</p><p style="font-size:14px;color:var(--text);">${report.accomplish}</p></div>` : ''}
+            ${report.biggestChange ? `<div style="margin-bottom:8px;"><p style="font-size:12px;font-weight:700;color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">一番変わったこと</p><p style="font-size:14px;color:var(--text);">${report.biggestChange}</p></div>` : ''}
+            ${report.message       ? `<div><p style="font-size:12px;font-weight:700;color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">コーチへのメッセージ</p><p style="font-size:14px;color:var(--text);">${report.message}</p></div>` : ''}
+          </div>`;
+      }).join('');
+    }
+
+    function ratingChange(label, before, after) {
+      const diff  = after - before;
+      const arrow = diff > 0 ? `+${diff}↑` : diff < 0 ? `${diff}↓` : '→';
+      const color = diff > 0 ? 'var(--success)' : diff < 0 ? 'var(--error)' : 'var(--text-muted)';
+      return `
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">${label}</div>
+          <div style="font-size:17px;font-weight:800;color:var(--text);">${before} → ${after}</div>
+          <div style="font-size:13px;font-weight:700;color:${color};margin-top:2px;">${arrow}</div>
+        </div>`;
+    }
+
+    function switchAdminTab(tab, btn) {
+      ['students','lessons','reports'].forEach(t => {
+        document.getElementById('admin-tab-' + t).style.display = t === tab ? 'block' : 'none';
+      });
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (tab === 'reports') loadReports();
+    }
+  </script>
+</body>
+</html>
