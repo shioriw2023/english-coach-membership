@@ -436,7 +436,7 @@
       const container = document.getElementById('progress-list');
       container.innerHTML = '<div class="loading-center"><div class="spinner"></div></div>';
 
-      const usersSnap = await db.collection('users').where('setupDone', '==', true).orderBy('createdAt', 'desc').get();
+      const usersSnap = await db.collection('users').where('setupDone', '==', true).get();
       if (usersSnap.empty) {
         container.innerHTML = '<div class="empty-state">まだ受講生がいません</div>';
         return;
