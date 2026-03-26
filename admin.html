@@ -109,7 +109,8 @@
               <select id="new-lesson-type" class="form-input form-select" onchange="toggleUrlField()">
                 <option value="lesson">レッスン動画</option>
                 <option value="group_coaching">グルコンアーカイブ</option>
-                <option value="manual">マニュアル</option>
+                <option value="manual">マニュアル（URL）</option>
+                <option value="pdf">PDF（アップロード）</option>
               </select>
             </div>
           </div>
@@ -124,10 +125,17 @@
             <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">YouTubeのURLをそのまま貼り付けてOKです</p>
           </div>
           <div class="form-group" id="field-docurl" style="display:none;">
-            <label class="form-label">ドキュメントのURL</label>
+            <label class="form-label">ドキュメントのURL（GoogleドキュメントやNotionなど）</label>
             <input type="text" id="new-lesson-docurl" class="form-input"
-              placeholder="例：GoogleドキュメントやスプレッドシートのURL、PDFのリンクなど">
-            <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">GoogleドキュメントのURL、PDFのリンクなどをそのまま貼り付けてOKです</p>
+              placeholder="例：GoogleドキュメントやNotionのURL">
+            <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">URLをそのまま貼り付けてOKです</p>
+          </div>
+          <div class="form-group" id="field-pdf" style="display:none;">
+            <label class="form-label">PDFファイルをアップロード</label>
+            <input type="file" id="new-lesson-pdf" class="form-input" accept="application/pdf"
+              style="padding:8px;" onchange="onPdfSelected()">
+            <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">最大20MBまで。アップロード後に自動でURLが設定されます。</p>
+            <div id="pdf-upload-status" style="display:none;font-size:13px;margin-top:8px;color:var(--text-muted);"></div>
           </div>
           <div class="form-group">
             <label class="form-label">説明文（任意）</label>
@@ -207,6 +215,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
   <script src="js/config.js"></script>
   <script>
     const ADMIN_PASSWORD = 'coach2026';
@@ -310,9 +319,30 @@
     }
 
     function toggleUrlField() {
-      const isManual = document.getElementById('new-lesson-type').value === 'manual';
-      document.getElementById('field-youtube').style.display = isManual ? 'none' : 'block';
-      document.getElementById('field-docurl').style.display  = isManual ? 'block' : 'none';
+      const type = document.getElementById('new-lesson-type').value;
+      document.getElementById('field-youtube').style.display  = type === 'manual' ? 'none' : 'block';
+      document.getElementById('field-docurl').style.display   = type === 'manual' ? 'block' : 'none';
+      document.getElementById('field-pdf').style.display      = type === 'pdf'    ? 'block' : 'none';
+    }
+
+    let uploadedPdfUrl = '';
+
+    function onPdfSelected() {
+      uploadedPdfUrl = '';
+      document.getElementById('pdf-upload-status').style.display = 'none';
+    }
+
+    async function uploadPdf() {
+      const file = document.getElementById('new-lesson-pdf').files[0];
+      if (!file) return null;
+      const statusEl = document.getElementById('pdf-upload-status');
+      statusEl.style.display = 'block';
+      statusEl.textContent = 'アップロード中...';
+      const ref = storage.ref(`pdfs/${Date.now()}_${file.name}`);
+      await ref.put(file);
+      const url = await ref.getDownloadURL();
+      statusEl.textContent = 'アップロード完了！';
+      return url;
     }
 
     async function addLesson() {
@@ -328,8 +358,14 @@
       let lessonData = { title, type, description: desc };
       if (type === 'manual') {
         const docUrl = document.getElementById('new-lesson-docurl').value.trim();
-        if (!docUrl) { errEl.textContent = 'ドキュメントのURLを入力してください'; errEl.style.display = 'block'; return; }
+        if (!docUrl) { errEl.textContent = 'URLを入力してください'; errEl.style.display = 'block'; return; }
         lessonData.docUrl = docUrl;
+      } else if (type === 'pdf') {
+        const file = document.getElementById('new-lesson-pdf').files[0];
+        if (!file) { errEl.textContent = 'PDFファイルを選択してください'; errEl.style.display = 'block'; return; }
+        const pdfUrl = await uploadPdf();
+        if (!pdfUrl) { errEl.textContent = 'アップロードに失敗しました'; errEl.style.display = 'block'; return; }
+        lessonData.docUrl = pdfUrl;
       } else {
         const youtubeId = extractYoutubeId(document.getElementById('new-lesson-youtube').value);
         if (!youtubeId) { errEl.textContent = 'YouTubeのURLが正しくありません'; errEl.style.display = 'block'; return; }
@@ -347,7 +383,10 @@
 
       document.getElementById('new-lesson-title').value   = '';
       document.getElementById('new-lesson-youtube').value = '';
+      document.getElementById('new-lesson-docurl').value  = '';
+      document.getElementById('new-lesson-pdf').value     = '';
       document.getElementById('new-lesson-desc').value    = '';
+      document.getElementById('pdf-upload-status').style.display = 'none';
       sucEl.textContent = 'レッスンを追加しました！';
       sucEl.style.display = 'block';
       document.getElementById('view-course').value = course;
