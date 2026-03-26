@@ -35,7 +35,7 @@
           <span class="header-course-badge">管理パネル</span>
         </div>
         <a href="dashboard.html?preview=keizokusei" target="_blank" class="btn btn-outline btn-sm" style="margin-right:8px;">受講生ページ ↗</a>
-        <button class="logout-btn" onclick="location.reload()">ログアウト</button>
+        <button class="logout-btn" onclick="sessionStorage.removeItem('adminLoggedIn');location.reload()">ログアウト</button>
       </div>
     </header>
 
@@ -212,13 +212,23 @@
   <script>
     const ADMIN_PASSWORD = 'coach2026';
 
+    function showAdmin() {
+      document.getElementById('admin-gate').style.display = 'none';
+      document.getElementById('admin-main').style.display = 'block';
+      loadStudents();
+      loadLessonList();
+    }
+
+    // セッション中はログイン不要
+    if (sessionStorage.getItem('adminLoggedIn') === '1') {
+      showAdmin();
+    }
+
     function checkAdminPw() {
       const pw = document.getElementById('admin-pw-input').value;
       if (pw === ADMIN_PASSWORD) {
-        document.getElementById('admin-gate').style.display = 'none';
-        document.getElementById('admin-main').style.display = 'block';
-        loadStudents();
-        loadLessonList();
+        sessionStorage.setItem('adminLoggedIn', '1');
+        showAdmin();
       } else {
         document.getElementById('admin-gate-error').style.display = 'block';
       }
