@@ -64,7 +64,7 @@
       <!-- タブ -->
       <div class="tabs">
         <button class="tab active" onclick="switchTab('lessons', this)">レッスン</button>
-        <button class="tab" onclick="switchTab('progress', this)">進捗</button>
+        <button class="tab" onclick="switchTab('progress', this)">メモ</button>
         <button class="tab" onclick="switchTab('achievement', this)">成果報告</button>
       </div>
 
@@ -75,18 +75,10 @@
         </div>
       </div>
 
-      <!-- ── 進捗タブ ── -->
+      <!-- ── メモタブ ── -->
       <div id="tab-progress" style="display:none;">
         <div class="card">
-          <div class="card-title">チェックリスト</div>
-          <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">視聴したレッスンにチェックを入れましょう</p>
-          <div id="checklist-list">
-            <div class="loading-center"><div class="spinner"></div></div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">進捗メモ</div>
+          <div class="card-title">メモ</div>
           <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">今日の学びや気づきを記録しましょう</p>
           <textarea class="memo-area" id="memo-input" placeholder="例：今日は自己紹介のフレーズを練習した。最初は緊張したけど、3回繰り返したら自然に言えるようになった！"></textarea>
           <div class="memo-footer">
@@ -308,7 +300,6 @@
         buildRatingRows();
       } else {
         renderLessons();
-        renderChecklist();
         updateProgressBar();
       }
 
@@ -397,22 +388,7 @@
       if (!completedSet.has(lessonId)) toggleComplete(lessonId);
     }
 
-    function renderChecklist() {
-      const container = document.getElementById('checklist-list');
-      if (allLessons.length === 0) {
-        container.innerHTML = '<div class="empty-state">レッスンがまだありません</div>';
-        return;
-      }
-      container.innerHTML = allLessons.map(l => {
-        const done = completedSet.has(l.id);
-        return `
-          <div class="checklist-item ${done ? 'checked' : ''}" onclick="toggleComplete('${l.id}')">
-            <div class="checkbox-box">${done ? '✓' : ''}</div>
-            <span class="checklist-item-title">${l.title}</span>
-            <span class="badge ${l.type === 'group_coaching' ? 'badge-group' : 'badge-lesson'}">${l.type === 'group_coaching' ? 'グルコン' : 'レッスン'}</span>
-          </div>`;
-      }).join('');
-    }
+
 
     function updateProgressBar() {
       const total = allLessons.length;
