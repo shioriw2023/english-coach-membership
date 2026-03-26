@@ -12,23 +12,15 @@
 
       <span class="login-eyebrow">Members Only</span>
       <h1 class="login-title">英語コーチング<br>受講生マイページ</h1>
-      <p class="login-subtitle">お名前でログインしてください</p>
+      <p class="login-subtitle">メールアドレスでログインしてください</p>
 
-      <!-- Step 1: 名前入力 -->
-      <div id="step-name">
+      <!-- Step 1: メアド＋パスワードログイン -->
+      <div id="step-login">
         <div class="form-group">
-          <label class="form-label">お名前</label>
-          <input type="text" id="input-name" class="form-input" placeholder="例：山田 花子"
-            onkeydown="if(event.key==='Enter') handleNameNext()">
+          <label class="form-label">メールアドレス</label>
+          <input type="email" id="input-email" class="form-input" placeholder="例：hanako@example.com"
+            onkeydown="if(event.key==='Enter') document.getElementById('input-password').focus()">
         </div>
-        <div id="name-error" class="alert alert-error" style="display:none;"></div>
-        <button class="btn btn-primary btn-full" onclick="handleNameNext()">次へ →</button>
-      </div>
-
-      <!-- Step 2: パスワードログイン -->
-      <div id="step-login" style="display:none;">
-        <button class="back-link" onclick="showStep('step-name')">← 戻る</button>
-        <div class="alert alert-info" id="login-name-display"></div>
         <div class="form-group">
           <label class="form-label">パスワード</label>
           <input type="password" id="input-password" class="form-input" placeholder="パスワードを入力"
@@ -38,12 +30,17 @@
         <button class="btn btn-primary btn-full" onclick="handleLogin()">ログイン</button>
       </div>
 
-      <!-- Step 3: 初回パスワード設定 -->
+      <!-- Step 2: 初回パスワード設定（セットアップリンク経由） -->
       <div id="step-setup" style="display:none;">
         <div class="alert alert-info" style="margin-bottom:20px;">
           ようこそ！はじめにパスワードを設定してください。
         </div>
         <p style="font-size:15px; font-weight:700; color:var(--text); margin-bottom:20px;" id="setup-name-display"></p>
+        <div class="form-group">
+          <label class="form-label">メールアドレス</label>
+          <input type="email" id="setup-email-display" class="form-input" readonly
+            style="background:var(--bg-alt,#f5f5f5);color:var(--text-muted);">
+        </div>
         <div class="form-group">
           <label class="form-label">パスワード（6文字以上）</label>
           <input type="password" id="input-new-pw" class="form-input" placeholder="パスワードを設定">
@@ -84,19 +81,20 @@
       try {
         const docSnap = await db.collection('users').doc(setupId).get();
         if (!docSnap.exists || docSnap.data().setupDone) {
-          showStep('step-name');
+          showStep('step-login');
           return;
         }
         currentUserDoc = { id: docSnap.id, ...docSnap.data() };
         document.getElementById('setup-name-display').textContent = `${currentUserDoc.name} さんとして登録します`;
+        document.getElementById('setup-email-display').value = currentUserDoc.email || '';
         showStep('step-setup');
       } catch(e) {
-        showStep('step-name');
+        showStep('step-login');
       }
     });
 
     function showStep(id) {
-      ['step-name','step-login','step-setup','step-loading'].forEach(s => {
+      ['step-login','step-setup','step-loading'].forEach(s => {
         document.getElementById(s).style.display = 'none';
       });
       document.getElementById(id).style.display = 'block';
@@ -111,44 +109,18 @@
       document.getElementById(id).style.display = 'none';
     }
 
-    async function handleNameNext() {
-      const name = document.getElementById('input-name').value.trim();
-      if (!name) { showError('name-error', 'お名前を入力してください'); return; }
-      hideError('name-error');
-      showStep('step-loading');
-      try {
-        const snapshot = await db.collection('users').where('name', '==', name).limit(1).get();
-        if (snapshot.empty) {
-          showStep('step-name');
-          showError('name-error', '登録されていない名前です。コーチにご確認ください。');
-          return;
-        }
-        const docSnap = snapshot.docs[0];
-        currentUserDoc = { id: docSnap.id, ...docSnap.data() };
-        if (currentUserDoc.setupDone) {
-          document.getElementById('login-name-display').textContent = `${currentUserDoc.name} さん、おかえりなさい`;
-          showStep('step-login');
-        } else {
-          document.getElementById('setup-name-display').textContent = `${currentUserDoc.name} さんとして登録します`;
-          showStep('step-setup');
-        }
-      } catch(e) {
-        showStep('step-name');
-        showError('name-error', 'エラーが発生しました。時間をおいて再度お試しください。');
-      }
-    }
-
     async function handleLogin() {
+      const email    = document.getElementById('input-email').value.trim();
       const password = document.getElementById('input-password').value;
+      if (!email)    { showError('login-error', 'メールアドレスを入力してください'); return; }
       if (!password) { showError('login-error', 'パスワードを入力してください'); return; }
       hideError('login-error');
       showStep('step-loading');
       try {
-        const email = `${currentUserDoc.id}@ec.coaching`;
         await auth.signInWithEmailAndPassword(email, password);
       } catch(e) {
         showStep('step-login');
-        showError('login-error', 'パスワードが間違っています');
+        showError('login-error', 'メールアドレスまたはパスワードが間違っています');
       }
     }
 
@@ -160,13 +132,12 @@
       if (pw !== pw2)    { showError('setup-error', 'パスワードが一致しません'); return; }
       showStep('step-loading');
       try {
-        const email = `${currentUserDoc.id}@ec.coaching`;
-        await auth.createUserWithEmailAndPassword(email, pw);
+        await auth.createUserWithEmailAndPassword(currentUserDoc.email, pw);
         await db.collection('users').doc(currentUserDoc.id).update({ setupDone: true });
       } catch(e) {
         showStep('step-setup');
         if (e.code === 'auth/email-already-in-use') {
-          showError('setup-error', 'このアカウントはすでに設定済みです。パスワードでログインしてください。');
+          showError('setup-error', 'このアカウントはすでに設定済みです。ログインページからログインしてください。');
         } else {
           showError('setup-error', 'エラーが発生しました: ' + e.message);
         }

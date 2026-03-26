@@ -57,16 +57,19 @@
             <div class="form-group">
               <label class="form-label">お名前（フルネーム）</label>
               <input type="text" id="new-student-name" class="form-input" placeholder="例：山田 花子">
-              <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">※ 名前はログインIDになります。重複不可。</p>
             </div>
             <div class="form-group">
-              <label class="form-label">コース</label>
-              <select id="new-student-course" class="form-input form-select">
-                <option value="keizokusei">継続生コース</option>
-                <option value="0ki">0期生</option>
-                <option value="1ki">1期生</option>
-              </select>
+              <label class="form-label">メールアドレス</label>
+              <input type="email" id="new-student-email" class="form-input" placeholder="例：hanako@example.com">
             </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">コース</label>
+            <select id="new-student-course" class="form-input form-select">
+              <option value="keizokusei">継続生コース</option>
+              <option value="0ki">0期生</option>
+              <option value="1ki">1期生</option>
+            </select>
           </div>
           <div id="add-student-error" class="alert alert-error" style="display:none;"></div>
           <div id="add-student-success" class="alert alert-success" style="display:none;"></div>
@@ -208,19 +211,22 @@
 
     async function addStudent() {
       const name   = document.getElementById('new-student-name').value.trim();
+      const email  = document.getElementById('new-student-email').value.trim().toLowerCase();
       const course = document.getElementById('new-student-course').value;
       const errEl  = document.getElementById('add-student-error');
       const sucEl  = document.getElementById('add-student-success');
       errEl.style.display = 'none'; sucEl.style.display = 'none';
-      if (!name) { errEl.textContent = '名前を入力してください'; errEl.style.display = 'block'; return; }
-      const dup = await db.collection('users').where('name', '==', name).limit(1).get();
-      if (!dup.empty) { errEl.textContent = 'この名前はすでに登録されています'; errEl.style.display = 'block'; return; }
+      if (!name)  { errEl.textContent = '名前を入力してください'; errEl.style.display = 'block'; return; }
+      if (!email) { errEl.textContent = 'メールアドレスを入力してください'; errEl.style.display = 'block'; return; }
+      const dup = await db.collection('users').where('email', '==', email).limit(1).get();
+      if (!dup.empty) { errEl.textContent = 'このメールアドレスはすでに登録されています'; errEl.style.display = 'block'; return; }
       const docRef = await db.collection('users').add({
-        name, course,
+        name, email, course,
         setupDone: false,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-      document.getElementById('new-student-name').value = '';
+      document.getElementById('new-student-name').value  = '';
+      document.getElementById('new-student-email').value = '';
       sucEl.textContent = `${name} さんを追加しました！セットアップリンクをコピーして送ってください。`;
       sucEl.style.display = 'block';
       await loadStudents();
@@ -237,7 +243,7 @@
           <div class="student-row">
             <div>
               <div class="student-name">${u.name}</div>
-              <div class="student-meta">${COURSE_LABELS[u.course] || u.course}</div>
+              <div class="student-meta">${u.email || ''} ／ ${COURSE_LABELS[u.course] || u.course}</div>
             </div>
             <div style="display:flex;align-items:center;gap:8px;">
               <span class="status-pill ${u.setupDone ? 'status-done' : 'status-pending'}">
