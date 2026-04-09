@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>デザインA — 英語コーチング</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:         #FDF5F7;
+      --white:      #FFFFFF;
+      --text:       #1A1419;
+      --text-muted: #9A8890;
+      --accent:     #D0748A;
+      --accent-hover: #BC6078;
+      --accent-light: #FAE8EE;
+      --border:     rgba(0,0,0,0.08);
+      --radius:     6px;
+      --radius-lg:  14px;
+      --shadow:     0 8px 40px rgba(0,0,0,0.09), 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* 背景テクスチャ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(208,116,138,0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(208,116,138,0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 460px;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* カード上部のアクセントバー */
+    .card-top {
+      height: 5px;
+      background: linear-gradient(90deg, var(--accent), #E8A0B0, var(--accent));
+    }
+
+    .card-body {
+      padding: 48px 44px 52px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 30px;
+      font-weight: 500;
+      line-height: 1.35;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 32px;
+    }
+
+    .form-group { margin-bottom: 20px; }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      background: #FDFCFA;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(208,116,138,0.15);
+    }
+
+    input::placeholder { color: var(--text-muted); opacity: 0.6; }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 8px;
+    }
+
+    .btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .card-footer {
+      padding: 18px 44px;
+      background: var(--accent-light);
+      border-top: 1px solid rgba(208,116,138,0.12);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* バッジ */
+    .badge {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .label-tag {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      background: #1C1916;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="label-tag">PATTERN A — 上品・ナチュラル</div>
+
+  <div class="card">
+    <div class="card-top"></div>
+    <div class="card-body">
+      <div class="badge">✦</div>
+      <span class="eyebrow">Members Only</span>
+      <h1>英語コーチング<br>受講生マイページ</h1>
+      <p class="subtitle">メールアドレスでログインしてください</p>
+      <div class="divider"></div>
+
+      <div class="form-group">
+        <label>メールアドレス</label>
+        <input type="email" placeholder="hanako@example.com">
+      </div>
+      <div class="form-group">
+        <label>パスワード</label>
+        <input type="password" placeholder="パスワードを入力">
+      </div>
+      <button class="btn">ログイン</button>
+    </div>
+    <div class="card-footer">
+      初めてのログインは、コーチから届いたセットアップリンクをご利用ください
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>デザインB — 管理者パネル</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0D0D12;
+      --surface: #13131A;
+      --surface2: #1A1A24;
+      --text: #F5F2EE;
+      --text-muted: rgba(245,242,238,0.45);
+      --accent: #D4B896;
+      --accent-dim: rgba(212,184,150,0.15);
+      --border: rgba(255,255,255,0.07);
+      --radius: 6px;
+      --radius-lg: 10px;
+      --shadow: 0 2px 16px rgba(0,0,0,0.3);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; -webkit-font-smoothing: antialiased; font-size: 14px; }
+
+    /* サイドバー */
+    .sidebar {
+      width: 220px; background: var(--surface); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; padding: 32px 0; flex-shrink: 0;
+    }
+    .sidebar-logo { padding: 0 24px 32px; border-bottom: 1px solid var(--border); }
+    .sidebar-logo-eyebrow { font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+    .sidebar-logo-name { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 400; color: var(--text); letter-spacing: 0.03em; }
+    .sidebar-nav { padding: 20px 0; flex: 1; }
+    .nav-label { font-size: 9px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.2); padding: 0 24px; margin-bottom: 8px; margin-top: 16px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 24px; font-size: 13px; color: var(--text-muted); cursor: pointer; transition: color 0.15s, background 0.15s; }
+    .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+    .nav-item.active { color: var(--accent); background: var(--accent-dim); border-right: 2px solid var(--accent); }
+    .nav-icon { font-size: 13px; width: 18px; text-align: center; opacity: 0.7; }
+    .sidebar-footer { padding: 20px 24px; border-top: 1px solid var(--border); }
+    .sidebar-footer-name { font-size: 12px; color: var(--text); font-weight: 500; }
+    .sidebar-footer-role { font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+
+    /* メインコンテンツ */
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .topbar {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 0 32px; height: 56px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .topbar-eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); }
+    .topbar-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 400; color: var(--text); }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .topbar-badge { font-size: 11px; background: var(--accent-dim); color: var(--accent); padding: 4px 12px; border-radius: 20px; font-weight: 500; border: 1px solid rgba(212,184,150,0.2); }
+    .content { padding: 32px; overflow-y: auto; flex: 1; }
+
+    /* 統計カード */
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 22px 24px;
+    }
+    .stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; }
+    .stat-value { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 400; color: var(--text); }
+    .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+    .stat-accent { color: var(--accent); }
+
+    /* テーブル */
+    .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .table-head { padding: 20px 24px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+    .table-head h2 { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 400; color: var(--text); }
+    .btn-sm { padding: 7px 14px; background: var(--accent); color: #0D0D12; border: none; border-radius: var(--radius); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .btn-sm:hover { background: #C9A882; }
+    table { width: 100%; border-collapse: collapse; }
+    th { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 600; padding: 12px 24px; text-align: left; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); }
+    td { padding: 14px 24px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(212,184,150,0.04); }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; }
+    .badge-active { background: rgba(74,140,98,0.15); color: #6DBF8B; border: 1px solid rgba(74,140,98,0.2); }
+    .badge-pending { background: rgba(212,184,150,0.12); color: var(--accent); border: 1px solid rgba(212,184,150,0.2); }
+    .link-btn { font-size: 11px; color: var(--accent); background: none; border: none; cursor: pointer; font-family: 'Inter', sans-serif; letter-spacing: 0.05em; opacity: 0.8; }
+    .link-btn:hover { opacity: 1; }
+
+    .label-tag { position: fixed; top: 16px; right: 16px; background: var(--accent); color: #0D0D12; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; padding: 6px 12px; border-radius: 20px; z-index: 10; }
+  </style>
+</head>
+<body>
+  <div class="label-tag">PATTERN B — 管理者パネル</div>
+
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-eyebrow">Admin Panel</div>
+      <div class="sidebar-logo-name">English Coaching</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-label">管理</div>
+      <div class="nav-item active"><span class="nav-icon">👥</span> 受講生管理</div>
+      <div class="nav-item"><span class="nav-icon">📚</span> レッスン管理</div>
+      <div class="nav-item"><span class="nav-icon">📝</span> 成果報告一覧</div>
+      <div class="nav-label">システム</div>
+      <div class="nav-item"><span class="nav-icon">⚙️</span> 設定</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-name">和島しおり</div>
+      <div class="sidebar-footer-role">Coach</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="topbar-eyebrow">Students</span>
+        <span class="topbar-title">受講生管理</span>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-badge">12 Members</div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-label">Total Students</div>
+          <div class="stat-value">12</div>
+          <div class="stat-sub">3コース合計</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Reports This Month</div>
+          <div class="stat-value stat-accent">8</div>
+          <div class="stat-sub">先月比 +2</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pending Setup</div>
+          <div class="stat-value">2</div>
+          <div class="stat-sub">セットアップ待ち</div>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-head">
+          <h2>受講生一覧</h2>
+          <button class="btn-sm">+ Add Student</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th><th>Course</th><th>Email</th><th>Status</th><th>Setup Link</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>田中 花子</td><td>1期生</td><td>hanako@example.com</td>
+              <td><span class="badge badge-active">Active</span></td>
+              <td><button class="link-btn">リンクをコピー</button></td>
+              <td><button class="link-btn">編集</button></td>
+            </tr>
+            <tr>
+              <td>山田 美咲</td><td>継続生</td><td>misaki@example.com</td>
+              <td><span class="badge badge-active">Active</span></td>
+              <td><button class="link-btn">リンクをコピー</button></td>
+              <td><button class="link-btn">編集</button></td>
+            </tr>
+            <tr>
+              <td>佐藤 由美</td><td>0期生</td><td>yumi@example.com</td>
+              <td><span class="badge badge-pending">Pending</span></td>
+              <td><button class="link-btn">リンクをコピー</button></td>
+              <td><button class="link-btn">編集</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

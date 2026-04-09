@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>デザインB — 英語コーチング</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* 左半分：写真 */
+    .photo-side {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: none;
+    }
+
+    @media (min-width: 900px) {
+      .photo-side { display: block; }
+    }
+
+    .photo-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(10,10,15,0.72) 0%,
+        rgba(20,20,30,0.55) 100%
+      );
+    }
+
+    .photo-content {
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px 48px;
+      color: #fff;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      opacity: 0.9;
+    }
+
+    .photo-tagline {
+      font-family: 'Playfair Display', serif;
+    }
+
+    .photo-tagline h2 {
+      font-size: 42px;
+      font-weight: 400;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    .photo-tagline h2 em {
+      font-style: italic;
+      color: #D4B896;
+    }
+
+    .photo-tagline p {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      opacity: 0.7;
+      letter-spacing: 0.03em;
+      line-height: 1.7;
+    }
+
+    .photo-caption {
+      font-size: 11px;
+      opacity: 0.4;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* 右半分：ログインフォーム */
+    .form-side {
+      width: 100%;
+      max-width: 480px;
+      background: #0D0D12;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 52px;
+    }
+
+    @media (max-width: 899px) {
+      .form-side {
+        max-width: 100%;
+        padding: 60px 32px;
+        min-height: 100vh;
+        position: relative;
+      }
+
+      .form-side::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80');
+        background-size: cover;
+        background-position: center;
+        opacity: 0.15;
+      }
+    }
+
+    .form-inner { position: relative; }
+
+    .eyebrow {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #D4B896;
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 34px;
+      font-weight: 400;
+      line-height: 1.3;
+      color: #F5F2EE;
+      margin-bottom: 8px;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: #D4B896;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 44px;
+      font-weight: 300;
+      letter-spacing: 0.01em;
+    }
+
+    .form-group { margin-bottom: 20px; }
+
+    label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 4px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: #F5F2EE;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    input:focus {
+      border-color: #D4B896;
+      background: rgba(255,255,255,0.09);
+    }
+
+    input::placeholder { color: rgba(255,255,255,0.25); }
+
+    .btn {
+      width: 100%;
+      padding: 15px;
+      background: #D4B896;
+      color: #0D0D12;
+      border: none;
+      border-radius: 4px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 10px;
+    }
+
+    .btn:hover { background: #C9A882; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .footer-note {
+      margin-top: 32px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      line-height: 1.7;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding-top: 24px;
+      font-weight: 300;
+    }
+
+    .label-tag {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: #D4B896;
+      color: #0D0D12;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      padding: 6px 12px;
+      border-radius: 20px;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div class="label-tag">PATTERN B — 海外風・スタイリッシュ</div>
+
+  <!-- 左：写真 -->
+  <div class="photo-side">
+    <div class="photo-bg"></div>
+    <div class="photo-overlay"></div>
+    <div class="photo-content">
+      <div class="logo">English Coaching</div>
+      <div class="photo-tagline">
+        <h2>Transform your<br>English, transform<br>your <em>world.</em></h2>
+        <p>世界で通用する英語力を、<br>あなたの日常に。</p>
+      </div>
+      <div class="photo-caption">London, United Kingdom</div>
+    </div>
+  </div>
+
+  <!-- 右：フォーム -->
+  <div class="form-side">
+    <div class="form-inner">
+      <span class="eyebrow">Members Only</span>
+      <h1>英語コーチング<br>受講生 <em>Portal</em></h1>
+      <p class="subtitle">メールアドレスでログインしてください</p>
+
+      <div class="form-group">
+        <label>メールアドレス</label>
+        <input type="email" placeholder="hanako@example.com">
+      </div>
+      <div class="form-group">
+        <label>パスワード</label>
+        <input type="password" placeholder="パスワードを入力">
+      </div>
+      <button class="btn">Sign In</button>
+
+      <p class="footer-note">
+        初めてのログインは、コーチから届いたセットアップリンクをご利用ください
+      </p>
+    </div>
+  </div>
+</body>
+</html>

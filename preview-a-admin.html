@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>デザインA — 管理者パネル</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FDF5F7; --white: #FFFFFF; --text: #1A1419;
+      --text-muted: #9A8890; --accent: #D0748A; --accent-hover: #BC6078;
+      --accent-light: #FAE8EE; --border: rgba(0,0,0,0.08);
+      --radius: 6px; --radius-lg: 10px;
+      --shadow: 0 2px 12px rgba(0,0,0,0.07);
+      --sidebar: #2D1F26;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; -webkit-font-smoothing: antialiased; font-size: 14px; }
+
+    /* サイドバー */
+    .sidebar {
+      width: 220px; background: var(--sidebar); color: #fff;
+      display: flex; flex-direction: column; padding: 32px 0; flex-shrink: 0;
+    }
+    .sidebar-logo { padding: 0 24px 32px; font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 500; letter-spacing: 0.05em; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .sidebar-logo span { display: block; font-size: 9px; font-family: 'DM Sans', sans-serif; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 4px; }
+    .sidebar-nav { padding: 24px 0; flex: 1; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 11px 24px; font-size: 13px; color: rgba(255,255,255,0.55); cursor: pointer; transition: background 0.15s, color 0.15s; }
+    .nav-item:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.85); }
+    .nav-item.active { color: #fff; background: rgba(208,116,138,0.2); border-right: 2px solid var(--accent); }
+    .nav-icon { font-size: 14px; width: 18px; text-align: center; }
+    .sidebar-footer { padding: 16px 24px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 11px; color: rgba(255,255,255,0.3); }
+
+    /* メインコンテンツ */
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .topbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 32px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .topbar-title { font-size: 15px; font-weight: 600; }
+    .topbar-badge { font-size: 11px; background: var(--accent-light); color: var(--accent); padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+    .content { padding: 32px; overflow-y: auto; flex: 1; }
+
+    /* 統計カード */
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+    .stat-card { background: var(--white); border-radius: var(--radius-lg); padding: 22px 24px; box-shadow: var(--shadow); }
+    .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 8px; }
+    .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 500; color: var(--text); }
+    .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+    /* テーブル */
+    .table-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; }
+    .table-head { padding: 20px 24px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+    .table-head h2 { font-size: 14px; font-weight: 600; }
+    .btn-sm { padding: 7px 14px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-size: 12px; font-weight: 600; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; }
+    th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); font-weight: 500; padding: 12px 24px; text-align: left; background: #FDFCFA; border-bottom: 1px solid var(--border); }
+    td { padding: 13px 24px; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--accent-light); }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+    .badge-active { background: #E8F5ED; color: #4A8C62; }
+    .badge-pending { background: #FEF3E2; color: #B07828; }
+
+    .label-tag { position: fixed; top: 16px; right: 16px; background: #2D1F26; color: #fff; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; padding: 6px 12px; border-radius: 20px; z-index: 10; }
+
+    .btn-preview {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; background: var(--accent-light); color: var(--accent);
+      border: 1.5px solid rgba(208,116,138,0.3); border-radius: var(--radius);
+      font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-preview:hover { background: #F5D8E2; border-color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="label-tag">PATTERN A — 管理者パネル</div>
+
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <span>Admin Panel</span>
+      英語コーチング
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active"><span class="nav-icon">👥</span> 受講生管理</div>
+      <div class="nav-item"><span class="nav-icon">📚</span> レッスン管理</div>
+      <div class="nav-item"><span class="nav-icon">📝</span> 成果報告一覧</div>
+      <div class="nav-item"><span class="nav-icon">⚙️</span> 設定</div>
+      <a href="preview-a-dashboard.html" target="_blank" class="nav-item" style="color:rgba(255,255,255,0.55);text-decoration:none;margin-top:8px;border-top:1px solid rgba(255,255,255,0.06);padding-top:16px;"><span class="nav-icon">👁️</span> 受講生ページを見る</a>
+    </nav>
+    <div class="sidebar-footer">和島しおり (コーチ)</div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title">受講生管理</div>
+      <div class="topbar-badge">全 12 名</div>
+    </div>
+    <div class="content">
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-label">受講生総数</div>
+          <div class="stat-value">12</div>
+          <div class="stat-sub">3コース合計</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">今月の成果報告</div>
+          <div class="stat-value">8</div>
+          <div class="stat-sub">先月比 +2</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">未セットアップ</div>
+          <div class="stat-value">2</div>
+          <div class="stat-sub">セットアップ待ち</div>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-head">
+          <h2>受講生一覧</h2>
+          <button class="btn-sm">+ 受講生を追加</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>名前</th><th>コース</th><th>メールアドレス</th><th>ステータス</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>田中 花子</td><td>1期生</td><td>hanako@example.com</td><td><span class="badge badge-active">登録済み</span></td><td style="display:flex;gap:10px;align-items:center;"><button class="btn-sm" style="background:transparent;color:var(--accent);padding:4px 0;">編集</button><a href="preview-a-dashboard.html" target="_blank" class="btn-preview">👁️ ページを見る</a></td></tr>
+            <tr><td>山田 美咲</td><td>継続生</td><td>misaki@example.com</td><td><span class="badge badge-active">登録済み</span></td><td style="display:flex;gap:10px;align-items:center;"><button class="btn-sm" style="background:transparent;color:var(--accent);padding:4px 0;">編集</button><a href="preview-a-dashboard.html" target="_blank" class="btn-preview">👁️ ページを見る</a></td></tr>
+            <tr><td>佐藤 由美</td><td>0期生</td><td>yumi@example.com</td><td><span class="badge badge-pending">未設定</span></td><td style="display:flex;gap:10px;align-items:center;"><button class="btn-sm" style="background:transparent;color:var(--accent);padding:4px 0;">編集</button><a href="preview-a-dashboard.html" target="_blank" class="btn-preview">👁️ ページを見る</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
