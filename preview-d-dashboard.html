@@ -11,7 +11,7 @@
       --bg:           #F8F5FF;
       --white:        #FFFFFF;
       --text:         #1A1419;
-      --text-muted:   #9A88AA;
+      --text-muted:   #9A8AAA;
       --accent:       #8B6BAE;
       --accent-hover: #7A5A9C;
       --accent-light: #F0E8FF;
@@ -314,7 +314,7 @@
       background: var(--white); border-radius: 14px; max-width: 500px; width: 100%;
       box-shadow: 0 20px 60px rgba(0,0,0,0.15); overflow: hidden;
     }
-    .modal-top { height: 5px; background: linear-gradient(90deg, var(--accent), #A888C8); }
+    .modal-top { height: 5px; background: linear-gradient(90deg, #8B6BAE, #A888C8); }
     .modal-body { padding: 28px 32px 32px; }
     .modal-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
     .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
@@ -1108,8 +1108,7 @@
     // ページ読み込み時：保存済みデザインが違う場合はリダイレクト
     (function() {
       const pref = localStorage.getItem('preferred_design');
-      const _map={A:'preview-a-dashboard.html',B:'preview-b-dashboard.html',C:'preview-c-dashboard.html',E:'preview-e-dashboard.html'};
-      if(pref && _map[pref]) window.location.href=_map[pref];
+      if (pref === 'B') window.location.href = 'preview-b-dashboard.html';
     })();
 
     // グルコンセッション定義（管理者ページと同じ）
