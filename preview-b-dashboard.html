@@ -1042,7 +1042,7 @@
 
     renderGruconSchedule();
 
-    function addMemo() {
+function addMemo() {
       const input = document.getElementById('memo-input');
       const text = input.value.trim();
       if (!text) return;
@@ -1054,7 +1054,34 @@
     }
 
     function deleteMemo(id) {
+      if (!confirm('このメモを削除しますか？')) return;
       const memos = JSON.parse(localStorage.getItem('user_memos') || '[]').filter(m => m.id !== id);
+      localStorage.setItem('user_memos', JSON.stringify(memos));
+      renderMemos();
+    }
+
+    function editMemo(id) {
+      const memos = JSON.parse(localStorage.getItem('user_memos') || '[]');
+      const memo = memos.find(m => m.id === id);
+      if (!memo) return;
+      const card = document.getElementById('memo-card-' + id);
+      card.innerHTML = `
+        <div style="flex:1;">
+          <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;">${memo.date}</div>
+          <textarea id="memo-edit-${id}" style="width:100%;padding:10px 12px;border:1.5px solid var(--accent);border-radius:var(--radius);font-family:inherit;font-size:13px;color:var(--text);background:var(--surface2);outline:none;resize:vertical;min-height:72px;line-height:1.7;">${memo.text.replace(/</g,'&lt;')}</textarea>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+          <button onclick="saveMemo(${id})" style="padding:5px 12px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:11px;font-weight:600;cursor:pointer;">保存</button>
+          <button onclick="renderMemos()" style="padding:5px 12px;background:none;border:1px solid var(--border);border-radius:var(--radius);font-size:11px;color:var(--text-muted);cursor:pointer;">キャンセル</button>
+        </div>`;
+    }
+
+    function saveMemo(id) {
+      const newText = document.getElementById('memo-edit-' + id).value.trim();
+      if (!newText) return;
+      const memos = JSON.parse(localStorage.getItem('user_memos') || '[]');
+      const idx = memos.findIndex(m => m.id === id);
+      if (idx !== -1) memos[idx].text = newText;
       localStorage.setItem('user_memos', JSON.stringify(memos));
       renderMemos();
     }
@@ -1068,12 +1095,15 @@
         return;
       }
       list.innerHTML = memos.map(m => `
-        <div style="background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);padding:16px 20px;display:flex;gap:12px;align-items:flex-start;">
+        <div id="memo-card-${m.id}" style="background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);padding:16px 20px;display:flex;gap:12px;align-items:flex-start;">
           <div style="flex:1;">
             <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;">${m.date}</div>
             <div style="font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;">${m.text.replace(/</g,'&lt;')}</div>
           </div>
-          <button onclick="deleteMemo(${m.id})" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0;line-height:1;flex-shrink:0;" title="削除">×</button>
+          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+            <button onclick="editMemo(${m.id})" style="padding:5px 12px;background:var(--accent-light);color:var(--accent);border:1px solid rgba(var(--accent-rgb,208,116,138),0.2);border-radius:var(--radius);font-size:11px;font-weight:600;cursor:pointer;">編集</button>
+            <button onclick="deleteMemo(${m.id})" style="padding:5px 12px;background:none;border:1px solid var(--border);border-radius:var(--radius);font-size:11px;color:var(--text-muted);cursor:pointer;">削除</button>
+          </div>
         </div>`).join('');
     }
 
