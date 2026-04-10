@@ -160,6 +160,8 @@
     /* タスク機能 */
     .time-select-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px 28px; margin-bottom: 24px; }
     .time-select-label { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 14px; }
+    .time-select-row { display: flex; flex-direction: column; gap: 18px; }
+    .time-select-row-label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
     .time-btns { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
     .time-btn {
       padding: 8px 18px; border: 1px solid var(--border); border-radius: 20px;
@@ -168,6 +170,14 @@
     }
     .time-btn:hover { border-color: var(--accent); color: var(--accent); }
     .time-btn.selected { background: var(--accent); border-color: var(--accent); color: #0D0D12; }
+    .level-btns { display: flex; gap: 10px; }
+    .level-btn {
+      padding: 10px 28px; border: 1px solid var(--border); border-radius: 20px;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.05em; cursor: pointer;
+      background: transparent; color: var(--text-muted); transition: all 0.15s;
+    }
+    .level-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .level-btn.selected { background: var(--accent); border-color: var(--accent); color: #0D0D12; }
     .time-custom { display: flex; align-items: center; gap: 6px; }
     .time-custom input {
       width: 64px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 20px;
@@ -299,16 +309,28 @@
     <!-- タスクタブ -->
     <div class="tab-panel active" id="tab-task">
       <div class="time-select-wrap">
-        <div class="time-select-label">今日使える時間は？</div>
-        <div class="time-btns">
-          <button class="time-btn" onclick="setTime(15, this)">15分</button>
-          <button class="time-btn" onclick="setTime(30, this)">30分</button>
-          <button class="time-btn" onclick="setTime(60, this)">60分</button>
-          <button class="time-btn" onclick="setTime(90, this)">90分</button>
-          <div class="time-custom">
-            <input type="number" id="custom-time" min="5" max="180" placeholder="自由">
-            <span>分</span>
-            <button class="time-btn" onclick="setTime(parseInt(document.getElementById('custom-time').value), this)" style="border-radius:6px;">決定</button>
+        <div class="time-select-label">今日のタスクを提案してもらう</div>
+        <div class="time-select-row">
+          <div>
+            <div class="time-select-row-label">Course Level</div>
+            <div class="level-btns">
+              <button class="level-btn" id="level-btn-beginner" onclick="setLevel('初級', this)">初級</button>
+              <button class="level-btn" id="level-btn-intermediate" onclick="setLevel('中級', this)">中級</button>
+            </div>
+          </div>
+          <div>
+            <div class="time-select-row-label">Time Available Today</div>
+            <div class="time-btns">
+              <button class="time-btn" onclick="setTime(15, this)">15分</button>
+              <button class="time-btn" onclick="setTime(30, this)">30分</button>
+              <button class="time-btn" onclick="setTime(60, this)">60分</button>
+              <button class="time-btn" onclick="setTime(90, this)">90分</button>
+              <div class="time-custom">
+                <input type="number" id="custom-time" min="5" max="180" placeholder="自由">
+                <span>分</span>
+                <button class="time-btn" onclick="setTime(parseInt(document.getElementById('custom-time').value), this)" style="border-radius:6px;">決定</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -319,10 +341,8 @@
       </div>
 
       <div class="task-results" id="task-results">
-        <div class="task-level-header">Beginner <span>— 基礎を固めるタスク</span></div>
-        <div class="task-grid" id="beginner-tasks"></div>
-        <div class="task-level-header">Intermediate <span>— 表現力を伸ばすタスク</span></div>
-        <div class="task-grid" id="intermediate-tasks"></div>
+        <div class="task-level-header" id="task-level-header-text"></div>
+        <div class="task-grid" id="suggested-tasks"></div>
         <div class="task-done-summary" id="task-done-summary"></div>
       </div>
     </div>
@@ -527,6 +547,7 @@
     ];
 
     let selectedTime = 0;
+    let selectedLevel = null;
     const TODAY = new Date().toISOString().slice(0, 10);
 
     function getTaskLog() { return JSON.parse(localStorage.getItem('task_log') || '{}'); }
@@ -551,6 +572,13 @@
       renderTasks(); renderCarryover();
     }
 
+    function setLevel(level, btn) {
+      selectedLevel = level;
+      document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('selected'));
+      if (btn) btn.classList.add('selected');
+      renderTasks();
+    }
+
     function setTime(min, btn) {
       if (!min || min < 1) return;
       selectedTime = min;
@@ -560,17 +588,20 @@
     }
 
     function renderTasks() {
-      document.getElementById('task-results').style.display = 'block';
-      const bTasks = TASKS.filter(t => t.level === '初級' && t.time <= selectedTime);
-      const iTasks = TASKS.filter(t => t.level === '中級' && t.time <= selectedTime);
-      const allIds = [...bTasks, ...iTasks].map(t => t.id);
+      const results = document.getElementById('task-results');
+      if (!selectedLevel || !selectedTime) { results.style.display = 'none'; return; }
+      results.style.display = 'block';
+
+      document.getElementById('task-level-header-text').innerHTML = selectedLevel + ' <span>' + (selectedLevel === '初級' ? '— Beginner Tasks' : '— Intermediate Tasks') + '</span>';
+
+      const filteredTasks = TASKS.filter(t => t.level === selectedLevel && t.time <= selectedTime);
+      const allIds = filteredTasks.map(t => t.id);
       assignTasks(allIds);
-      document.getElementById('beginner-tasks').innerHTML = bTasks.length
-        ? bTasks.map(t => taskCardHTML(t, TODAY)).join('')
-        : '<p class="task-empty">No beginner tasks fit this time. Try a longer duration.</p>';
-      document.getElementById('intermediate-tasks').innerHTML = iTasks.length
-        ? iTasks.map(t => taskCardHTML(t, TODAY)).join('')
-        : '<p class="task-empty">No intermediate tasks fit this time. Try a longer duration.</p>';
+
+      document.getElementById('suggested-tasks').innerHTML = filteredTasks.length
+        ? filteredTasks.map(t => taskCardHTML(t, TODAY)).join('')
+        : `<p class="task-empty">No ${selectedLevel} tasks fit within ${selectedTime} min. Try a longer duration.</p>`;
+
       const log = getTaskLog();
       const todayLog = log[TODAY] || { assigned: [], completed: [] };
       const doneCount = todayLog.completed.filter(id => allIds.includes(id)).length;
