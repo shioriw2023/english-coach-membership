@@ -866,7 +866,7 @@
           actions = `<button class="btn-select" onclick="toggleSelection(${t.id}, event)">✓ やる</button>
             <button class="btn-complete" onclick="completeTask(${t.id}, '${date}', event)">完了にする</button>`;
         } else {
-          actions = `<button class="btn-select skip" onclick="toggleSelection(${t.id}, event)">やる</button>`;
+          actions = `<button class="btn-select skip" onclick="toggleSelection(${t.id}, event)">やらない</button>`;
         }
         if (isCustom) actions += ` <button class="btn-delete-custom" onclick="deleteCustomTask(${t.id}, event)" title="削除">✕</button>`;
       } else {

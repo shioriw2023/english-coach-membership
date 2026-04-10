@@ -781,7 +781,7 @@
           actions = `<button class="btn-select" onclick="toggleSelection(${t.id}, event)">✓ Do This</button>
             <button class="btn-complete" onclick="completeTask(${t.id}, '${date}', event)">Mark Complete</button>`;
         } else {
-          actions = `<button class="btn-select skip" onclick="toggleSelection(${t.id}, event)">Do This</button>`;
+          actions = `<button class="btn-select skip" onclick="toggleSelection(${t.id}, event)">Skip</button>`;
         }
         if (isCustom) actions += ` <button class="btn-delete-custom" onclick="deleteCustomTask(${t.id}, event)" title="Delete">✕</button>`;
       } else {
