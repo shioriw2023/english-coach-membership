@@ -422,7 +422,7 @@
         </div>
       </div>
       <!-- 持ち越しタスク -->
-      <div class="carryover-section" id="carryover-section" style="display:none;">
+      <div class="carryover-section" id="carryover-section" style="display:block;">
         <div class="carryover-header">⚠ 持ち越しタスク <span class="carryover-badge" id="carryover-count"></span></div>
         <div class="task-grid" id="carryover-tasks"></div>
       </div>
@@ -936,13 +936,12 @@
       const grid = document.getElementById('carryover-tasks');
       const badge = document.getElementById('carryover-count');
 
-      if (carryoverIds.length === 0) {
-        section.style.display = 'none';
-        return;
-      }
-
       section.style.display = 'block';
       badge.textContent = carryoverIds.length + '件';
+      if (carryoverIds.length === 0) {
+        grid.innerHTML = '<p style="font-size:12px;color:var(--text-muted);padding:8px 0;">持ち越しタスクはありません</p>';
+        return;
+      }
       const carryoverTasks = carryoverIds.map(id => findTask(id)).filter(Boolean);
       grid.innerHTML = carryoverTasks.map(t => taskCardHTML(t, carryoverDates[t.id], true)).join('');
     }
