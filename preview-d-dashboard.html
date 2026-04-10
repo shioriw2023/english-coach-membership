@@ -549,24 +549,24 @@
         <div class="form-row form-row-2col">
           <div>
             <label class="form-label">報告期間（開始）</label>
-            <input type="date" class="form-input" value="2026-04-01">
+            <input type="date" class="form-input" id="report-date-start" value="2026-04-01">
           </div>
           <div>
             <label class="form-label">報告期間（終了）</label>
-            <input type="date" class="form-input" value="2026-04-09">
+            <input type="date" class="form-input" id="report-date-end" value="2026-04-09">
           </div>
         </div>
         <div class="form-row">
           <label class="form-label">取り組んだこと</label>
-          <textarea class="form-textarea" placeholder="この期間に取り組んだレッスン・タスクについて教えてください"></textarea>
+          <textarea class="form-textarea" id="report-effort" placeholder="この期間に取り組んだレッスン・タスクについて教えてください"></textarea>
         </div>
         <div class="form-row">
           <label class="form-label">成果・気づき</label>
-          <textarea class="form-textarea" placeholder="学んで気づいたこと、できるようになったことを書いてください"></textarea>
+          <textarea class="form-textarea" id="report-result" placeholder="学んで気づいたこと、できるようになったことを書いてください"></textarea>
         </div>
         <div class="form-row">
           <label class="form-label">次の目標</label>
-          <textarea class="form-textarea" style="min-height:64px;" placeholder="次の期間で取り組みたいこと・目標を書いてください"></textarea>
+          <textarea class="form-textarea" style="min-height:64px;" id="report-goal" placeholder="次の期間で取り組みたいこと・目標を書いてください"></textarea>
         </div>
         <button class="btn-submit-report" onclick="submitReport()">成果報告を送信する</button>
         <div class="submit-success" id="submit-success">✓ 成果報告を送信しました！コーチからの返信をお待ちください。</div>
@@ -1153,9 +1153,85 @@
     renderGruconSchedule();
 
     function submitReport() {
-      document.querySelector('.btn-submit-report').style.display = 'none';
-      document.getElementById('submit-success').style.display = 'block';
+      const dateStart = document.getElementById('report-date-start').value;
+      const dateEnd   = document.getElementById('report-date-end').value;
+      const effort    = document.getElementById('report-effort').value.trim();
+      const result    = document.getElementById('report-result').value.trim();
+      const goal      = document.getElementById('report-goal').value.trim();
+      const s = getUserSettings();
+      const name = s.name || '田中 花子';
+
+      if (!effort || !result || !goal) {
+        alert('すべての項目を入力してください。');
+        return;
+      }
+
+      const btn = document.querySelector('.btn-submit-report');
+      btn.disabled = true;
+      btn.textContent = '送信中...';
+
+      db.collection('reports').add({
+        name,
+        dateStart,
+        dateEnd,
+        effort,
+        result,
+        goal,
+        submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        btn.style.display = 'none';
+        document.getElementById('submit-success').style.display = 'block';
+        loadPastReports();
+      }).catch(err => {
+        btn.disabled = false;
+        btn.textContent = '成果報告を送信する';
+        alert('送信に失敗しました: ' + err.message);
+      });
     }
+
+    function loadPastReports() {
+      const s = getUserSettings();
+      const name = s.name || '田中 花子';
+      const container = document.querySelector('.past-reports');
+      if (!container) return;
+      db.collection('reports')
+        .where('name', '==', name)
+        .orderBy('submittedAt', 'desc')
+        .limit(10)
+        .get()
+        .then(snap => {
+          if (snap.empty) return;
+          const items = snap.docs.map(doc => {
+            const d = doc.data();
+            const sub = d.submittedAt ? d.submittedAt.toDate().toLocaleDateString('ja-JP') : '';
+            return `<div class="past-report-item">
+              <div class="past-report-head">
+                <span class="past-report-period">${d.dateStart} 〜 ${d.dateEnd}</span>
+                <span class="past-report-date">提出日：${sub}</span>
+              </div>
+              <div class="past-report-body">${d.effort}</div>
+            </div>`;
+          });
+          container.innerHTML = items.join('');
+        }).catch(() => {});
+    }
+
+    // ページ読み込み時に過去の報告を取得
+    loadPastReports();
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCGowlHLBb-dg9bpmo1oDb0PEe-pGiJol8",
+      authDomain: "english-coaching-member-a3c67.firebaseapp.com",
+      projectId: "english-coaching-member-a3c67",
+      storageBucket: "english-coaching-member-a3c67.firebasestorage.app",
+      messagingSenderId: "22360558331",
+      appId: "1:22360558331:web:1a19fc67737e4236eb3e5e"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
   </script>
 </body>
 </html>

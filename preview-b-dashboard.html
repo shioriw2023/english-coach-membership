@@ -523,15 +523,15 @@
         </div>
         <div style="margin-bottom:18px;">
           <label style="display:block;font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">取り組んだこと</label>
-          <textarea style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;color:var(--text);background:var(--surface2);outline:none;resize:vertical;min-height:80px;line-height:1.6;" placeholder="この期間に取り組んだレッスン・タスクについて教えてください"></textarea>
+          <textarea style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;color:var(--text);background:var(--surface2);outline:none;resize:vertical;min-height:80px;line-height:1.6;" id="report-effort" placeholder="この期間に取り組んだレッスン・タスクについて教えてください"></textarea>
         </div>
         <div style="margin-bottom:18px;">
           <label style="display:block;font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">成果・気づき</label>
-          <textarea style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;color:var(--text);background:var(--surface2);outline:none;resize:vertical;min-height:80px;line-height:1.6;" placeholder="学んで気づいたこと、できるようになったことを書いてください"></textarea>
+          <textarea style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;color:var(--text);background:var(--surface2);outline:none;resize:vertical;min-height:80px;line-height:1.6;" id="report-result" placeholder="学んで気づいたこと、できるようになったことを書いてください"></textarea>
         </div>
         <div style="margin-bottom:18px;">
           <label style="display:block;font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">次の目標</label>
-          <textarea style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;color:var(--text);background:var(--surface2);outline:none;resize:vertical;min-height:64px;line-height:1.6;" placeholder="次の期間で取り組みたいこと・目標を書いてください"></textarea>
+          <textarea style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;color:var(--text);background:var(--surface2);outline:none;resize:vertical;min-height:64px;line-height:1.6;" id="report-goal" placeholder="次の期間で取り組みたいこと・目標を書いてください"></textarea>
         </div>
         <button onclick="submitBReport()" style="width:100%;padding:13px;background:var(--accent);color:#0D0D12;border:none;border-radius:var(--radius);font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;margin-top:8px;" id="b-submit-btn">Submit Report</button>
         <div id="b-submit-success" style="display:none;text-align:center;padding:20px;background:rgba(74,140,98,0.12);border:1px solid rgba(74,140,98,0.2);border-radius:var(--radius);color:#6DBF8B;font-weight:600;font-size:13px;margin-top:12px;">✓ 成果報告を送信しました！コーチからの返信をお待ちください。</div>
@@ -1039,6 +1039,20 @@
       document.getElementById('b-submit-btn').style.display = 'none';
       document.getElementById('b-submit-success').style.display = 'block';
     }
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCGowlHLBb-dg9bpmo1oDb0PEe-pGiJol8",
+      authDomain: "english-coaching-member-a3c67.firebaseapp.com",
+      projectId: "english-coaching-member-a3c67",
+      storageBucket: "english-coaching-member-a3c67.firebasestorage.app",
+      messagingSenderId: "22360558331",
+      appId: "1:22360558331:web:1a19fc67737e4236eb3e5e"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
   </script>
 </body>
 </html>

@@ -562,12 +562,67 @@
       if (name === 'grucon') renderGruconTable();
     }
 
+    let allReports = [];
+    let currentFilter = 'all';
+
     function filterReports(course, btn) {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      document.querySelectorAll('.report-card').forEach(card => {
-        card.style.display = (course === 'all' || card.dataset.course === course) ? '' : 'none';
-      });
+      currentFilter = course;
+      renderReportList();
+    }
+
+    function renderReportList() {
+      const list = document.getElementById('report-list');
+      const filtered = currentFilter === 'all'
+        ? allReports
+        : allReports.filter(r => r.course === currentFilter);
+
+      if (filtered.length === 0) {
+        list.innerHTML = '<div class="report-empty">成果報告はまだありません</div>';
+        return;
+      }
+
+      list.innerHTML = filtered.map(r => {
+        const isNew = r.submittedAt && (Date.now() - r.submittedAt.toDate().getTime()) < 7 * 24 * 60 * 60 * 1000;
+        const subDate = r.submittedAt ? r.submittedAt.toDate().toLocaleDateString('ja-JP') : '';
+        return `<div class="report-card" data-course="${r.course || ''}">
+          <div class="report-card-head">
+            <div class="report-card-meta">
+              <span class="report-student-name">${r.name}</span>
+              ${r.course ? `<span class="report-course-tag">${r.course}</span>` : ''}
+              ${isNew ? '<span class="report-new-badge">NEW</span>' : ''}
+              <span class="report-period">📅 ${r.dateStart} 〜 ${r.dateEnd}</span>
+            </div>
+            <span class="report-date">送信日：${subDate}</span>
+          </div>
+          <div class="report-card-body">
+            <div>
+              <div class="report-section-label">取り組んだこと</div>
+              <div class="report-section-text">${r.effort}</div>
+            </div>
+            <div>
+              <div class="report-section-label">成果・気づき</div>
+              <div class="report-section-text">${r.result}</div>
+            </div>
+            <div>
+              <div class="report-section-label">次の目標</div>
+              <div class="report-section-text">${r.goal}</div>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function loadReports() {
+      db.collection('reports')
+        .orderBy('submittedAt', 'desc')
+        .onSnapshot(snap => {
+          allReports = snap.docs.map(doc => doc.data());
+          renderReportList();
+          // 件数をstat更新
+          document.getElementById('stat-reports') && (document.getElementById('stat-reports').textContent = allReports.length);
+        }, () => {});
     }
 
     // グルコンセッション定義
@@ -653,6 +708,22 @@
       saveGruconLink(num, url, course);
       renderGruconTable();
     }
+  </script>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCGowlHLBb-dg9bpmo1oDb0PEe-pGiJol8",
+      authDomain: "english-coaching-member-a3c67.firebaseapp.com",
+      projectId: "english-coaching-member-a3c67",
+      storageBucket: "english-coaching-member-a3c67.firebasestorage.app",
+      messagingSenderId: "22360558331",
+      appId: "1:22360558331:web:1a19fc67737e4236eb3e5e"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    loadReports();
   </script>
 </body>
 </html>
