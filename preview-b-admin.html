@@ -50,7 +50,6 @@
     .topbar-eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); }
     .topbar-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 400; color: var(--text); }
     .topbar-right { display: flex; align-items: center; gap: 12px; }
-    .topbar-badge { font-size: 11px; background: var(--accent-dim); color: var(--accent); padding: 4px 12px; border-radius: 20px; font-weight: 500; border: 1px solid rgba(212,184,150,0.2); }
     .content { padding: 32px; overflow-y: auto; flex: 1; }
 
     /* 統計カード */
@@ -221,9 +220,6 @@
       <div class="topbar-left">
         <span class="topbar-eyebrow">Students</span>
         <span class="topbar-title">受講生管理</span>
-      </div>
-      <div class="topbar-right">
-        <div class="topbar-badge">12 Members</div>
       </div>
     </div>
     <div class="content">
@@ -461,7 +457,6 @@
       // 受講生数の更新
       const count = tbody.querySelectorAll('tr').length;
       const pendingRows = tbody.querySelectorAll('tr:has(.badge-pending)');
-      document.querySelector('.topbar-badge').textContent = '全 ' + count + ' 名';
       document.getElementById('stat-total').textContent = count;
       document.getElementById('stat-pending').textContent = pendingRows.length;
       const pendingNames = Array.from(pendingRows).map(r => '· ' + r.cells[0].textContent);

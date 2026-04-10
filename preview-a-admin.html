@@ -12,7 +12,7 @@
       --accent-light: #FAE8EE; --border: rgba(0,0,0,0.08);
       --radius: 6px; --radius-lg: 10px;
       --shadow: 0 2px 12px rgba(0,0,0,0.07);
-      --sidebar: #2D1F26;
+      --sidebar: #7A3047;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; -webkit-font-smoothing: antialiased; font-size: 14px; }
@@ -35,7 +35,6 @@
     .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
     .topbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 32px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
     .topbar-title { font-size: 15px; font-weight: 600; }
-    .topbar-badge { font-size: 11px; background: var(--accent-light); color: var(--accent); padding: 4px 10px; border-radius: 20px; font-weight: 500; }
     .content { padding: 32px; overflow-y: auto; flex: 1; }
 
     /* 統計カード */
@@ -209,7 +208,6 @@
   <div class="main">
     <div class="topbar">
       <div class="topbar-title">受講生管理</div>
-      <div class="topbar-badge">全 12 名</div>
     </div>
     <div class="content">
 
@@ -447,7 +445,6 @@
       // 受講生数の更新
       const count = tbody.querySelectorAll('tr').length;
       const pendingRows = tbody.querySelectorAll('tr:has(.badge-pending)');
-      document.querySelector('.topbar-badge').textContent = '全 ' + count + ' 名';
       document.getElementById('stat-total').textContent = count;
       document.getElementById('stat-pending').textContent = pendingRows.length;
       const pendingNames = Array.from(pendingRows).map(r => '· ' + r.cells[0].textContent);
