@@ -546,29 +546,23 @@
     <div class="tab-panel" id="tab-report">
       <div class="report-form" id="report-form-wrap">
         <div class="report-form-title">成果報告を申請する</div>
-        <div class="form-row form-row-2col">
-          <div>
-            <label class="form-label">報告期間（開始）</label>
-            <input type="date" class="form-input" id="report-date-start" value="2026-04-01">
-          </div>
-          <div>
-            <label class="form-label">報告期間（終了）</label>
-            <input type="date" class="form-input" id="report-date-end" value="2026-04-09">
-          </div>
+        <div class="form-row">
+          <label class="form-label">お名前 <span style="color:var(--accent);font-size:10px;">必須</span></label>
+          <input type="text" class="form-input" id="report-name" placeholder="例：田中 花子" oninput="checkReportForm()">
         </div>
         <div class="form-row">
-          <label class="form-label">取り組んだこと</label>
-          <textarea class="form-textarea" id="report-effort" placeholder="この期間に取り組んだレッスン・タスクについて教えてください"></textarea>
+          <label class="form-label">取り組んだこと <span style="color:var(--accent);font-size:10px;">必須</span></label>
+          <textarea class="form-textarea" id="report-effort" placeholder="この期間に取り組んだレッスン・タスクについて教えてください" oninput="checkReportForm()"></textarea>
         </div>
         <div class="form-row">
-          <label class="form-label">成果・気づき</label>
-          <textarea class="form-textarea" id="report-result" placeholder="学んで気づいたこと、できるようになったことを書いてください"></textarea>
+          <label class="form-label">成果・気づき <span style="color:var(--accent);font-size:10px;">必須</span></label>
+          <textarea class="form-textarea" id="report-result" placeholder="学んで気づいたこと、できるようになったことを書いてください" oninput="checkReportForm()"></textarea>
         </div>
         <div class="form-row">
-          <label class="form-label">次の目標</label>
-          <textarea class="form-textarea" style="min-height:64px;" id="report-goal" placeholder="次の期間で取り組みたいこと・目標を書いてください"></textarea>
+          <label class="form-label">次の目標 <span style="color:var(--accent);font-size:10px;">必須</span></label>
+          <textarea class="form-textarea" style="min-height:64px;" id="report-goal" placeholder="次の期間で取り組みたいこと・目標を書いてください" oninput="checkReportForm()"></textarea>
         </div>
-        <button class="btn-submit-report" onclick="submitReport()">成果報告を送信する</button>
+        <button class="btn-submit-report" id="btn-submit-report" onclick="submitReport()" disabled style="opacity:0.45;cursor:not-allowed;">成果報告を送信する</button>
         <div class="submit-success" id="submit-success">✓ 成果報告を送信しました！コーチからの返信をお待ちください。</div>
       </div>
 
@@ -1223,35 +1217,35 @@ function addMemo() {
     // 初期レンダリング
     renderGruconSchedule();
 
+    function checkReportForm() {
+      const name   = (document.getElementById('report-name')?.value || '').trim();
+      const effort = (document.getElementById('report-effort')?.value || '').trim();
+      const result = (document.getElementById('report-result')?.value || '').trim();
+      const goal   = (document.getElementById('report-goal')?.value || '').trim();
+      const btn = document.getElementById('btn-submit-report');
+      if (!btn) return;
+      const ok = name && effort && result && goal;
+      btn.disabled = !ok;
+      btn.style.opacity = ok ? '1' : '0.45';
+      btn.style.cursor  = ok ? 'pointer' : 'not-allowed';
+    }
+
     function submitReport() {
-      const dateStart = document.getElementById('report-date-start').value;
-      const dateEnd   = document.getElementById('report-date-end').value;
-      const effort    = document.getElementById('report-effort').value.trim();
-      const result    = document.getElementById('report-result').value.trim();
-      const goal      = document.getElementById('report-goal').value.trim();
+      const name    = document.getElementById('report-name').value.trim();
+      const effort  = document.getElementById('report-effort').value.trim();
+      const result  = document.getElementById('report-result').value.trim();
+      const goal    = document.getElementById('report-goal').value.trim();
       const s = getUserSettings();
       const email = s.email || '';
 
-      if (!effort || !result || !goal) {
-        alert('すべての項目を入力してください。');
-        return;
-      }
-      if (!email) {
-        alert('設定タブでメールアドレスを登録してください。');
-        return;
-      }
-
-      const btn = document.querySelector('.btn-submit-report');
+      const btn = document.getElementById('btn-submit-report');
       btn.disabled = true;
+      btn.style.opacity = '0.45';
       btn.textContent = '送信中...';
 
-      // 管理者が登録した名前をFirestoreから取得
-      db.collection('students').doc(email).get().then(doc => {
-        const name = doc.exists ? doc.data().name : email;
-        const course = doc.exists ? doc.data().course : '';
-        return db.collection('reports').add({
-          name, email, course,
-          dateStart, dateEnd, effort, result, goal,
+      db.collection('reports').add({
+          name, email,
+          effort, result, goal,
           submittedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
       }).then(() => {
