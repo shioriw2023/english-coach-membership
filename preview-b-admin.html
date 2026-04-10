@@ -80,8 +80,120 @@
     .badge-pending { background: rgba(212,184,150,0.12); color: var(--accent); border: 1px solid rgba(212,184,150,0.2); }
     .link-btn { font-size: 11px; color: var(--accent); background: none; border: none; cursor: pointer; font-family: 'Inter', sans-serif; letter-spacing: 0.05em; opacity: 0.8; }
     .link-btn:hover { opacity: 1; }
+    .btn-preview {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 12px; background: var(--accent-dim); color: var(--accent);
+      border: 1px solid rgba(212,184,150,0.2); border-radius: var(--radius);
+      font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: none;
+      letter-spacing: 0.05em; transition: background 0.15s;
+    }
+    .btn-preview:hover { background: rgba(212,184,150,0.25); }
 
     .label-tag { position: fixed; top: 16px; right: 16px; background: var(--accent); color: #0D0D12; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; padding: 6px 12px; border-radius: 20px; z-index: 10; }
+
+    /* パネル切り替え */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* レッスン管理パネル */
+    .student-selector { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
+    .student-chip { padding: 8px 20px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; background: transparent; color: var(--text-muted); letter-spacing: 0.03em; transition: all 0.15s; }
+    .student-chip:hover { border-color: var(--accent); color: var(--accent); }
+    .student-chip.selected { background: var(--accent); border-color: var(--accent); color: #0D0D12; font-weight: 700; }
+
+    .progress-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .progress-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .progress-panel-head { padding: 16px 20px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+    .progress-panel-icon { font-size: 14px; }
+    .progress-panel-title { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+    .progress-panel-body { padding: 18px 20px; }
+
+    .today-task-list { display: flex; flex-direction: column; gap: 10px; }
+    .today-task-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: var(--radius); background: var(--surface2); border: 1px solid var(--border); }
+    .today-task-item.done { border-color: rgba(74,140,98,0.2); }
+    .today-task-check { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
+    .today-task-check.done { background: rgba(74,140,98,0.8); color: #fff; }
+    .today-task-check.pending { background: rgba(255,255,255,0.06); color: var(--text-muted); border: 1px solid var(--border); }
+    .today-task-info { flex: 1; }
+    .today-task-name { font-size: 12px; font-weight: 500; color: var(--text); }
+    .today-task-time { font-size: 11px; color: var(--text-muted); font-weight: 300; }
+    .today-task-status { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; letter-spacing: 0.06em; }
+    .today-task-status.done { background: rgba(74,140,98,0.15); color: #6DBF8B; border: 1px solid rgba(74,140,98,0.2); }
+    .today-task-status.pending { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(212,184,150,0.2); }
+    .today-summary { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .today-summary-text { font-size: 11px; color: var(--text-muted); font-weight: 300; letter-spacing: 0.04em; }
+    .today-summary-count { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--accent); }
+
+    .overall-list { display: flex; flex-direction: column; gap: 14px; }
+    .overall-item-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .overall-item-label { font-size: 12px; font-weight: 500; color: var(--text); }
+    .overall-item-value { font-size: 11px; color: var(--text-muted); font-weight: 300; }
+    .overall-bar-wrap { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; }
+    .overall-bar { height: 4px; background: var(--accent); border-radius: 2px; transition: width 0.5s ease; }
+    .overall-bar.green { background: #4A8C62; }
+    .overall-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+    .overall-stat { text-align: center; }
+    .overall-stat-num { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--text); }
+    .overall-stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 300; }
+
+    .no-student { text-align: center; padding: 40px; color: var(--text-muted); font-size: 13px; font-weight: 300; }
+    .no-student-icon { font-size: 32px; margin-bottom: 10px; }
+
+    /* 成果報告一覧 */
+    .report-list { display: flex; flex-direction: column; gap: 16px; }
+    .report-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .report-card-head { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .report-card-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .report-student-name { font-size: 14px; font-weight: 600; color: var(--text); }
+    .report-course-tag { font-size: 10px; background: var(--accent-dim); color: var(--accent); padding: 2px 8px; border-radius: 4px; font-weight: 600; letter-spacing: 0.06em; border: 1px solid rgba(212,184,150,0.2); }
+    .report-period { font-size: 11px; color: var(--text-muted); font-weight: 300; }
+    .report-date { font-size: 11px; color: var(--text-muted); font-weight: 300; white-space: nowrap; }
+    .report-card-body { padding: 20px 24px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    .report-section-label { font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; opacity: 0.7; }
+    .report-section-text { font-size: 12px; color: var(--text-muted); line-height: 1.7; font-weight: 300; }
+    .report-filter { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+    .filter-btn { padding: 6px 14px; border: 1px solid var(--border); border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; cursor: pointer; background: transparent; color: var(--text-muted); transition: all 0.15s; }
+    .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #0D0D12; }
+    .report-new-badge { font-size: 9px; background: var(--accent); color: #0D0D12; padding: 2px 7px; border-radius: 4px; font-weight: 700; letter-spacing: 0.08em; }
+
+    /* グルコン管理 */
+    .grucon-table { width: 100%; border-collapse: collapse; }
+    .grucon-table th { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 600; padding: 12px 20px; text-align: left; background: var(--surface2); border-bottom: 1px solid var(--border); }
+    .grucon-table td { padding: 14px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .grucon-table tr:last-child td { border-bottom: none; }
+    .grucon-table tr.upcoming-row td { opacity: 0.35; }
+    .grucon-num { font-size: 13px; font-weight: 600; color: var(--text); }
+    .grucon-date { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-weight: 300; }
+    .grucon-url-wrap { display: flex; gap: 8px; align-items: center; }
+    .grucon-url-input { flex: 1; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-family: 'Inter', sans-serif; font-size: 12px; color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s; }
+    .grucon-url-input:focus { border-color: var(--accent); }
+    .grucon-url-input::placeholder { color: var(--text-muted); opacity: 0.5; font-size: 11px; }
+    .grucon-course-select { padding: 9px 10px; border: 1px solid var(--border); border-radius: var(--radius); font-family: 'Inter', sans-serif; font-size: 12px; color: var(--text); background: var(--bg); outline: none; cursor: pointer; }
+    .grucon-course-select:focus { border-color: var(--accent); }
+    .btn-grucon-save { padding: 9px 16px; background: var(--accent); color: #0D0D12; border: none; border-radius: var(--radius); font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; letter-spacing: 0.06em; transition: background 0.15s; }
+    .btn-grucon-save:hover { background: #C9A882; }
+    .grucon-saved-badge { font-size: 10px; background: rgba(74,140,98,0.15); color: #6DBF8B; border: 1px solid rgba(74,140,98,0.2); padding: 3px 8px; border-radius: 4px; font-weight: 600; white-space: nowrap; }
+    .grucon-saved-url { font-size: 11px; color: var(--accent); text-decoration: underline; cursor: pointer; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .grucon-clear-btn { font-size: 11px; color: var(--text-muted); cursor: pointer; background: none; border: none; padding: 2px 4px; text-decoration: underline; font-weight: 300; }
+
+    /* 受講生追加モーダル */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); overflow: hidden; }
+    .modal-box-top { height: 3px; background: linear-gradient(90deg, var(--accent), #E8C9A0); }
+    .modal-box-body { padding: 32px 36px; }
+    .modal-box-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 400; color: var(--text); margin-bottom: 4px; }
+    .modal-box-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 24px; font-weight: 300; }
+    .mform-row { margin-bottom: 18px; }
+    .mform-label { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    .mform-input, .mform-select { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: var(--radius); font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s; }
+    .mform-input:focus, .mform-select:focus { border-color: var(--accent); }
+    .mform-select { cursor: pointer; }
+    .modal-footer { display: flex; gap: 10px; margin-top: 8px; }
+    .btn-modal-submit { flex: 1; padding: 12px; background: var(--accent); color: #0D0D12; border: none; border-radius: var(--radius); font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: background 0.15s; }
+    .btn-modal-submit:hover { background: #C9A882; }
+    .btn-modal-cancel { padding: 12px 18px; background: none; border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; color: var(--text-muted); cursor: pointer; }
+    .modal-success { display: none; text-align: center; padding: 16px; background: rgba(74,140,98,0.12); border: 1px solid rgba(74,140,98,0.2); border-radius: var(--radius); color: #6DBF8B; font-weight: 600; font-size: 13px; margin-top: 12px; }
   </style>
 </head>
 <body>
@@ -94,11 +206,13 @@
     </div>
     <nav class="sidebar-nav">
       <div class="nav-label">管理</div>
-      <div class="nav-item active"><span class="nav-icon">👥</span> 受講生管理</div>
-      <div class="nav-item"><span class="nav-icon">📚</span> レッスン管理</div>
-      <div class="nav-item"><span class="nav-icon">📝</span> 成果報告一覧</div>
+      <div class="nav-item active" onclick="switchNav('students')"><span class="nav-icon">👥</span> 受講生管理</div>
+      <div class="nav-item" onclick="switchNav('lessons')"><span class="nav-icon">📚</span> レッスン管理</div>
+      <div class="nav-item" onclick="switchNav('grucon')"><span class="nav-icon">🎥</span> グルコン管理</div>
+      <div class="nav-item" onclick="switchNav('reports')"><span class="nav-icon">📝</span> 成果報告一覧</div>
       <div class="nav-label">システム</div>
       <div class="nav-item"><span class="nav-icon">⚙️</span> 設定</div>
+      <a href="preview-b-dashboard.html" target="_blank" class="nav-item" style="color:rgba(245,242,238,0.45);text-decoration:none;margin-top:8px;border-top:1px solid rgba(255,255,255,0.07);padding-top:16px;"><span class="nav-icon">👁️</span> 受講生ページを見る</a>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-footer-name">和島しおり</div>
@@ -117,28 +231,32 @@
       </div>
     </div>
     <div class="content">
+
+      <!-- 受講生管理パネル -->
+      <div class="panel active" id="panel-students">
       <div class="stats">
         <div class="stat-card">
-          <div class="stat-label">Total Students</div>
-          <div class="stat-value">12</div>
-          <div class="stat-sub">3コース合計</div>
+          <div class="stat-label">受講生総数</div>
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-sub">登録済み合計</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Reports This Month</div>
-          <div class="stat-value stat-accent">8</div>
-          <div class="stat-sub">先月比 +2</div>
+          <div class="stat-label">今月の成果報告</div>
+          <div class="stat-value stat-accent">0</div>
+          <div class="stat-sub">報告件数</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Pending Setup</div>
-          <div class="stat-value">2</div>
-          <div class="stat-sub">セットアップ待ち</div>
+          <div class="stat-label">パスワード未設定</div>
+          <div class="stat-value" id="stat-pending">0</div>
+          <div class="stat-sub">ログイン待ち</div>
+          <div id="stat-pending-names" style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.4);line-height:1.8;"></div>
         </div>
       </div>
 
       <div class="table-card">
         <div class="table-head">
           <h2>受講生一覧</h2>
-          <button class="btn-sm">+ Add Student</button>
+          <button class="btn-sm" onclick="openAddModal()">+ Add Student</button>
         </div>
         <table>
           <thead>
@@ -147,28 +265,411 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>田中 花子</td><td>1期生</td><td>hanako@example.com</td>
-              <td><span class="badge badge-active">Active</span></td>
-              <td><button class="link-btn">リンクをコピー</button></td>
-              <td><button class="link-btn">編集</button></td>
-            </tr>
-            <tr>
-              <td>山田 美咲</td><td>継続生</td><td>misaki@example.com</td>
-              <td><span class="badge badge-active">Active</span></td>
-              <td><button class="link-btn">リンクをコピー</button></td>
-              <td><button class="link-btn">編集</button></td>
-            </tr>
-            <tr>
-              <td>佐藤 由美</td><td>0期生</td><td>yumi@example.com</td>
-              <td><span class="badge badge-pending">Pending</span></td>
-              <td><button class="link-btn">リンクをコピー</button></td>
-              <td><button class="link-btn">編集</button></td>
-            </tr>
           </tbody>
         </table>
       </div>
+      </div><!-- end panel-students -->
+
+      <!-- レッスン管理パネル -->
+      <div class="panel" id="panel-lessons">
+        <div class="table-card" style="margin-bottom:24px;">
+          <div class="table-head"><h2>受講生を選択</h2></div>
+          <div style="padding:20px 24px;">
+            <div class="student-selector">
+            </div>
+          </div>
+        </div>
+        <div id="student-progress">
+          <div class="no-student">
+            <div class="no-student-icon">👆</div>
+            受講生を選択すると進捗が表示されます
+          </div>
+        </div>
+      </div>
+
+      <!-- グルコン管理パネル -->
+      <div class="panel" id="panel-grucon">
+        <div class="table-card">
+          <div class="table-head"><h2>グループコーチング アーカイブ管理</h2></div>
+          <table class="grucon-table">
+            <thead>
+              <tr><th style="width:180px;">回・日程</th><th>YouTubeリンク</th><th style="width:140px;">対象コース</th><th style="width:80px;"></th></tr>
+            </thead>
+            <tbody id="grucon-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 成果報告一覧パネル -->
+      <div class="panel" id="panel-reports">
+        <div class="report-filter">
+          <span style="font-size:11px;color:var(--text-muted);margin-right:4px;font-weight:300;">絞り込み：</span>
+          <button class="filter-btn active" onclick="filterReports('all', this)">すべて</button>
+          <button class="filter-btn" onclick="filterReports('継続生', this)">継続生</button>
+          <button class="filter-btn" onclick="filterReports('1期生', this)">1期生</button>
+          <button class="filter-btn" onclick="filterReports('0期生', this)">0期生</button>
+          <button class="filter-btn" onclick="filterReports('2期生', this)">2期生</button>
+        </div>
+        <div class="report-list" id="report-list">
+
+          <div class="report-card" data-course="1期生">
+            <div class="report-card-head">
+              <div class="report-card-meta">
+                <span class="report-student-name">田中 花子</span>
+                <span class="report-course-tag">1期生</span>
+                <span class="report-new-badge">NEW</span>
+                <span class="report-period">📅 2026/03/24 〜 2026/04/06</span>
+              </div>
+              <span class="report-date">送信日：2026/04/07</span>
+            </div>
+            <div class="report-card-body">
+              <div>
+                <div class="report-section-label">取り組んだこと</div>
+                <div class="report-section-text">毎日シャドーイングを15分続けました。レッスン動画は3本視聴し、単語暗記は1日10個を目標に取り組みました。</div>
+              </div>
+              <div>
+                <div class="report-section-label">成果・気づき</div>
+                <div class="report-section-text">リスニングのスピードに少し慣れてきました。フレーズごとにまとまりで聞けるようになってきた気がします。</div>
+              </div>
+              <div>
+                <div class="report-section-label">次の目標</div>
+                <div class="report-section-text">瞬間英作文を毎日5文こなすことと、グルコンでの発言回数を増やすことを目標にします。</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="report-card" data-course="継続生">
+            <div class="report-card-head">
+              <div class="report-card-meta">
+                <span class="report-student-name">山田 美咲</span>
+                <span class="report-course-tag">継続生</span>
+                <span class="report-period">📅 2026/03/17 〜 2026/03/30</span>
+              </div>
+              <span class="report-date">送信日：2026/03/31</span>
+            </div>
+            <div class="report-card-body">
+              <div>
+                <div class="report-section-label">取り組んだこと</div>
+                <div class="report-section-text">音読練習とリスニング精聴を中心に取り組みました。英語日記も毎日続けることができました。</div>
+              </div>
+              <div>
+                <div class="report-section-label">成果・気づき</div>
+                <div class="report-section-text">英語日記を書くことで、自分が使えるフレーズが増えてきたと感じます。発音の正確さも少し上がりました。</div>
+              </div>
+              <div>
+                <div class="report-section-label">次の目標</div>
+                <div class="report-section-text">ビジネス英語の表現を増やしていきたいです。週に1回は英語で独り言を10分続ける習慣をつけます。</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="report-card" data-course="0期生">
+            <div class="report-card-head">
+              <div class="report-card-meta">
+                <span class="report-student-name">佐藤 由美</span>
+                <span class="report-course-tag">0期生</span>
+                <span class="report-period">📅 2026/03/24 〜 2026/04/06</span>
+              </div>
+              <span class="report-date">送信日：2026/04/06</span>
+            </div>
+            <div class="report-card-body">
+              <div>
+                <div class="report-section-label">取り組んだこと</div>
+                <div class="report-section-text">シャドーイングと瞬間英作文に取り組みました。最初は難しかったですが少しずつ慣れてきました。</div>
+              </div>
+              <div>
+                <div class="report-section-label">成果・気づき</div>
+                <div class="report-section-text">口が動くスピードが上がってきた気がします。まだ意味を考えながらだと詰まってしまいます。</div>
+              </div>
+              <div>
+                <div class="report-section-label">次の目標</div>
+                <div class="report-section-text">瞬間英作文を考えずにパッと言えるようになることを目指します。グルコンに初めて参加したいです。</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- end content -->
+  </div><!-- end main -->
+
+  <!-- 受講生追加モーダル -->
+  <div class="modal-overlay" id="add-modal" onclick="closeAddModal(event)">
+    <div class="modal-box">
+      <div class="modal-box-top"></div>
+      <div class="modal-box-body">
+        <div class="modal-box-title">Add Student</div>
+        <div class="modal-box-sub">氏名・メールアドレス・コースを入力してください</div>
+        <div class="mform-row">
+          <label class="mform-label">氏名</label>
+          <input type="text" class="mform-input" id="add-name" placeholder="例：田中 花子">
+        </div>
+        <div class="mform-row">
+          <label class="mform-label">メールアドレス</label>
+          <input type="email" class="mform-input" id="add-email" placeholder="例：hanako@example.com">
+        </div>
+        <div class="mform-row">
+          <label class="mform-label">コース</label>
+          <select class="mform-select" id="add-course">
+            <option value="">選択してください</option>
+            <option value="継続生">継続生</option>
+            <option value="0期生">0期生</option>
+            <option value="1期生">1期生</option>
+            <option value="2期生">2期生</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-modal-submit" onclick="submitAddStudent()">Register</button>
+          <button class="btn-modal-cancel" onclick="closeAddModal()">Cancel</button>
+        </div>
+        <div class="modal-success" id="add-success">✓ 受講生を登録しました！</div>
+      </div>
     </div>
   </div>
+
+  <script>
+    function openAddModal() {
+      document.getElementById('add-name').value = '';
+      document.getElementById('add-email').value = '';
+      document.getElementById('add-course').value = '';
+      document.getElementById('add-success').style.display = 'none';
+      document.querySelector('.modal-footer').style.display = 'flex';
+      document.getElementById('add-modal').classList.add('open');
+    }
+    function closeAddModal(e) {
+      if (!e || e.target === document.getElementById('add-modal')) {
+        document.getElementById('add-modal').classList.remove('open');
+      }
+    }
+    function submitAddStudent() {
+      const name = document.getElementById('add-name').value.trim();
+      const email = document.getElementById('add-email').value.trim();
+      const course = document.getElementById('add-course').value;
+      if (!name || !email || !course) { alert('すべての項目を入力してください'); return; }
+
+      // テーブルに行を追加
+      const tbody = document.querySelector('table tbody');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${name}</td>
+        <td>${course}</td>
+        <td>${email}</td>
+        <td><span class="badge badge-pending">未設定</span></td>
+        <td style="display:flex;gap:10px;align-items:center;">
+          <button class="btn-sm" style="background:transparent;color:var(--accent);padding:4px 0;">編集</button>
+          <a href="preview-b-dashboard.html" target="_blank" class="btn-preview">👁️ ページを見る</a>
+        </td>`;
+      tbody.appendChild(tr);
+
+      // 受講生数の更新
+      const count = tbody.querySelectorAll('tr').length;
+      const pendingRows = tbody.querySelectorAll('tr:has(.badge-pending)');
+      document.querySelector('.topbar-badge').textContent = '全 ' + count + ' 名';
+      document.getElementById('stat-total').textContent = count;
+      document.getElementById('stat-pending').textContent = pendingRows.length;
+      const pendingNames = Array.from(pendingRows).map(r => '· ' + r.cells[0].textContent);
+      document.getElementById('stat-pending-names').textContent = pendingNames.join('\n');
+
+      // レッスン管理のチップにも追加
+      const chipId = 'new_' + Date.now();
+      const chip = document.createElement('div');
+      chip.className = 'student-chip';
+      chip.setAttribute('onclick', `selectStudent('${chipId}')`);
+      chip.innerHTML = `${name} <span style="font-size:10px;opacity:0.6;">${course}</span>`;
+      STUDENTS[chipId] = {
+        name, course,
+        today: [],
+        overall: { lessons:{done:0,total:20}, group:{done:0,total:8}, tasks:{done:0,total:60}, reports:0, streak:0 }
+      };
+      document.querySelector('.student-selector').appendChild(chip);
+
+      document.querySelector('.modal-footer').style.display = 'none';
+      document.getElementById('add-success').style.display = 'block';
+      setTimeout(() => document.getElementById('add-modal').classList.remove('open'), 2000);
+    }
+
+    const STUDENTS = {};
+
+    function selectStudent(id) {
+      document.querySelectorAll('.student-chip').forEach(c => c.classList.remove('selected'));
+      event.currentTarget.classList.add('selected');
+      const s = STUDENTS[id];
+      const doneTasks = s.today.filter(t => t.done).length;
+      const lPct = Math.round(s.overall.lessons.done / s.overall.lessons.total * 100);
+      const gPct = Math.round(s.overall.group.done / s.overall.group.total * 100);
+      const tPct = Math.round(s.overall.tasks.done / s.overall.tasks.total * 100);
+      document.getElementById('student-progress').innerHTML = `
+        <div class="progress-panels">
+          <div class="progress-panel">
+            <div class="progress-panel-head">
+              <span class="progress-panel-icon">📋</span>
+              <span class="progress-panel-title">Today's Tasks</span>
+            </div>
+            <div class="progress-panel-body">
+              <div class="today-task-list">
+                ${s.today.map(t => `
+                  <div class="today-task-item${t.done?' done':''}">
+                    <div class="today-task-check ${t.done?'done':'pending'}">${t.done?'✓':'–'}</div>
+                    <div class="today-task-info">
+                      <div class="today-task-name">${t.name}</div>
+                      <div class="today-task-time">⏱ ${t.time}</div>
+                    </div>
+                    <span class="today-task-status ${t.done?'done':'pending'}">${t.done?'Done':'Pending'}</span>
+                  </div>`).join('')}
+              </div>
+              <div class="today-summary">
+                <span class="today-summary-text">Completed today</span>
+                <span class="today-summary-count">${doneTasks} <span style="font-size:13px;font-family:'Inter',sans-serif;color:var(--text-muted);">/ ${s.today.length}</span></span>
+              </div>
+            </div>
+          </div>
+          <div class="progress-panel">
+            <div class="progress-panel-head">
+              <span class="progress-panel-icon">📊</span>
+              <span class="progress-panel-title">Overall Progress</span>
+            </div>
+            <div class="progress-panel-body">
+              <div class="overall-list">
+                <div class="overall-item">
+                  <div class="overall-item-head">
+                    <span class="overall-item-label">レッスン視聴</span>
+                    <span class="overall-item-value">${s.overall.lessons.done} / ${s.overall.lessons.total} 本 (${lPct}%)</span>
+                  </div>
+                  <div class="overall-bar-wrap"><div class="overall-bar" style="width:${lPct}%"></div></div>
+                </div>
+                <div class="overall-item">
+                  <div class="overall-item-head">
+                    <span class="overall-item-label">グルコン参加</span>
+                    <span class="overall-item-value">${s.overall.group.done} / ${s.overall.group.total} 回 (${gPct}%)</span>
+                  </div>
+                  <div class="overall-bar-wrap"><div class="overall-bar green" style="width:${gPct}%"></div></div>
+                </div>
+                <div class="overall-item">
+                  <div class="overall-item-head">
+                    <span class="overall-item-label">タスク達成率</span>
+                    <span class="overall-item-value">${s.overall.tasks.done} / ${s.overall.tasks.total} 個 (${tPct}%)</span>
+                  </div>
+                  <div class="overall-bar-wrap"><div class="overall-bar" style="width:${tPct}%"></div></div>
+                </div>
+              </div>
+              <div class="overall-stats">
+                <div class="overall-stat">
+                  <div class="overall-stat-num">${s.overall.reports}</div>
+                  <div class="overall-stat-label">成果報告</div>
+                </div>
+                <div class="overall-stat">
+                  <div class="overall-stat-num">${s.overall.streak}</div>
+                  <div class="overall-stat-label">連続学習日</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function switchNav(name) {
+      document.querySelectorAll('.nav-item').forEach((el, i) => {
+        const names = [null,'students','lessons','grucon','reports',null,null];
+        if (names[i]) el.classList.toggle('active', names[i] === name);
+        else el.classList.remove('active');
+      });
+      document.querySelectorAll('.panel').forEach(p => {
+        p.classList.toggle('active', p.id === 'panel-' + name);
+      });
+      const titles = { students: '受講生管理', lessons: 'レッスン管理', grucon: 'グルコン管理', reports: '成果報告一覧' };
+      document.querySelector('.topbar-title').textContent = titles[name] || '';
+      if (name === 'grucon') renderGruconTable();
+    }
+
+    function filterReports(course, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.report-card').forEach(card => {
+        card.style.display = (course === 'all' || card.dataset.course === course) ? '' : 'none';
+      });
+    }
+
+    const GRUCON_SESSIONS = [
+      { num:'01', month:'Apr', day:1,  label:'2026年4月1日（水）',  past:true  },
+      { num:'02', month:'Apr', day:8,  label:'2026年4月8日（水）',  past:true  },
+      { num:'03', month:'Apr', day:15, label:'2026年4月15日（水）', past:false },
+      { num:'04', month:'Apr', day:22, label:'2026年4月22日（水）', past:false },
+      { num:'05', month:'Apr', day:29, label:'2026年4月29日（水）', past:false },
+      { num:'06', month:'May', day:6,  label:'2026年5月6日（水）',  past:false },
+      { num:'07', month:'May', day:13, label:'2026年5月13日（水）', past:false },
+      { num:'08', month:'May', day:20, label:'2026年5月20日（水）', past:false },
+      { num:'09', month:'May', day:27, label:'2026年5月27日（水）', past:false },
+      { num:'10', month:'Jun', day:3,  label:'2026年6月3日（水）',  past:false },
+      { num:'11', month:'Jun', day:10, label:'2026年6月10日（水）', past:false },
+      { num:'12', month:'Jun', day:17, label:'2026年6月17日（水）', past:false },
+      { num:'13', month:'Jun', day:24, label:'2026年6月24日（水）', past:false },
+      { num:'14', month:'Jul', day:1,  label:'2026年7月1日（水）',  past:false },
+      { num:'15', month:'Jul', day:8,  label:'2026年7月8日（水）',  past:false },
+      { num:'16', month:'Jul', day:15, label:'2026年7月15日（水）', past:false },
+      { num:'17', month:'Jul', day:22, label:'2026年7月22日（水）', past:false },
+      { num:'18', month:'Jul', day:29, label:'2026年7月29日（水）', past:false },
+    ];
+
+    function getGruconLinks() { return JSON.parse(localStorage.getItem('grucon_links') || '{}'); }
+    function saveGruconLink(num, url, course) {
+      const links = getGruconLinks();
+      links[num] = { url, course };
+      localStorage.setItem('grucon_links', JSON.stringify(links));
+    }
+    function clearGruconLink(num) {
+      const links = getGruconLinks();
+      delete links[num];
+      localStorage.setItem('grucon_links', JSON.stringify(links));
+      renderGruconTable();
+    }
+
+    function renderGruconTable() {
+      const links = getGruconLinks();
+      const tbody = document.getElementById('grucon-tbody');
+      tbody.innerHTML = GRUCON_SESSIONS.map(s => {
+        const saved = links[s.num];
+        if (!s.past) {
+          return `<tr class="upcoming-row">
+            <td><div class="grucon-num">グループコーチング #${s.num}</div><div class="grucon-date">${s.label} 21:00〜</div></td>
+            <td colspan="3" style="font-size:12px;color:var(--text-muted);font-weight:300;">開催予定</td>
+          </tr>`;
+        }
+        if (saved) {
+          return `<tr class="past-row">
+            <td><div class="grucon-num">グループコーチング #${s.num}</div><div class="grucon-date">${s.label} 21:00〜</div></td>
+            <td><div style="display:flex;align-items:center;gap:10px;">
+              <span class="grucon-saved-badge">✓ 保存済み</span>
+              <a class="grucon-saved-url" href="${saved.url}" target="_blank">${saved.url}</a>
+            </div></td>
+            <td><span class="badge badge-active" style="font-size:11px;">${saved.course}</span></td>
+            <td><button class="grucon-clear-btn" onclick="clearGruconLink('${s.num}')">削除</button></td>
+          </tr>`;
+        }
+        return `<tr class="past-row">
+          <td><div class="grucon-num">グループコーチング #${s.num}</div><div class="grucon-date">${s.label} 21:00〜</div></td>
+          <td><div class="grucon-url-wrap">
+            <input class="grucon-url-input" id="url-${s.num}" type="url" placeholder="https://www.youtube.com/watch?v=...">
+          </div></td>
+          <td><select class="grucon-course-select" id="course-${s.num}">
+            <option value="全コース共通">全コース共通</option>
+            <option value="継続生">継続生</option>
+            <option value="0期生">0期生</option>
+            <option value="1期生">1期生</option>
+            <option value="2期生">2期生</option>
+          </select></td>
+          <td><button class="btn-grucon-save" onclick="saveFromTable('${s.num}')">保存</button></td>
+        </tr>`;
+      }).join('');
+    }
+
+    function saveFromTable(num) {
+      const url = document.getElementById('url-' + num).value.trim();
+      const course = document.getElementById('course-' + num).value;
+      if (!url) { alert('URLを入力してください'); return; }
+      saveGruconLink(num, url, course);
+      renderGruconTable();
+    }
+  </script>
 </body>
 </html>

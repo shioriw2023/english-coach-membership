@@ -89,6 +89,76 @@
     .tab:hover { color: var(--accent); }
     .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* 発音添削 */
+    .pronunciation-phrases { display: grid; gap: 12px; margin-bottom: 28px; }
+    .pronunciation-phrase-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 18px 22px; display: flex; align-items: center; gap: 16px; }
+    .phrase-num { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500; color: var(--accent); min-width: 28px; }
+    .phrase-content { flex: 1; }
+    .phrase-en { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .phrase-ja { font-size: 12px; color: var(--text-muted); }
+    .btn-record { padding: 8px 16px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background 0.15s; }
+    .btn-record:hover { background: var(--accent-hover); }
+    .btn-record.submitted { background: #4A8C62; }
+    .feedback-section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .feedback-list { display: flex; flex-direction: column; gap: 10px; }
+    .feedback-item { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 16px 20px; }
+    .feedback-item-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .feedback-phrase { font-size: 13px; font-weight: 600; color: var(--text); }
+    .feedback-date { font-size: 11px; color: var(--text-muted); }
+    .feedback-status { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; }
+    .feedback-status.reviewing { background: #FEF3E2; color: #B07828; }
+    .feedback-status.done { background: #E8F5ED; color: #4A8C62; }
+    .feedback-comment { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; background: var(--bg); border-radius: var(--radius); padding: 10px 14px; }
+
+    /* 成果報告フォーム */
+    .report-form { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 28px 32px; margin-bottom: 28px; }
+    .report-form-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 20px; }
+    .form-row { margin-bottom: 18px; }
+    .form-label { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    .form-input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s; }
+    .form-input:focus { border-color: var(--accent); }
+    .form-textarea { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); outline: none; resize: vertical; min-height: 80px; transition: border-color 0.15s; line-height: 1.6; }
+    .form-textarea:focus { border-color: var(--accent); }
+    .form-row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .btn-submit-report { width: 100%; padding: 13px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; margin-top: 8px; }
+    .btn-submit-report:hover { background: var(--accent-hover); }
+    .submit-success { display: none; text-align: center; padding: 20px; background: #E8F5ED; border-radius: var(--radius); color: #4A8C62; font-weight: 600; font-size: 14px; }
+    .past-reports { display: flex; flex-direction: column; gap: 10px; }
+    .past-report-item { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 16px 20px; }
+    .past-report-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .past-report-period { font-size: 13px; font-weight: 600; color: var(--text); }
+    .past-report-date { font-size: 11px; color: var(--text-muted); }
+    .past-report-body { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; }
+
+    /* グルコンスケジュール */
+    .schedule-header {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-muted); margin: 0 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
+    }
+    .schedule-grid { display: grid; gap: 8px; }
+    .schedule-item {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
+      padding: 14px 20px; display: flex; align-items: center; gap: 16px;
+    }
+    .schedule-date-box {
+      text-align: center; min-width: 44px; flex-shrink: 0;
+    }
+    .schedule-month { font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+    .schedule-day { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 500; color: var(--text); line-height: 1; }
+    .schedule-divider { width: 1px; height: 32px; background: var(--border); flex-shrink: 0; }
+    .schedule-info { flex: 1; }
+    .schedule-title { font-size: 13px; font-weight: 600; color: var(--text); }
+    .schedule-time { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .badge-upcoming { font-size: 10px; background: var(--accent-light); color: var(--accent); padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+    .badge-past { font-size: 10px; background: #F0F0F0; color: #AAA; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+    .schedule-item.past { opacity: 0.65; }
+    .schedule-item.past:has(.btn-archive) { opacity: 1; }
+    .btn-archive { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; transition: background 0.15s, transform 0.1s; white-space: nowrap; flex-shrink: 0; }
+    .btn-archive:hover { background: var(--accent-hover); transform: translateY(-1px); }
+
     /* レッスンカード */
     .lesson-grid { display: grid; gap: 14px; }
     .lesson-card {
@@ -122,6 +192,82 @@
     .badge-done { font-size: 10px; background: #E8F5ED; color: #4A8C62; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
     .badge-new { font-size: 10px; background: var(--accent-light); color: var(--accent); padding: 2px 8px; border-radius: 4px; font-weight: 500; }
 
+    /* 発音チェックリンク */
+    .btn-pronunciation {
+      font-size: 12px; font-weight: 600; color: var(--accent);
+      background: var(--accent-light); border: 1.5px solid rgba(208,116,138,0.25);
+      border-radius: var(--radius); padding: 6px 14px; cursor: pointer;
+      text-decoration: none; transition: background 0.15s;
+    }
+    .btn-pronunciation:hover { background: #F5D8E2; }
+
+    /* タスク機能 */
+    .time-select-wrap { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 24px 28px; margin-bottom: 24px; }
+    .time-select-label { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 14px; }
+    .time-btns { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .time-btn {
+      padding: 8px 18px; border: 1.5px solid var(--border); border-radius: 20px;
+      font-size: 13px; font-weight: 500; cursor: pointer; background: var(--bg);
+      color: var(--text-muted); transition: all 0.15s;
+    }
+    .time-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .time-btn.selected { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .time-custom { display: flex; align-items: center; gap: 6px; }
+    .time-custom input {
+      width: 64px; padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 20px;
+      font-size: 13px; text-align: center; outline: none; background: var(--bg); color: var(--text);
+      transition: border-color 0.15s;
+    }
+    .time-custom input:focus { border-color: var(--accent); }
+    .time-custom span { font-size: 13px; color: var(--text-muted); }
+
+    .task-results { display: none; }
+    .task-level-header {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-muted); margin: 20px 0 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
+    }
+    .task-level-header span { color: var(--accent); margin-left: 6px; }
+    .task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+    .task-card {
+      background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-lg);
+      padding: 16px 18px; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .task-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(208,116,138,0.12); }
+    .task-card.selected { border-color: var(--accent); background: var(--accent-light); }
+    .task-card-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+    .task-card-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .task-card-time { font-size: 12px; color: var(--text-muted); }
+    .task-card-footer { margin-top: 10px; font-size: 11px; color: var(--accent); font-weight: 500; }
+    .task-empty { font-size: 13px; color: var(--text-muted); padding: 12px 0; }
+
+    /* モーダル */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+      z-index: 200; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--white); border-radius: 14px; max-width: 500px; width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15); overflow: hidden;
+    }
+    .modal-top { height: 5px; background: linear-gradient(90deg, var(--accent), #E898AC); }
+    .modal-body { padding: 28px 32px 32px; }
+    .modal-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+    .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .modal-time { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+    .modal-desc { font-size: 13.5px; color: var(--text); line-height: 1.7; margin-bottom: 20px; }
+    .modal-video {
+      width: 100%; aspect-ratio: 16/9; background: var(--accent-light);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px; color: var(--text-muted); font-size: 13px;
+    }
+    .modal-video-placeholder { text-align: center; }
+    .modal-video-placeholder .play { font-size: 32px; margin-bottom: 6px; }
+    .modal-footer { display: flex; gap: 10px; }
+    .btn-modal-start { flex: 1; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+    .btn-modal-start:hover { background: var(--accent-hover); }
+    .btn-modal-close { padding: 12px 18px; background: none; border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 14px; color: var(--text-muted); cursor: pointer; }
+
     .label-tag {
       position: fixed; top: 16px; right: 16px; background: #2D1F26; color: #fff;
       font-size: 11px; font-weight: 600; letter-spacing: 0.1em; padding: 6px 12px;
@@ -146,6 +292,7 @@
     </div>
     <div class="header-user">
       <span class="user-name">田中 花子さん</span>
+      <a href="pronunciation-a.html" class="btn-pronunciation">🎤 発音チェック</a>
       <button class="btn-logout">ログアウト</button>
     </div>
   </header>
@@ -180,70 +327,348 @@
     </div>
 
     <div class="tabs">
-      <div class="tab active">レッスン</div>
-      <div class="tab">グルコン</div>
-      <div class="tab">マニュアル</div>
-      <div class="tab">メモ</div>
+      <div class="tab active" onclick="switchTab('task')">今日のタスク</div>
+      <div class="tab" onclick="switchTab('lesson')">レッスン</div>
+      <div class="tab" onclick="switchTab('group')">グルコン日程</div>
+      <div class="tab" onclick="switchTab('manual')">マニュアル</div>
+      <div class="tab" onclick="switchTab('pronunciation')">発音添削</div>
+      <div class="tab" onclick="switchTab('report')">成果報告</div>
+      <div class="tab" onclick="switchTab('memo')">メモ</div>
     </div>
 
-    <div class="lesson-grid">
-      <div class="lesson-card">
-        <div class="lesson-thumb">
-          <div class="lesson-play"><div class="play-icon">▶</div></div>
-        </div>
-        <div class="lesson-body">
-          <div class="lesson-no">Lesson 01</div>
-          <div class="lesson-title">英語コーチング全体のロードマップ</div>
-          <div class="lesson-meta">
-            <span class="lesson-duration">⏱ 23分</span>
-            <span class="badge-done">視聴済み</span>
+    <!-- 今日のタスクタブ -->
+    <div class="tab-panel active" id="tab-task">
+      <div class="time-select-wrap">
+        <div class="time-select-label">今日使える時間は？</div>
+        <div class="time-btns">
+          <button class="time-btn" onclick="setTime(15, this)">15分</button>
+          <button class="time-btn" onclick="setTime(30, this)">30分</button>
+          <button class="time-btn" onclick="setTime(60, this)">60分</button>
+          <button class="time-btn" onclick="setTime(90, this)">90分</button>
+          <div class="time-custom">
+            <input type="number" id="custom-time" min="5" max="180" placeholder="自由">
+            <span>分</span>
+            <button class="time-btn" onclick="setTime(parseInt(document.getElementById('custom-time').value), this)" style="border-radius:6px;">決定</button>
           </div>
+        </div>
+      </div>
+      <div class="task-results" id="task-results">
+        <div class="task-level-header">初級 <span>— 基礎を固めるタスク</span></div>
+        <div class="task-grid" id="beginner-tasks"></div>
+        <div class="task-level-header">中級 <span>— 表現力を伸ばすタスク</span></div>
+        <div class="task-grid" id="intermediate-tasks"></div>
+      </div>
+    </div>
+
+    <!-- レッスンタブ -->
+    <div class="tab-panel" id="tab-lesson">
+      <div class="lesson-grid">
+        <div class="lesson-card">
+          <div class="lesson-thumb"><div class="lesson-play"><div class="play-icon">▶</div></div></div>
+          <div class="lesson-body">
+            <div class="lesson-no">Lesson 01</div>
+            <div class="lesson-title">英語コーチング全体のロードマップ</div>
+            <div class="lesson-meta"><span class="lesson-duration">⏱ 23分</span><span class="badge-done">視聴済み</span></div>
+          </div>
+        </div>
+        <div class="lesson-card">
+          <div class="lesson-thumb"><div class="lesson-play"><div class="play-icon">▶</div></div></div>
+          <div class="lesson-body">
+            <div class="lesson-no">Lesson 02</div>
+            <div class="lesson-title">発音の基礎：母音と子音の違い</div>
+            <div class="lesson-meta"><span class="lesson-duration">⏱ 31分</span><span class="badge-done">視聴済み</span></div>
+          </div>
+        </div>
+        <div class="lesson-card">
+          <div class="lesson-thumb"><div class="lesson-play"><div class="play-icon">▶</div></div></div>
+          <div class="lesson-body">
+            <div class="lesson-no">Lesson 03</div>
+            <div class="lesson-title">リスニング力を伸ばすシャドーイング実践</div>
+            <div class="lesson-meta"><span class="lesson-duration">⏱ 28分</span><span class="badge-new">未視聴</span></div>
+          </div>
+        </div>
+        <div class="lesson-card">
+          <div class="lesson-thumb"><div class="lesson-play"><div class="play-icon">▶</div></div></div>
+          <div class="lesson-body">
+            <div class="lesson-no">Lesson 04</div>
+            <div class="lesson-title">日常英会話フレーズ 100選（前編）</div>
+            <div class="lesson-meta"><span class="lesson-duration">⏱ 45分</span><span class="badge-new">未視聴</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- グルコンタブ -->
+    <div class="tab-panel" id="tab-group">
+      <p class="schedule-header">グループコーチング日程（暫定）— 毎週水曜 21:00〜</p>
+      <div class="schedule-grid" id="grucon-schedule"></div>
+    </div>
+
+    <!-- マニュアルタブ -->
+    <div class="tab-panel" id="tab-manual">
+      <p style="color:var(--text-muted);font-size:13px;padding:24px 0;">マニュアルはまもなく追加されます。</p>
+    </div>
+
+    <!-- 発音添削タブ -->
+    <div class="tab-panel" id="tab-pronunciation">
+      <div class="pronunciation-phrases">
+        <div class="pronunciation-phrase-card">
+          <div class="phrase-num">01</div>
+          <div class="phrase-content">
+            <div class="phrase-en">Nice to meet you.</div>
+            <div class="phrase-ja">はじめまして。</div>
+          </div>
+          <button class="btn-record" onclick="this.textContent='✓ 提出済み';this.classList.add('submitted');this.disabled=true;">🎤 録音して提出</button>
+        </div>
+        <div class="pronunciation-phrase-card">
+          <div class="phrase-num">02</div>
+          <div class="phrase-content">
+            <div class="phrase-en">I really appreciate it.</div>
+            <div class="phrase-ja">本当にありがとうございます。</div>
+          </div>
+          <button class="btn-record" onclick="this.textContent='✓ 提出済み';this.classList.add('submitted');this.disabled=true;">🎤 録音して提出</button>
+        </div>
+        <div class="pronunciation-phrase-card">
+          <div class="phrase-num">03</div>
+          <div class="phrase-content">
+            <div class="phrase-en">Could you say that again?</div>
+            <div class="phrase-ja">もう一度言っていただけますか？</div>
+          </div>
+          <button class="btn-record" onclick="this.textContent='✓ 提出済み';this.classList.add('submitted');this.disabled=true;">🎤 録音して提出</button>
         </div>
       </div>
 
-      <div class="lesson-card">
-        <div class="lesson-thumb">
-          <div class="lesson-play"><div class="play-icon">▶</div></div>
+      <div class="feedback-section-title">コーチからのフィードバック</div>
+      <div class="feedback-list">
+        <div class="feedback-item">
+          <div class="feedback-item-head">
+            <span class="feedback-phrase">How are you doing?</span>
+            <span class="feedback-date">2026/04/02</span>
+          </div>
+          <div><span class="feedback-status done">添削済み</span></div>
+          <div class="feedback-comment">「How are you」を「ハワユ」と繋げてとても自然に発音できています。「doing」の語尾をもう少し弱くするとより自然になります。全体的にとても良いです！</div>
         </div>
-        <div class="lesson-body">
-          <div class="lesson-no">Lesson 02</div>
-          <div class="lesson-title">発音の基礎：母音と子音の違い</div>
-          <div class="lesson-meta">
-            <span class="lesson-duration">⏱ 31分</span>
-            <span class="badge-done">視聴済み</span>
+        <div class="feedback-item">
+          <div class="feedback-item-head">
+            <span class="feedback-phrase">Nice to meet you.</span>
+            <span class="feedback-date">2026/04/07</span>
+          </div>
+          <div><span class="feedback-status reviewing">確認中</span></div>
+          <div class="feedback-comment" style="color:var(--text-muted);font-style:italic;">コーチが確認中です。しばらくお待ちください。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 成果報告タブ -->
+    <div class="tab-panel" id="tab-report">
+      <div class="report-form" id="report-form-wrap">
+        <div class="report-form-title">成果報告を申請する</div>
+        <div class="form-row form-row-2col">
+          <div>
+            <label class="form-label">報告期間（開始）</label>
+            <input type="date" class="form-input" value="2026-04-01">
+          </div>
+          <div>
+            <label class="form-label">報告期間（終了）</label>
+            <input type="date" class="form-input" value="2026-04-09">
           </div>
         </div>
+        <div class="form-row">
+          <label class="form-label">取り組んだこと</label>
+          <textarea class="form-textarea" placeholder="この期間に取り組んだレッスン・タスクについて教えてください"></textarea>
+        </div>
+        <div class="form-row">
+          <label class="form-label">成果・気づき</label>
+          <textarea class="form-textarea" placeholder="学んで気づいたこと、できるようになったことを書いてください"></textarea>
+        </div>
+        <div class="form-row">
+          <label class="form-label">次の目標</label>
+          <textarea class="form-textarea" style="min-height:64px;" placeholder="次の期間で取り組みたいこと・目標を書いてください"></textarea>
+        </div>
+        <button class="btn-submit-report" onclick="submitReport()">成果報告を送信する</button>
+        <div class="submit-success" id="submit-success">✓ 成果報告を送信しました！コーチからの返信をお待ちください。</div>
       </div>
 
-      <div class="lesson-card">
-        <div class="lesson-thumb">
-          <div class="lesson-play"><div class="play-icon">▶</div></div>
-        </div>
-        <div class="lesson-body">
-          <div class="lesson-no">Lesson 03</div>
-          <div class="lesson-title">リスニング力を伸ばすシャドーイング実践</div>
-          <div class="lesson-meta">
-            <span class="lesson-duration">⏱ 28分</span>
-            <span class="badge-new">未視聴</span>
+      <div class="feedback-section-title">過去の成果報告</div>
+      <div class="past-reports">
+        <div class="past-report-item">
+          <div class="past-report-head">
+            <span class="past-report-period">2026年3月16日 〜 3月31日</span>
+            <span class="past-report-date">提出日：2026/03/31</span>
           </div>
+          <div class="past-report-body">シャドーイングを毎日15分継続できた。レッスン4〜6を視聴し、発音の基礎が少しずつ身についてきた感覚がある。</div>
+        </div>
+        <div class="past-report-item">
+          <div class="past-report-head">
+            <span class="past-report-period">2026年3月1日 〜 3月15日</span>
+            <span class="past-report-date">提出日：2026/03/15</span>
+          </div>
+          <div class="past-report-body">単語暗記を中心に取り組んだ。初めてのグルコンに参加し、他の受講生の学習方法が参考になった。</div>
         </div>
       </div>
+    </div>
 
-      <div class="lesson-card">
-        <div class="lesson-thumb">
-          <div class="lesson-play"><div class="play-icon">▶</div></div>
-        </div>
-        <div class="lesson-body">
-          <div class="lesson-no">Lesson 04</div>
-          <div class="lesson-title">日常英会話フレーズ 100選（前編）</div>
-          <div class="lesson-meta">
-            <span class="lesson-duration">⏱ 45分</span>
-            <span class="badge-new">未視聴</span>
-          </div>
-        </div>
-      </div>
+    <!-- メモタブ -->
+    <div class="tab-panel" id="tab-memo">
+      <p style="color:var(--text-muted);font-size:13px;padding:24px 0;">メモはまもなく追加されます。</p>
     </div>
 
   </div>
+
+  <!-- タスク詳細モーダル -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal">
+      <div class="modal-top"></div>
+      <div class="modal-body">
+        <div class="modal-tag" id="modal-tag"></div>
+        <div class="modal-title" id="modal-title"></div>
+        <div class="modal-time" id="modal-time"></div>
+        <div class="modal-desc" id="modal-desc"></div>
+        <div class="modal-video" id="modal-video">
+          <div class="modal-video-placeholder">
+            <div class="play">▶</div>
+            <div>動画・資料がここに表示されます</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-modal-start">このタスクを始める</button>
+          <button class="btn-modal-close" onclick="closeModal()">閉じる</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const TASKS = [
+      { id:1, level:'初級', tag:'発音', title:'シャドーイング', desc:'音声を聞きながら少し遅れて同時に発音する練習です。リスニングと発音が同時に鍛えられます。今日はレッスン01の音声を使いましょう。', time:15, video:true },
+      { id:2, level:'初級', tag:'語彙', title:'単語暗記 10個', desc:'今週の単語リストから10個を暗記します。声に出しながら書くとより効果的です。', time:10, video:false },
+      { id:3, level:'初級', tag:'発音', title:'音読練習', desc:'テキストを声に出してゆっくり読む練習です。正確な発音を意識しながら進めましょう。', time:15, video:false },
+      { id:4, level:'初級', tag:'レッスン', title:'レッスン動画を見る', desc:'次の未視聴レッスン動画を視聴します。メモを取りながら集中して取り組みましょう。', time:30, video:true },
+      { id:5, level:'初級', tag:'リスニング', title:'英語音声を流し聞き', desc:'日常の作業中に英語音声をBGMとして流します。耳を英語に慣らすのが目的です。', time:30, video:false },
+      { id:6, level:'中級', tag:'スピーキング', title:'瞬間英作文', desc:'日本語を見て瞬時に英語に変換する練習です。テキストの例文を使って取り組みましょう。', time:20, video:false },
+      { id:7, level:'中級', tag:'リスニング', title:'リスニング精聴', desc:'音声を聞いてディクテーション（書き取り）する練習です。聞こえた英語をそのままノートに書きましょう。', time:30, video:true },
+      { id:8, level:'中級', tag:'ライティング', title:'英語日記 1段落', desc:'今日の出来事や感じたことを英語で1段落（3〜5文）書きます。難しい単語より伝わる文を意識して。', time:20, video:false },
+      { id:9, level:'中級', tag:'スピーキング', title:'1分間スピーキング', desc:'決めたテーマについて英語で1分間話し続けます。録音してあとで聞き直すとさらに効果的です。', time:10, video:false },
+      { id:10, level:'中級', tag:'発音', title:'発音チェック', desc:'発音チェックページで今週のフレーズを練習します。マイクで話して一致度を確認しましょう。', time:15, video:false, link:'pronunciation-a.html' },
+    ];
+
+    let selectedTime = 0;
+
+    function setTime(min, btn) {
+      if (!min || min < 1) return;
+      selectedTime = min;
+      document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+      if (btn) btn.classList.add('selected');
+      renderTasks();
+    }
+
+    function renderTasks() {
+      const results = document.getElementById('task-results');
+      results.style.display = 'block';
+      const beginnerEl = document.getElementById('beginner-tasks');
+      const interEl = document.getElementById('intermediate-tasks');
+      const bTasks = TASKS.filter(t => t.level === '初級' && t.time <= selectedTime);
+      const iTasks = TASKS.filter(t => t.level === '中級' && t.time <= selectedTime);
+      beginnerEl.innerHTML = bTasks.length
+        ? bTasks.map(t => taskCardHTML(t)).join('')
+        : '<p class="task-empty">この時間に合う初級タスクはありません。もう少し長い時間を選んでみてください。</p>';
+      interEl.innerHTML = iTasks.length
+        ? iTasks.map(t => taskCardHTML(t)).join('')
+        : '<p class="task-empty">この時間に合う中級タスクはありません。もう少し長い時間を選んでみてください。</p>';
+    }
+
+    function taskCardHTML(t) {
+      return `<div class="task-card" onclick="openModal(${t.id})">
+        <div class="task-card-tag">${t.tag}</div>
+        <div class="task-card-title">${t.title}</div>
+        <div class="task-card-time">⏱ ${t.time}分</div>
+        <div class="task-card-footer">詳細・資料を見る →</div>
+      </div>`;
+    }
+
+    function openModal(id) {
+      const t = TASKS.find(x => x.id === id);
+      if (!t) return;
+      document.getElementById('modal-tag').textContent = t.tag + ' / ' + t.level;
+      document.getElementById('modal-title').textContent = t.title;
+      document.getElementById('modal-time').textContent = '⏱ 目安 ' + t.time + '分';
+      document.getElementById('modal-desc').textContent = t.desc;
+      const videoEl = document.getElementById('modal-video');
+      videoEl.style.display = t.video ? 'flex' : 'none';
+      const startBtn = document.querySelector('.btn-modal-start');
+      if (t.link) {
+        startBtn.onclick = () => window.open(t.link, '_blank');
+        startBtn.textContent = 'ページを開く';
+      } else {
+        startBtn.onclick = closeModal;
+        startBtn.textContent = 'このタスクを始める';
+      }
+      document.getElementById('modal-overlay').classList.add('open');
+    }
+
+    function closeModal(e) {
+      if (!e || e.target === document.getElementById('modal-overlay') || e.currentTarget === document.querySelector('.btn-modal-close')) {
+        document.getElementById('modal-overlay').classList.remove('open');
+      }
+    }
+
+    function switchTab(name) {
+      const names = ['task','lesson','group','manual','pronunciation','report','memo'];
+      document.querySelectorAll('.tab').forEach((t, i) => {
+        t.classList.toggle('active', names[i] === name);
+      });
+      document.querySelectorAll('.tab-panel').forEach(p => {
+        p.classList.toggle('active', p.id === 'tab-' + name);
+      });
+      if (name === 'group') renderGruconSchedule();
+    }
+
+    // グルコンセッション定義（管理者ページと同じ）
+    const GRUCON_SESSIONS = [
+      { num:'01', month:'Apr', day:1,  label:'2026年4月1日（水）',  past:true  },
+      { num:'02', month:'Apr', day:8,  label:'2026年4月8日（水）',  past:true  },
+      { num:'03', month:'Apr', day:15, label:'2026年4月15日（水）', past:false },
+      { num:'04', month:'Apr', day:22, label:'2026年4月22日（水）', past:false },
+      { num:'05', month:'Apr', day:29, label:'2026年4月29日（水）', past:false },
+      { num:'06', month:'May', day:6,  label:'2026年5月6日（水）',  past:false },
+      { num:'07', month:'May', day:13, label:'2026年5月13日（水）', past:false },
+      { num:'08', month:'May', day:20, label:'2026年5月20日（水）', past:false },
+      { num:'09', month:'May', day:27, label:'2026年5月27日（水）', past:false },
+      { num:'10', month:'Jun', day:3,  label:'2026年6月3日（水）',  past:false },
+      { num:'11', month:'Jun', day:10, label:'2026年6月10日（水）', past:false },
+      { num:'12', month:'Jun', day:17, label:'2026年6月17日（水）', past:false },
+      { num:'13', month:'Jun', day:24, label:'2026年6月24日（水）', past:false },
+      { num:'14', month:'Jul', day:1,  label:'2026年7月1日（水）',  past:false },
+      { num:'15', month:'Jul', day:8,  label:'2026年7月8日（水）',  past:false },
+      { num:'16', month:'Jul', day:15, label:'2026年7月15日（水）', past:false },
+      { num:'17', month:'Jul', day:22, label:'2026年7月22日（水）', past:false },
+      { num:'18', month:'Jul', day:29, label:'2026年7月29日（水）', past:false },
+    ];
+
+    function renderGruconSchedule() {
+      const links = JSON.parse(localStorage.getItem('grucon_links') || '{}');
+      const grid = document.getElementById('grucon-schedule');
+      grid.innerHTML = GRUCON_SESSIONS.map(s => {
+        const saved = links[s.num];
+        const archiveBtn = (s.past && saved)
+          ? `<a class="btn-archive" href="${saved.url}" target="_blank">▶ アーカイブを見る</a>`
+          : (s.past ? `<span class="badge-past">終了</span>` : `<span class="badge-upcoming">予定</span>`);
+        return `<div class="schedule-item${s.past ? ' past' : ''}">
+          <div class="schedule-date-box"><div class="schedule-month">${s.month}</div><div class="schedule-day">${s.day}</div></div>
+          <div class="schedule-divider"></div>
+          <div class="schedule-info"><div class="schedule-title">グループコーチング #${s.num}</div><div class="schedule-time">${s.label} 21:00〜</div></div>
+          ${archiveBtn}
+        </div>`;
+      }).join('');
+    }
+
+    // 初期レンダリング
+    renderGruconSchedule();
+
+    function submitReport() {
+      document.querySelector('.btn-submit-report').style.display = 'none';
+      document.getElementById('submit-success').style.display = 'block';
+    }
+  </script>
 </body>
 </html>

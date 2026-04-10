@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pronunciation Check — English Coaching</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0D0D12; --surface: #13131A; --surface2: #1A1A24;
+      --text: #F5F2EE; --text-muted: rgba(245,242,238,0.45);
+      --accent: #D4B896; --accent-dim: rgba(212,184,150,0.12);
+      --border: rgba(255,255,255,0.07); --radius: 8px; --radius-lg: 12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+    .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 32px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+    .back-btn { font-size: 12px; color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 4px; letter-spacing: 0.04em; transition: color 0.15s; }
+    .back-btn:hover { color: var(--accent); }
+    .header-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 400; }
+    .header-badge { font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; background: var(--accent-dim); color: var(--accent); padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(212,184,150,0.2); }
+
+    .container { max-width: 680px; margin: 0 auto; padding: 48px 24px; }
+
+    .phrase-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+    .phrase-nav-btn { width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 50%; background: transparent; cursor: pointer; font-size: 14px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .phrase-nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .phrase-nav-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; }
+
+    .phrase-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 20px; }
+    .phrase-card-top { height: 3px; background: linear-gradient(90deg, var(--accent), #E8C9A0); }
+    .phrase-card-body { padding: 32px 36px; }
+    .phrase-label { font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    .phrase-text { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 400; color: var(--text); line-height: 1.35; margin-bottom: 8px; }
+    .phrase-text em { font-style: italic; color: var(--accent); }
+    .phrase-jp { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; font-weight: 300; }
+    .phrase-tip { font-size: 12px; color: var(--text-muted); background: var(--surface2); border-radius: 6px; padding: 10px 14px; line-height: 1.65; font-weight: 300; border: 1px solid var(--border); }
+    .phrase-tip strong { color: var(--accent); font-weight: 600; }
+
+    .record-area { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px 36px; margin-bottom: 20px; }
+    .record-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; }
+
+    .steps { display: flex; gap: 8px; margin-bottom: 24px; }
+    .step { flex: 1; height: 2px; border-radius: 1px; background: rgba(255,255,255,0.08); transition: background 0.3s; }
+    .step.done { background: var(--accent); }
+    .step.active { background: linear-gradient(90deg, var(--accent), #E8C9A0); }
+
+    .mic-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .mic-btn { width: 80px; height: 80px; border-radius: 50%; border: none; cursor: pointer; background: var(--accent); color: #0D0D12; font-size: 28px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(212,184,150,0.2); transition: all 0.2s; }
+    .mic-btn:hover { background: #C9A882; transform: scale(1.05); }
+    .mic-btn.recording { background: #E8485E; color: #fff; box-shadow: 0 0 0 12px rgba(232,72,94,0.1), 0 4px 20px rgba(232,72,94,0.25); animation: pulse 1.2s infinite; }
+    .mic-btn:disabled { background: rgba(255,255,255,0.08); color: var(--text-muted); box-shadow: none; cursor: not-allowed; transform: none; }
+    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 12px rgba(232,72,94,0.1); } 50% { box-shadow: 0 0 0 22px rgba(232,72,94,0.04); } }
+    .mic-status { font-size: 12px; color: var(--text-muted); text-align: center; min-height: 20px; font-weight: 300; }
+    .mic-status.recording { color: #E8485E; font-weight: 600; }
+
+    .result-box { display: none; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; margin-top: 20px; }
+    .result-box.show { display: block; }
+    .result-box-label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    .result-text { font-size: 17px; font-weight: 500; color: var(--text); line-height: 1.4; }
+    .result-actions { display: flex; gap: 10px; margin-top: 16px; }
+    .btn-submit { flex: 1; padding: 12px; background: var(--accent); color: #0D0D12; border: none; border-radius: var(--radius); font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: background 0.15s; }
+    .btn-submit:hover { background: #C9A882; }
+    .btn-retry { padding: 12px 20px; background: none; border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
+    .btn-retry:hover { border-color: rgba(212,184,150,0.4); color: var(--accent); }
+
+    .score-area { display: none; text-align: center; padding: 24px 0 8px; }
+    .score-area.show { display: block; }
+    .score-circle { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+    .score-circle svg { position: absolute; top: 0; left: 0; transform: rotate(-90deg); }
+    .score-number { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 400; color: var(--text); position: relative; z-index: 1; line-height: 1; }
+    .score-pct { font-size: 13px; color: var(--text-muted); position: relative; z-index: 1; }
+    .score-label { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .score-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; font-weight: 300; }
+    .score-detail { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; margin: 0 0 20px; text-align: left; }
+    .score-detail-row { display: flex; justify-content: space-between; font-size: 12px; padding: 5px 0; border-bottom: 1px solid var(--border); color: var(--text-muted); font-weight: 300; }
+    .score-detail-row:last-child { border-bottom: none; }
+    .score-detail-row span:last-child { font-weight: 600; color: var(--accent); }
+    .btn-next { width: 100%; padding: 13px; background: var(--accent); color: #0D0D12; border: none; border-radius: var(--radius); font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: background 0.15s; margin-bottom: 10px; }
+    .btn-next:hover { background: #C9A882; }
+    .btn-again { width: 100%; padding: 11px; background: none; border: 1px solid var(--border); border-radius: var(--radius); font-size: 12px; color: var(--text-muted); cursor: pointer; letter-spacing: 0.05em; transition: all 0.15s; }
+    .btn-again:hover { border-color: rgba(212,184,150,0.4); color: var(--accent); }
+
+    .label-tag { position: fixed; top: 16px; right: 16px; background: var(--accent); color: #0D0D12; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; padding: 6px 12px; border-radius: 20px; z-index: 100; }
+    .no-support { background: rgba(255,200,50,0.1); border: 1px solid rgba(255,200,50,0.2); border-radius: var(--radius); padding: 14px 18px; font-size: 13px; color: #F0C040; margin-bottom: 20px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="label-tag">PATTERN B — Pronunciation</div>
+
+  <header class="header">
+    <a href="preview-b-dashboard.html" class="back-btn">← Dashboard</a>
+    <div class="header-title">Pronunciation Check</div>
+    <span class="header-badge">🎤 Practice</span>
+  </header>
+
+  <div class="container">
+    <div class="no-support" id="no-support">⚠️ Speech recognition requires Google Chrome.</div>
+
+    <div class="phrase-nav">
+      <button class="phrase-nav-btn" onclick="prevPhrase()">‹</button>
+      <span class="phrase-nav-label" id="phrase-counter">Phrase 1 / 5</span>
+      <button class="phrase-nav-btn" onclick="nextPhrase()">›</button>
+    </div>
+
+    <div class="phrase-card">
+      <div class="phrase-card-top"></div>
+      <div class="phrase-card-body">
+        <div class="phrase-label">Today's Phrase</div>
+        <div class="phrase-text" id="phrase-text">Nice to meet you.</div>
+        <div class="phrase-jp" id="phrase-jp">はじめまして。</div>
+        <div class="phrase-tip" id="phrase-tip"><strong>Tip:</strong> 「meet」の語尾のtは軽く止める。「you」は「ユー」より「ヤ」に近い音。</div>
+      </div>
+    </div>
+
+    <div class="record-area">
+      <div class="record-label">Speak into the microphone</div>
+      <div class="steps">
+        <div class="step active" id="step1"></div>
+        <div class="step" id="step2"></div>
+        <div class="step" id="step3"></div>
+      </div>
+      <div class="mic-wrap">
+        <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">🎤</button>
+        <div class="mic-status" id="mic-status">Press to start recording</div>
+      </div>
+      <div class="result-box" id="result-box">
+        <div class="result-box-label">Recognized</div>
+        <div class="result-text" id="result-text"></div>
+        <div class="result-actions">
+          <button class="btn-submit" onclick="submitResult()">Submit & Score</button>
+          <button class="btn-retry" onclick="retryRecording()">Re-record</button>
+        </div>
+      </div>
+      <div class="score-area" id="score-area">
+        <div class="score-circle">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(212,184,150,0.12)" stroke-width="8"/>
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#D4B896" stroke-width="8" stroke-linecap="round"
+              id="score-ring" stroke-dasharray="314" stroke-dashoffset="314"/>
+          </svg>
+          <div class="score-number" id="score-number">—</div>
+          <div class="score-pct">%</div>
+        </div>
+        <div class="score-label" id="score-label"></div>
+        <div class="score-sub" id="score-sub"></div>
+        <div class="score-detail" id="score-detail"></div>
+        <button class="btn-next" onclick="nextPhrase()">Next Phrase →</button>
+        <button class="btn-again" onclick="resetCurrent()">Try Again</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PHRASES = [
+      { en: 'Nice to meet you.', jp: 'はじめまして。', tip: '「meet」の語尾のtは軽く止める。「you」は「ユー」より「ヤ」に近い音。' },
+      { en: 'How are you doing?', jp: '調子はどう？', tip: '「How are you」は繋げて「ハワユ」のように発音。' },
+      { en: 'I really appreciate it.', jp: '本当にありがとうございます。', tip: '「appreciate」は「アプリーシエイト」。rは唇を丸めて。' },
+      { en: 'Could you say that again?', jp: 'もう一度言っていただけますか？', tip: '「Could you」は「クジュ」のように繋げる。' },
+      { en: "I'm looking forward to it.", jp: '楽しみにしています。', tip: '「looking forward」は滑らかに繋げて発音。' },
+    ];
+
+    let currentIdx = 0, recognition = null, isRecording = false, recognizedText = '';
+
+    function initRecognition() {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { document.getElementById('no-support').style.display = 'block'; document.getElementById('mic-btn').disabled = true; return; }
+      recognition = new SR();
+      recognition.lang = 'en-US'; recognition.continuous = false; recognition.interimResults = true;
+      recognition.onresult = (e) => {
+        const t = Array.from(e.results).map(r => r[0].transcript).join('');
+        document.getElementById('mic-status').textContent = '"' + t + '"';
+        if (e.results[0].isFinal) recognizedText = t;
+      };
+      recognition.onend = () => { if (isRecording) showResult(); };
+      recognition.onerror = () => {
+        isRecording = false; setStep(1);
+        document.getElementById('mic-btn').classList.remove('recording');
+        document.getElementById('mic-btn').textContent = '🎤';
+        document.getElementById('mic-status').textContent = 'Error. Please try again.';
+        document.getElementById('mic-status').classList.remove('recording');
+      };
+    }
+
+    function toggleRecording() {
+      if (!recognition) return;
+      if (isRecording) { recognition.stop(); isRecording = false; }
+      else {
+        recognizedText = '';
+        document.getElementById('result-box').classList.remove('show');
+        document.getElementById('score-area').classList.remove('show');
+        isRecording = true; setStep(2);
+        document.getElementById('mic-btn').classList.add('recording');
+        document.getElementById('mic-btn').textContent = '⏹';
+        document.getElementById('mic-status').textContent = 'Recording...';
+        document.getElementById('mic-status').classList.add('recording');
+        recognition.start();
+      }
+    }
+
+    function showResult() {
+      isRecording = false;
+      document.getElementById('mic-btn').classList.remove('recording');
+      document.getElementById('mic-btn').textContent = '🎤';
+      document.getElementById('mic-status').classList.remove('recording');
+      setStep(3);
+      if (recognizedText) {
+        document.getElementById('result-text').textContent = recognizedText;
+        document.getElementById('result-box').classList.add('show');
+        document.getElementById('mic-status').textContent = 'Check the result below.';
+      } else {
+        document.getElementById('mic-status').textContent = 'Could not recognize. Please try again.';
+        setStep(1);
+      }
+    }
+
+    function retryRecording() {
+      recognizedText = '';
+      document.getElementById('result-box').classList.remove('show');
+      document.getElementById('score-area').classList.remove('show');
+      document.getElementById('mic-status').textContent = 'Press to start recording';
+      setStep(1);
+    }
+
+    function submitResult() {
+      showScore(calcScore(PHRASES[currentIdx].en, recognizedText));
+    }
+
+    function calcScore(target, spoken) {
+      if (!spoken) return 0;
+      const n = s => s.toLowerCase().replace(/[^a-z\s]/g,'').trim().split(/\s+/);
+      const t = n(target), s = n(spoken);
+      return Math.round((t.filter(w => s.includes(w)).length / t.length) * 100);
+    }
+
+    function showScore(score) {
+      document.getElementById('result-box').classList.remove('show');
+      document.getElementById('score-area').classList.add('show');
+      document.getElementById('score-number').textContent = score;
+      document.getElementById('score-ring').style.strokeDashoffset = 314 - (314 * score / 100);
+      const [label, sub] = score >= 90 ? ['Excellent! 🎉','Perfect pronunciation. Keep it up!']
+        : score >= 70 ? ['Well done!','Clearly understandable. Almost perfect!']
+        : score >= 50 ? ['Keep going!','Getting there. Try once more!']
+        : ['Practice more!','Take it slow and try again.'];
+      document.getElementById('score-label').textContent = label;
+      document.getElementById('score-sub').textContent = sub;
+      const t = PHRASES[currentIdx].en.toLowerCase().replace(/[^a-z\s]/g,'').trim().split(/\s+/);
+      const s = recognizedText.toLowerCase().replace(/[^a-z\s]/g,'').trim().split(/\s+/);
+      document.getElementById('score-detail').innerHTML = `
+        <div class="score-detail-row"><span>Target</span><span>${PHRASES[currentIdx].en}</span></div>
+        <div class="score-detail-row"><span>Your speech</span><span>${recognizedText || '—'}</span></div>
+        <div class="score-detail-row"><span>Words matched</span><span>${t.filter(w=>s.includes(w)).length} / ${t.length}</span></div>`;
+    }
+
+    function resetCurrent() {
+      recognizedText = '';
+      document.getElementById('result-box').classList.remove('show');
+      document.getElementById('score-area').classList.remove('show');
+      document.getElementById('mic-status').textContent = 'Press to start recording';
+      document.getElementById('mic-status').classList.remove('recording');
+      setStep(1);
+    }
+
+    function setStep(n) {
+      ['step1','step2','step3'].forEach((id,i) => {
+        document.getElementById(id).className = 'step' + (i+1<n?' done':i+1===n?' active':'');
+      });
+    }
+
+    function loadPhrase(idx) {
+      currentIdx = idx;
+      const p = PHRASES[idx];
+      document.getElementById('phrase-text').textContent = p.en;
+      document.getElementById('phrase-jp').textContent = p.jp;
+      document.getElementById('phrase-tip').innerHTML = '<strong>Tip:</strong> ' + p.tip;
+      document.getElementById('phrase-counter').textContent = 'Phrase ' + (idx+1) + ' / ' + PHRASES.length;
+      resetCurrent();
+    }
+
+    function prevPhrase() { loadPhrase((currentIdx-1+PHRASES.length)%PHRASES.length); }
+    function nextPhrase() { loadPhrase((currentIdx+1)%PHRASES.length); }
+
+    initRecognition();
+  </script>
+</body>
+</html>

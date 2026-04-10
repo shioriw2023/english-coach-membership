@@ -35,7 +35,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* 背景テクスチャ */
     body::before {
       content: '';
       position: fixed;
@@ -56,133 +55,72 @@
       position: relative;
     }
 
-    /* カード上部のアクセントバー */
-    .card-top {
-      height: 5px;
-      background: linear-gradient(90deg, var(--accent), #E8A0B0, var(--accent));
-    }
+    .card-top { height: 5px; background: linear-gradient(90deg, var(--accent), #E8A0B0, var(--accent)); }
+    .card-body { padding: 48px 44px 40px; }
 
-    .card-body {
-      padding: 48px 44px 52px;
+    .badge {
+      position: absolute; top: 24px; right: 24px;
+      width: 36px; height: 36px; border: 1.5px solid var(--accent);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px;
     }
 
     .eyebrow {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 20px;
+      display: inline-block; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 20px;
     }
 
-    h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 30px;
-      font-weight: 500;
-      line-height: 1.35;
-      color: var(--text);
-      margin-bottom: 8px;
-    }
+    h1 { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 500; line-height: 1.35; color: var(--text); margin-bottom: 8px; }
+    .subtitle { font-size: 13.5px; color: var(--text-muted); margin-bottom: 28px; }
+    .divider { height: 1px; background: var(--border); margin-bottom: 28px; }
 
-    .subtitle {
-      font-size: 13.5px;
-      color: var(--text-muted);
-      margin-bottom: 36px;
-    }
-
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin-bottom: 32px;
-    }
+    .form-screen { display: none; }
+    .form-screen.active { display: block; }
 
     .form-group { margin-bottom: 20px; }
-
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
+    label { display: block; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
 
     input {
-      width: 100%;
-      padding: 13px 16px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      color: var(--text);
-      background: #FDFCFA;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      outline: none;
+      width: 100%; padding: 13px 16px;
+      border: 1.5px solid var(--border); border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--text);
+      background: #FDFCFA; transition: border-color 0.2s, box-shadow 0.2s; outline: none;
     }
-
-    input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(208,116,138,0.15);
-    }
-
+    input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(208,116,138,0.15); }
     input::placeholder { color: var(--text-muted); opacity: 0.6; }
+    input:disabled { background: #F5F0F2; color: var(--text-muted); }
+    input.error { border-color: #D0748A; }
 
     .btn {
-      width: 100%;
-      padding: 14px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-      margin-top: 8px;
+      width: 100%; padding: 14px; background: var(--accent); color: #fff; border: none;
+      border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 14px;
+      font-weight: 600; letter-spacing: 0.04em; cursor: pointer;
+      transition: background 0.2s, transform 0.1s; margin-top: 8px;
     }
-
     .btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
     .btn:active { transform: translateY(0); }
 
-    .card-footer {
-      padding: 18px 44px;
-      background: var(--accent-light);
-      border-top: 1px solid rgba(208,116,138,0.12);
-      font-size: 12px;
-      color: var(--text-muted);
-      text-align: center;
-    }
+    .hint { font-size: 12px; color: var(--text-muted); margin-top: 6px; line-height: 1.5; }
+    .pw-rule { font-size: 12px; color: var(--text-muted); background: var(--accent-light); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 20px; line-height: 1.6; }
 
-    /* バッジ */
-    .badge {
-      position: absolute;
-      top: 24px;
-      right: 24px;
-      width: 36px;
-      height: 36px;
-      border: 1.5px solid var(--accent);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-    }
+    /* エラーテキスト */
+    .error-msg { font-size: 12px; color: #C0424A; background: #FEF0F1; border: 1px solid rgba(192,66,74,0.2); border-radius: var(--radius); padding: 10px 14px; margin-top: 8px; line-height: 1.6; display: none; }
+    .error-msg.show { display: block; }
+
+    /* パスワード設定リンク */
+    .pw-link { display: block; text-align: center; margin-top: 16px; font-size: 12.5px; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; transition: opacity 0.15s; }
+    .pw-link:hover { opacity: 0.75; }
+
+    /* 戻るリンク */
+    .back-link { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-muted); cursor: pointer; margin-bottom: 20px; transition: color 0.15s; width: fit-content; }
+    .back-link:hover { color: var(--accent); }
+
+    /* セットアップ成功 */
+    .setup-success { display: none; text-align: center; padding: 16px; background: #E8F5ED; border-radius: var(--radius); color: #4A8C62; font-weight: 600; font-size: 13px; margin-top: 12px; }
 
     .label-tag {
-      position: fixed;
-      top: 16px;
-      left: 16px;
-      background: #1C1916;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      padding: 6px 12px;
-      border-radius: 20px;
+      position: fixed; top: 16px; left: 16px; background: #1C1916; color: #fff;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em; padding: 6px 12px; border-radius: 20px;
     }
   </style>
 </head>
@@ -195,22 +133,144 @@
       <div class="badge">✦</div>
       <span class="eyebrow">Members Only</span>
       <h1>英語コーチング<br>受講生マイページ</h1>
-      <p class="subtitle">メールアドレスでログインしてください</p>
-      <div class="divider"></div>
 
-      <div class="form-group">
-        <label>メールアドレス</label>
-        <input type="email" placeholder="hanako@example.com">
+      <!-- STEP 1: 通常ログイン -->
+      <div class="form-screen active" id="screen-login">
+        <p class="subtitle">メールアドレスとパスワードでログインしてください</p>
+        <div class="divider"></div>
+        <div class="form-group">
+          <label>メールアドレス</label>
+          <input type="email" id="login-email" placeholder="hanako@example.com">
+        </div>
+        <div class="form-group">
+          <label>パスワード</label>
+          <input type="password" id="login-password" placeholder="パスワードを入力">
+        </div>
+        <div class="error-msg" id="login-error">メールアドレスまたはパスワードを入力してください</div>
+        <button class="btn" onclick="doLogin()">ログイン</button>
+        <a class="pw-link" onclick="showScreen('email-check')">パスワードの設定がまだの方・パスワードを忘れた方はこちら</a>
       </div>
-      <div class="form-group">
-        <label>パスワード</label>
-        <input type="password" placeholder="パスワードを入力">
+
+      <!-- STEP 2: メールアドレス確認 -->
+      <div class="form-screen" id="screen-email-check">
+        <span class="back-link" onclick="showScreen('login')">← ログインに戻る</span>
+        <p class="subtitle">登録済みのメールアドレスを入力してください</p>
+        <div class="divider"></div>
+        <div class="form-group">
+          <label>メールアドレス</label>
+          <input type="email" id="check-email" placeholder="hanako@example.com">
+          <div class="error-msg" id="email-check-error">このメールアドレスは登録されていません。<br>コーチにご確認ください。</div>
+        </div>
+        <button class="btn" onclick="checkEmail()">次へ → パスワードを設定する</button>
       </div>
-      <button class="btn">ログイン</button>
-    </div>
-    <div class="card-footer">
-      初めてのログインは、コーチから届いたセットアップリンクをご利用ください
+
+      <!-- STEP 3: パスワード設定 -->
+      <div class="form-screen" id="screen-setup">
+        <span class="back-link" onclick="showScreen('email-check')">← 戻る</span>
+        <p class="subtitle">新しいパスワードを設定してください</p>
+        <div class="divider"></div>
+        <div class="form-group">
+          <label>メールアドレス</label>
+          <input type="email" id="setup-email-display" disabled>
+        </div>
+        <div class="pw-rule">🔑 パスワードは6文字以上で設定してください</div>
+        <div class="form-group">
+          <label>新しいパスワード</label>
+          <input type="password" id="setup-pw1" placeholder="6文字以上で入力">
+        </div>
+        <div class="form-group">
+          <label>パスワード（確認）</label>
+          <input type="password" id="setup-pw2" placeholder="もう一度入力してください">
+        </div>
+        <div class="error-msg" id="setup-error"></div>
+        <button class="btn" id="setup-btn" onclick="completeSetup()">パスワードを設定してログイン</button>
+        <div class="setup-success" id="setup-success">✓ パスワードを設定しました！マイページに移動します…</div>
+      </div>
+
     </div>
   </div>
+
+  <script>
+    // 管理者ページで登録された受講生メールアドレス（モック）
+    const REGISTERED_EMAILS = [
+      'hanako@example.com',
+      'taro@example.com',
+      'yuki@example.com',
+      'kimura@example.com',
+      'sato@example.com'
+    ];
+
+    function showScreen(name) {
+      ['login', 'email-check', 'setup'].forEach(id => {
+        document.getElementById('screen-' + id).classList.toggle('active', id === name);
+      });
+      // エラーをリセット
+      document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
+    }
+
+    function doLogin() {
+      const email = document.getElementById('login-email').value.trim();
+      const pw = document.getElementById('login-password').value;
+      const err = document.getElementById('login-error');
+      if (!email || !pw) {
+        err.textContent = 'メールアドレスとパスワードを入力してください';
+        err.classList.add('show');
+        return;
+      }
+      err.classList.remove('show');
+      // ※実際のログイン処理はここに接続
+      alert('ログイン処理（実装時にFirebaseと接続）');
+    }
+
+    function checkEmail() {
+      const email = document.getElementById('check-email').value.trim().toLowerCase();
+      const err = document.getElementById('email-check-error');
+      if (!email) {
+        err.textContent = 'メールアドレスを入力してください';
+        err.classList.add('show');
+        return;
+      }
+      if (!REGISTERED_EMAILS.includes(email)) {
+        err.textContent = 'このメールアドレスは登録されていません。入力に誤りがないかご確認ください。';
+        err.classList.add('show');
+        document.getElementById('check-email').classList.add('error');
+        return;
+      }
+      err.classList.remove('show');
+      document.getElementById('check-email').classList.remove('error');
+      // メールアドレスをパスワード設定画面に引き渡す
+      document.getElementById('setup-email-display').value = email;
+      document.getElementById('setup-pw1').value = '';
+      document.getElementById('setup-pw2').value = '';
+      document.getElementById('setup-btn').style.display = '';
+      document.getElementById('setup-success').style.display = 'none';
+      showScreen('setup');
+    }
+
+    function completeSetup() {
+      const pw1 = document.getElementById('setup-pw1').value;
+      const pw2 = document.getElementById('setup-pw2').value;
+      const err = document.getElementById('setup-error');
+
+      if (!pw1 || !pw2) {
+        err.textContent = 'パスワードを入力してください';
+        err.classList.add('show');
+        return;
+      }
+      if (pw1.length < 6) {
+        err.textContent = 'パスワードは6文字以上で設定してください';
+        err.classList.add('show');
+        return;
+      }
+      if (pw1 !== pw2) {
+        err.textContent = 'パスワードが一致しません。もう一度確認してください';
+        err.classList.add('show');
+        return;
+      }
+      err.classList.remove('show');
+      document.getElementById('setup-btn').style.display = 'none';
+      document.getElementById('setup-success').style.display = 'block';
+    }
+  </script>
 </body>
 </html>

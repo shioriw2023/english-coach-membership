@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>発音チェック — 英語コーチング</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FDF5F7; --white: #FFFFFF; --text: #1A1419; --text-muted: #9A8890;
+      --accent: #D0748A; --accent-hover: #BC6078; --accent-light: #FAE8EE;
+      --border: rgba(0,0,0,0.08); --radius: 8px; --radius-lg: 14px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+    .header { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 32px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .back-btn { font-size: 13px; color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: color 0.15s; }
+    .back-btn:hover { color: var(--accent); }
+    .header-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 500; }
+    .header-badge { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: var(--accent-light); color: var(--accent); padding: 3px 10px; border-radius: 20px; }
+
+    .container { max-width: 680px; margin: 0 auto; padding: 48px 24px; }
+
+    /* フレーズ選択 */
+    .phrase-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+    .phrase-nav-btn { width: 36px; height: 36px; border: 1.5px solid var(--border); border-radius: 50%; background: var(--white); cursor: pointer; font-size: 14px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .phrase-nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .phrase-nav-label { font-size: 12px; color: var(--text-muted); }
+
+    /* メインカード */
+    .phrase-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 24px; }
+    .phrase-card-top { height: 5px; background: linear-gradient(90deg, var(--accent), #E898AC); }
+    .phrase-card-body { padding: 36px 40px; }
+    .phrase-label { font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    .phrase-text { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 500; color: var(--text); line-height: 1.3; margin-bottom: 8px; }
+    .phrase-jp { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+    .phrase-tip { font-size: 12.5px; color: var(--text-muted); background: var(--accent-light); border-radius: 6px; padding: 10px 14px; line-height: 1.6; }
+    .phrase-tip strong { color: var(--accent); }
+
+    /* 録音エリア */
+    .record-area { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 32px 40px; margin-bottom: 24px; }
+    .record-label { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 20px; }
+
+    /* ステップ表示 */
+    .steps { display: flex; gap: 8px; margin-bottom: 24px; }
+    .step { flex: 1; height: 3px; border-radius: 2px; background: var(--border); transition: background 0.3s; }
+    .step.done { background: var(--accent); }
+    .step.active { background: linear-gradient(90deg, var(--accent), #E898AC); }
+
+    /* マイクボタン */
+    .mic-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .mic-btn {
+      width: 80px; height: 80px; border-radius: 50%; border: none; cursor: pointer;
+      background: var(--accent); color: #fff; font-size: 28px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(208,116,138,0.35);
+      transition: all 0.2s;
+    }
+    .mic-btn:hover { background: var(--accent-hover); transform: scale(1.05); }
+    .mic-btn.recording { background: #E8485E; box-shadow: 0 0 0 12px rgba(232,72,94,0.12), 0 4px 20px rgba(232,72,94,0.3); animation: pulse 1.2s infinite; }
+    .mic-btn:disabled { background: #ddd; box-shadow: none; cursor: not-allowed; transform: none; }
+    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 12px rgba(232,72,94,0.12), 0 4px 20px rgba(232,72,94,0.3); } 50% { box-shadow: 0 0 0 20px rgba(232,72,94,0.06), 0 4px 20px rgba(232,72,94,0.3); } }
+    .mic-status { font-size: 13px; color: var(--text-muted); text-align: center; min-height: 20px; }
+    .mic-status.recording { color: #E8485E; font-weight: 600; }
+
+    /* 認識結果 */
+    .result-box { display: none; background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px 20px; margin-top: 20px; }
+    .result-box.show { display: block; }
+    .result-box-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    .result-text { font-size: 18px; font-weight: 500; color: var(--text); line-height: 1.4; }
+    .result-actions { display: flex; gap: 10px; margin-top: 16px; }
+    .btn-submit { flex: 1; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+    .btn-submit:hover { background: var(--accent-hover); }
+    .btn-retry { padding: 12px 20px; background: none; border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 14px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
+    .btn-retry:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* 結果スコア */
+    .score-area { display: none; text-align: center; padding: 24px 0 8px; }
+    .score-area.show { display: block; }
+    .score-circle {
+      width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 16px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      position: relative;
+    }
+    .score-circle svg { position: absolute; top: 0; left: 0; transform: rotate(-90deg); }
+    .score-number { font-size: 38px; font-weight: 500; color: var(--text); position: relative; z-index: 1; line-height: 1; }
+    .score-pct { font-size: 14px; color: var(--text-muted); position: relative; z-index: 1; }
+    .score-label { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .score-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+    .score-detail { background: var(--bg); border-radius: var(--radius); padding: 14px 18px; margin: 0 0 20px; text-align: left; }
+    .score-detail-row { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; border-bottom: 1px solid var(--border); }
+    .score-detail-row:last-child { border-bottom: none; }
+    .score-detail-row span:last-child { font-weight: 600; color: var(--accent); }
+    .btn-next { width: 100%; padding: 13px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; margin-bottom: 10px; }
+    .btn-next:hover { background: var(--accent-hover); }
+    .btn-again { width: 100%; padding: 11px; background: none; border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 13px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
+    .btn-again:hover { border-color: var(--accent); color: var(--accent); }
+
+    .label-tag { position: fixed; top: 16px; right: 16px; background: #2D1F26; color: #fff; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; padding: 6px 12px; border-radius: 20px; z-index: 100; }
+
+    .no-support { background: #FFF3CD; border: 1px solid #FFEAA7; border-radius: var(--radius); padding: 14px 18px; font-size: 13px; color: #856404; margin-bottom: 20px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="label-tag">PATTERN A — 発音チェック</div>
+
+  <header class="header">
+    <div class="header-left">
+      <a href="preview-a-dashboard.html" class="back-btn">← マイページへ戻る</a>
+    </div>
+    <div class="header-title">発音チェック</div>
+    <span class="header-badge">🎤 Pronunciation</span>
+  </header>
+
+  <div class="container">
+    <div class="no-support" id="no-support">
+      ⚠️ お使いのブラウザは音声認識に対応していません。Google Chromeをお使いください。
+    </div>
+
+    <!-- フレーズナビ -->
+    <div class="phrase-nav">
+      <button class="phrase-nav-btn" onclick="prevPhrase()">‹</button>
+      <span class="phrase-nav-label" id="phrase-counter">フレーズ 1 / 5</span>
+      <button class="phrase-nav-btn" onclick="nextPhrase()">›</button>
+    </div>
+
+    <!-- フレーズカード -->
+    <div class="phrase-card">
+      <div class="phrase-card-top"></div>
+      <div class="phrase-card-body">
+        <div class="phrase-label">今日のフレーズ</div>
+        <div class="phrase-text" id="phrase-text">Nice to meet you.</div>
+        <div class="phrase-jp" id="phrase-jp">はじめまして。</div>
+        <div class="phrase-tip" id="phrase-tip"><strong>発音のコツ：</strong>「meet」の語尾のtは軽く止める。「you」は「ユー」より「ヤ」に近い音。</div>
+      </div>
+    </div>
+
+    <!-- 録音エリア -->
+    <div class="record-area">
+      <div class="record-label">マイクで話してみましょう</div>
+      <div class="steps">
+        <div class="step active" id="step1"></div>
+        <div class="step" id="step2"></div>
+        <div class="step" id="step3"></div>
+      </div>
+
+      <div class="mic-wrap" id="mic-wrap">
+        <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">🎤</button>
+        <div class="mic-status" id="mic-status">ボタンを押して話してください</div>
+      </div>
+
+      <div class="result-box" id="result-box">
+        <div class="result-box-label">認識結果</div>
+        <div class="result-text" id="result-text"></div>
+        <div class="result-actions">
+          <button class="btn-submit" onclick="submitResult()">送信して採点する</button>
+          <button class="btn-retry" onclick="retryRecording()">修正する</button>
+        </div>
+      </div>
+
+      <div class="score-area" id="score-area">
+        <div class="score-circle" id="score-circle">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#FAE8EE" stroke-width="8"/>
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#D0748A" stroke-width="8" stroke-linecap="round"
+              id="score-ring" stroke-dasharray="314" stroke-dashoffset="314"/>
+          </svg>
+          <div class="score-number" id="score-number">—</div>
+          <div class="score-pct">%</div>
+        </div>
+        <div class="score-label" id="score-label"></div>
+        <div class="score-sub" id="score-sub"></div>
+        <div class="score-detail" id="score-detail"></div>
+        <button class="btn-next" onclick="nextPhrase()">次のフレーズへ →</button>
+        <button class="btn-again" onclick="resetCurrent()">もう一度挑戦する</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PHRASES = [
+      { en: 'Nice to meet you.', jp: 'はじめまして。', tip: '「meet」の語尾のtは軽く止める。「you」は「ユー」より「ヤ」に近い音。' },
+      { en: 'How are you doing?', jp: '調子はどう？', tip: '「How are you」は繋げて「ハワユ」のように発音。「doing」のgは弱く。' },
+      { en: 'I really appreciate it.', jp: '本当にありがとうございます。', tip: '「appreciate」は「アプリーシエイト」。「really」のrは唇を丸めて。' },
+      { en: 'Could you say that again?', jp: 'もう一度言っていただけますか？', tip: '「Could you」は「クジュ」のように繋げる。丁寧な表現として自然に言えるように。' },
+      { en: 'I\'m looking forward to it.', jp: '楽しみにしています。', tip: '「looking forward」は「ルッキンフォーワード」と滑らかに。toの後は短く。' },
+    ];
+
+    let currentIdx = 0;
+    let recognition = null;
+    let isRecording = false;
+    let recognizedText = '';
+
+    function initRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        document.getElementById('no-support').style.display = 'block';
+        document.getElementById('mic-btn').disabled = true;
+        return;
+      }
+      recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.continuous = false;
+      recognition.interimResults = true;
+
+      recognition.onresult = (e) => {
+        const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+        document.getElementById('mic-status').textContent = '「' + transcript + '」';
+        if (e.results[0].isFinal) recognizedText = transcript;
+      };
+
+      recognition.onend = () => {
+        if (isRecording) showResult();
+      };
+
+      recognition.onerror = (e) => {
+        isRecording = false;
+        setStep(1);
+        document.getElementById('mic-btn').classList.remove('recording');
+        document.getElementById('mic-btn').textContent = '🎤';
+        document.getElementById('mic-status').textContent = 'エラーが発生しました。もう一度お試しください。';
+        document.getElementById('mic-status').classList.remove('recording');
+      };
+    }
+
+    function toggleRecording() {
+      if (!recognition) return;
+      if (isRecording) {
+        recognition.stop();
+        isRecording = false;
+      } else {
+        recognizedText = '';
+        document.getElementById('result-box').classList.remove('show');
+        document.getElementById('score-area').classList.remove('show');
+        isRecording = true;
+        setStep(2);
+        document.getElementById('mic-btn').classList.add('recording');
+        document.getElementById('mic-btn').textContent = '⏹';
+        document.getElementById('mic-status').textContent = '録音中...';
+        document.getElementById('mic-status').classList.add('recording');
+        recognition.start();
+      }
+    }
+
+    function showResult() {
+      isRecording = false;
+      document.getElementById('mic-btn').classList.remove('recording');
+      document.getElementById('mic-btn').textContent = '🎤';
+      document.getElementById('mic-status').textContent = '認識完了。内容を確認してください。';
+      document.getElementById('mic-status').classList.remove('recording');
+      setStep(3);
+      if (recognizedText) {
+        document.getElementById('result-text').textContent = recognizedText;
+        document.getElementById('result-box').classList.add('show');
+      } else {
+        document.getElementById('mic-status').textContent = '音声が認識できませんでした。もう一度試してください。';
+        setStep(1);
+      }
+    }
+
+    function retryRecording() {
+      recognizedText = '';
+      document.getElementById('result-box').classList.remove('show');
+      document.getElementById('score-area').classList.remove('show');
+      document.getElementById('mic-status').textContent = 'ボタンを押して話してください';
+      setStep(1);
+    }
+
+    function submitResult() {
+      const score = calcScore(PHRASES[currentIdx].en, recognizedText);
+      showScore(score);
+    }
+
+    function calcScore(target, spoken) {
+      if (!spoken) return 0;
+      const normalize = s => s.toLowerCase().replace(/[^a-z\s]/g, '').trim().split(/\s+/);
+      const tWords = normalize(target);
+      const sWords = normalize(spoken);
+      let matches = 0;
+      tWords.forEach(w => { if (sWords.includes(w)) matches++; });
+      return Math.round((matches / tWords.length) * 100);
+    }
+
+    function showScore(score) {
+      document.getElementById('result-box').classList.remove('show');
+      const area = document.getElementById('score-area');
+      area.classList.add('show');
+      document.getElementById('score-number').textContent = score;
+      const circumference = 314;
+      const offset = circumference - (circumference * score / 100);
+      document.getElementById('score-ring').style.strokeDashoffset = offset;
+
+      let label, sub;
+      if (score >= 90) { label = '素晴らしい！🎉'; sub = 'ほぼ完璧な発音です。ネイティブに伝わります！'; }
+      else if (score >= 70) { label = 'よくできました！'; sub = 'しっかり伝わる発音です。もう少しで完璧！'; }
+      else if (score >= 50) { label = 'もう少し！'; sub = 'コツをつかんで、もう一度挑戦してみましょう。'; }
+      else { label = '練習あるのみ！'; sub: '難しいフレーズです。ゆっくり音読から始めましょう。'; sub = 'フレーズをゆっくり音読してから、もう一度試してみましょう。'; }
+
+      document.getElementById('score-label').textContent = label;
+      document.getElementById('score-sub').textContent = sub;
+
+      const target = normalize(PHRASES[currentIdx].en);
+      const spoken = normalize(recognizedText);
+      const matchedWords = target.filter(w => spoken.includes(w));
+      document.getElementById('score-detail').innerHTML = `
+        <div class="score-detail-row"><span>お手本</span><span>${PHRASES[currentIdx].en}</span></div>
+        <div class="score-detail-row"><span>あなたの発音</span><span>${recognizedText || '—'}</span></div>
+        <div class="score-detail-row"><span>一致した単語</span><span>${matchedWords.length} / ${target.length} 語</span></div>
+      `;
+    }
+
+    function normalize(s) {
+      return s.toLowerCase().replace(/[^a-z\s]/g, '').trim().split(/\s+/);
+    }
+
+    function resetCurrent() {
+      recognizedText = '';
+      document.getElementById('result-box').classList.remove('show');
+      document.getElementById('score-area').classList.remove('show');
+      document.getElementById('mic-status').textContent = 'ボタンを押して話してください';
+      document.getElementById('mic-status').classList.remove('recording');
+      setStep(1);
+    }
+
+    function setStep(n) {
+      ['step1','step2','step3'].forEach((id, i) => {
+        const el = document.getElementById(id);
+        el.className = 'step' + (i + 1 < n ? ' done' : i + 1 === n ? ' active' : '');
+      });
+    }
+
+    function loadPhrase(idx) {
+      currentIdx = idx;
+      const p = PHRASES[idx];
+      document.getElementById('phrase-text').textContent = p.en;
+      document.getElementById('phrase-jp').textContent = p.jp;
+      document.getElementById('phrase-tip').innerHTML = '<strong>発音のコツ：</strong>' + p.tip;
+      document.getElementById('phrase-counter').textContent = 'フレーズ ' + (idx + 1) + ' / ' + PHRASES.length;
+      resetCurrent();
+    }
+
+    function prevPhrase() { loadPhrase((currentIdx - 1 + PHRASES.length) % PHRASES.length); }
+    function nextPhrase() { loadPhrase((currentIdx + 1) % PHRASES.length); }
+
+    initRecognition();
+  </script>
+</body>
+</html>

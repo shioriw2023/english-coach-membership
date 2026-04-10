@@ -16,232 +16,95 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* 左半分：写真 */
     .photo-side {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-      display: none;
+      flex: 1; position: relative; overflow: hidden; display: none;
     }
-
-    @media (min-width: 900px) {
-      .photo-side { display: block; }
-    }
+    @media (min-width: 900px) { .photo-side { display: block; } }
 
     .photo-bg {
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       background-image: url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1200&q=80');
-      background-size: cover;
-      background-position: center;
+      background-size: cover; background-position: center;
     }
-
     .photo-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        135deg,
-        rgba(10,10,15,0.72) 0%,
-        rgba(20,20,30,0.55) 100%
-      );
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(10,10,15,0.72) 0%, rgba(20,20,30,0.55) 100%);
     }
-
     .photo-content {
-      position: relative;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 48px 48px;
-      color: #fff;
+      position: relative; height: 100%; display: flex; flex-direction: column;
+      justify-content: space-between; padding: 48px; color: #fff;
     }
+    .logo { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 400; letter-spacing: 0.08em; opacity: 0.9; }
+    .photo-tagline { font-family: 'Playfair Display', serif; }
+    .photo-tagline h2 { font-size: 42px; font-weight: 400; line-height: 1.25; margin-bottom: 16px; letter-spacing: -0.01em; }
+    .photo-tagline h2 em { font-style: italic; color: #D4B896; }
+    .photo-tagline p { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 300; opacity: 0.7; letter-spacing: 0.03em; line-height: 1.7; }
+    .photo-caption { font-size: 11px; opacity: 0.4; letter-spacing: 0.1em; text-transform: uppercase; }
 
-    .logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 18px;
-      font-weight: 400;
-      letter-spacing: 0.08em;
-      opacity: 0.9;
-    }
-
-    .photo-tagline {
-      font-family: 'Playfair Display', serif;
-    }
-
-    .photo-tagline h2 {
-      font-size: 42px;
-      font-weight: 400;
-      line-height: 1.25;
-      margin-bottom: 16px;
-      letter-spacing: -0.01em;
-    }
-
-    .photo-tagline h2 em {
-      font-style: italic;
-      color: #D4B896;
-    }
-
-    .photo-tagline p {
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      font-weight: 300;
-      opacity: 0.7;
-      letter-spacing: 0.03em;
-      line-height: 1.7;
-    }
-
-    .photo-caption {
-      font-size: 11px;
-      opacity: 0.4;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-
-    /* 右半分：ログインフォーム */
     .form-side {
-      width: 100%;
-      max-width: 480px;
-      background: #0D0D12;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 60px 52px;
+      width: 100%; max-width: 480px; background: #0D0D12;
+      display: flex; flex-direction: column; justify-content: center; padding: 60px 52px;
     }
-
     @media (max-width: 899px) {
-      .form-side {
-        max-width: 100%;
-        padding: 60px 32px;
-        min-height: 100vh;
-        position: relative;
-      }
-
+      .form-side { max-width: 100%; padding: 60px 32px; min-height: 100vh; position: relative; }
       .form-side::before {
-        content: '';
-        position: absolute;
-        inset: 0;
+        content: ''; position: absolute; inset: 0;
         background-image: url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80');
-        background-size: cover;
-        background-position: center;
-        opacity: 0.15;
+        background-size: cover; background-position: center; opacity: 0.15;
       }
     }
 
     .form-inner { position: relative; }
-
-    .eyebrow {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: #D4B896;
-      display: block;
-      margin-bottom: 20px;
-    }
-
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 34px;
-      font-weight: 400;
-      line-height: 1.3;
-      color: #F5F2EE;
-      margin-bottom: 8px;
-    }
-
-    h1 em {
-      font-style: italic;
-      color: #D4B896;
-    }
-
-    .subtitle {
-      font-size: 13px;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 44px;
-      font-weight: 300;
-      letter-spacing: 0.01em;
-    }
+    .eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #D4B896; display: block; margin-bottom: 20px; }
+    h1 { font-family: 'Playfair Display', serif; font-size: 34px; font-weight: 400; line-height: 1.3; color: #F5F2EE; margin-bottom: 8px; }
+    h1 em { font-style: italic; color: #D4B896; }
+    .subtitle { font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 32px; font-weight: 300; letter-spacing: 0.01em; }
 
     .form-group { margin-bottom: 20px; }
-
-    label {
-      display: block;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.45);
-      margin-bottom: 10px;
-    }
+    label { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 10px; }
 
     input {
-      width: 100%;
-      padding: 14px 18px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 4px;
-      font-family: 'Inter', sans-serif;
-      font-size: 15px;
-      color: #F5F2EE;
-      outline: none;
-      transition: border-color 0.2s, background 0.2s;
+      width: 100%; padding: 14px 18px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 15px; color: #F5F2EE;
+      outline: none; transition: border-color 0.2s, background 0.2s;
     }
-
-    input:focus {
-      border-color: #D4B896;
-      background: rgba(255,255,255,0.09);
-    }
-
+    input:focus { border-color: #D4B896; background: rgba(255,255,255,0.09); }
     input::placeholder { color: rgba(255,255,255,0.25); }
+    input:disabled { opacity: 0.5; cursor: not-allowed; }
+    input.error { border-color: #E08080; }
 
     .btn {
-      width: 100%;
-      padding: 15px;
-      background: #D4B896;
-      color: #0D0D12;
-      border: none;
-      border-radius: 4px;
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-      margin-top: 10px;
+      width: 100%; padding: 15px; background: #D4B896; color: #0D0D12; border: none;
+      border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+      transition: background 0.2s, transform 0.1s; margin-top: 10px;
     }
-
     .btn:hover { background: #C9A882; transform: translateY(-1px); }
     .btn:active { transform: translateY(0); }
 
-    .footer-note {
-      margin-top: 32px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.25);
-      line-height: 1.7;
-      border-top: 1px solid rgba(255,255,255,0.07);
-      padding-top: 24px;
-      font-weight: 300;
-    }
+    .pw-link { display: block; text-align: center; margin-top: 18px; font-size: 12px; color: rgba(212,184,150,0.8); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; transition: opacity 0.15s; font-weight: 300; }
+    .pw-link:hover { opacity: 0.65; }
 
-    .label-tag {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      background: #D4B896;
-      color: #0D0D12;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      padding: 6px 12px;
-      border-radius: 20px;
-      z-index: 10;
-    }
+    .back-link { display: flex; align-items: center; gap: 4px; font-size: 12px; color: rgba(255,255,255,0.35); cursor: pointer; margin-bottom: 20px; transition: color 0.15s; width: fit-content; }
+    .back-link:hover { color: #D4B896; }
+
+    .hint { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 6px; line-height: 1.5; font-weight: 300; }
+    .pw-rule { font-size: 12px; color: rgba(255,255,255,0.4); background: rgba(212,184,150,0.08); border: 1px solid rgba(212,184,150,0.15); border-radius: 4px; padding: 10px 14px; margin-bottom: 20px; line-height: 1.6; font-weight: 300; }
+    .setup-success { display: none; text-align: center; padding: 14px; background: rgba(74,140,98,0.12); border: 1px solid rgba(74,140,98,0.2); border-radius: 4px; color: #6DBF8B; font-weight: 600; font-size: 13px; margin-top: 12px; }
+
+    .error-msg { font-size: 12px; color: #E08080; background: rgba(224,128,128,0.08); border: 1px solid rgba(224,128,128,0.2); border-radius: 4px; padding: 10px 14px; margin-top: 8px; line-height: 1.6; display: none; font-weight: 300; }
+    .error-msg.show { display: block; }
+
+    .form-screen { display: none; }
+    .form-screen.active { display: block; }
+
+    .label-tag { position: fixed; top: 16px; left: 16px; background: #D4B896; color: #0D0D12; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; padding: 6px 12px; border-radius: 20px; z-index: 10; }
   </style>
 </head>
 <body>
   <div class="label-tag">PATTERN B — 海外風・スタイリッシュ</div>
 
-  <!-- 左：写真 -->
   <div class="photo-side">
     <div class="photo-bg"></div>
     <div class="photo-overlay"></div>
@@ -255,27 +118,139 @@
     </div>
   </div>
 
-  <!-- 右：フォーム -->
   <div class="form-side">
     <div class="form-inner">
       <span class="eyebrow">Members Only</span>
       <h1>英語コーチング<br>受講生 <em>Portal</em></h1>
-      <p class="subtitle">メールアドレスでログインしてください</p>
 
-      <div class="form-group">
-        <label>メールアドレス</label>
-        <input type="email" placeholder="hanako@example.com">
+      <!-- STEP 1: 通常ログイン -->
+      <div class="form-screen active" id="screen-login">
+        <p class="subtitle">メールアドレスとパスワードでログインしてください</p>
+        <div class="form-group">
+          <label>メールアドレス</label>
+          <input type="email" id="login-email" placeholder="hanako@example.com">
+        </div>
+        <div class="form-group">
+          <label>パスワード</label>
+          <input type="password" id="login-password" placeholder="パスワードを入力">
+        </div>
+        <div class="error-msg" id="login-error"></div>
+        <button class="btn" onclick="doLogin()">Sign In</button>
+        <a class="pw-link" onclick="showScreen('email-check')">パスワードの設定がまだの方・パスワードを忘れた方はこちら</a>
       </div>
-      <div class="form-group">
-        <label>パスワード</label>
-        <input type="password" placeholder="パスワードを入力">
-      </div>
-      <button class="btn">Sign In</button>
 
-      <p class="footer-note">
-        初めてのログインは、コーチから届いたセットアップリンクをご利用ください
-      </p>
+      <!-- STEP 2: メールアドレス確認 -->
+      <div class="form-screen" id="screen-email-check">
+        <span class="back-link" onclick="showScreen('login')">← ログインに戻る</span>
+        <p class="subtitle">登録済みのメールアドレスを入力してください</p>
+        <div class="form-group">
+          <label>メールアドレス</label>
+          <input type="email" id="check-email" placeholder="hanako@example.com">
+          <div class="error-msg" id="email-check-error"></div>
+        </div>
+        <button class="btn" onclick="checkEmail()">次へ → パスワードを設定する</button>
+      </div>
+
+      <!-- STEP 3: パスワード設定 -->
+      <div class="form-screen" id="screen-setup">
+        <span class="back-link" onclick="showScreen('email-check')">← 戻る</span>
+        <p class="subtitle">新しいパスワードを設定してください</p>
+        <div class="form-group">
+          <label>メールアドレス</label>
+          <input type="email" id="setup-email-display" disabled>
+        </div>
+        <div class="pw-rule">🔑 パスワードは6文字以上で設定してください</div>
+        <div class="form-group">
+          <label>新しいパスワード</label>
+          <input type="password" id="setup-pw1" placeholder="6文字以上で入力">
+        </div>
+        <div class="form-group">
+          <label>パスワード（確認）</label>
+          <input type="password" id="setup-pw2" placeholder="もう一度入力してください">
+        </div>
+        <div class="error-msg" id="setup-error"></div>
+        <button class="btn" id="setup-btn" onclick="completeSetup()">Set Password & Sign In</button>
+        <div class="setup-success" id="setup-success">✓ パスワードを設定しました！マイページに移動します…</div>
+      </div>
     </div>
   </div>
+
+  <script>
+    const REGISTERED_EMAILS = [
+      'hanako@example.com',
+      'taro@example.com',
+      'yuki@example.com',
+      'kimura@example.com',
+      'sato@example.com'
+    ];
+
+    function showScreen(name) {
+      ['login', 'email-check', 'setup'].forEach(id => {
+        document.getElementById('screen-' + id).classList.toggle('active', id === name);
+      });
+      document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
+    }
+
+    function doLogin() {
+      const email = document.getElementById('login-email').value.trim();
+      const pw = document.getElementById('login-password').value;
+      const err = document.getElementById('login-error');
+      if (!email || !pw) {
+        err.textContent = 'メールアドレスとパスワードを入力してください';
+        err.classList.add('show');
+        return;
+      }
+      err.classList.remove('show');
+      alert('ログイン処理（実装時にFirebaseと接続）');
+    }
+
+    function checkEmail() {
+      const email = document.getElementById('check-email').value.trim().toLowerCase();
+      const err = document.getElementById('email-check-error');
+      if (!email) {
+        err.textContent = 'メールアドレスを入力してください';
+        err.classList.add('show');
+        return;
+      }
+      if (!REGISTERED_EMAILS.includes(email)) {
+        err.textContent = 'このメールアドレスは登録されていません。入力に誤りがないかご確認ください。';
+        err.classList.add('show');
+        document.getElementById('check-email').classList.add('error');
+        return;
+      }
+      err.classList.remove('show');
+      document.getElementById('check-email').classList.remove('error');
+      document.getElementById('setup-email-display').value = email;
+      document.getElementById('setup-pw1').value = '';
+      document.getElementById('setup-pw2').value = '';
+      document.getElementById('setup-btn').style.display = '';
+      document.getElementById('setup-success').style.display = 'none';
+      showScreen('setup');
+    }
+
+    function completeSetup() {
+      const pw1 = document.getElementById('setup-pw1').value;
+      const pw2 = document.getElementById('setup-pw2').value;
+      const err = document.getElementById('setup-error');
+      if (!pw1 || !pw2) {
+        err.textContent = 'パスワードを入力してください';
+        err.classList.add('show');
+        return;
+      }
+      if (pw1.length < 6) {
+        err.textContent = 'パスワードは6文字以上で設定してください';
+        err.classList.add('show');
+        return;
+      }
+      if (pw1 !== pw2) {
+        err.textContent = 'パスワードが一致しません。もう一度確認してください';
+        err.classList.add('show');
+        return;
+      }
+      err.classList.remove('show');
+      document.getElementById('setup-btn').style.display = 'none';
+      document.getElementById('setup-success').style.display = 'block';
+    }
+  </script>
 </body>
 </html>
