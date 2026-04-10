@@ -92,6 +92,36 @@
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
+    /* 設定タブ */
+    .settings-panel { display: flex; flex-direction: column; gap: 24px; }
+    .settings-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 28px 32px; }
+    .settings-card-title { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .settings-card-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.6; }
+    .settings-field { display: flex; flex-direction: column; gap: 5px; max-width: 400px; }
+    .settings-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+    .settings-input { padding: 11px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; outline: none; background: var(--bg); color: var(--text); transition: border-color 0.15s; font-family: inherit; }
+    .settings-input:focus { border-color: var(--accent); }
+    .settings-input:disabled { opacity: 0.55; cursor: default; background: var(--bg); }
+    .settings-form { display: flex; flex-direction: column; gap: 16px; }
+    .btn-settings-save { padding: 10px 26px; background: var(--accent); color: #fff; border: none; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s; align-self: flex-start; margin-top: 4px; }
+    .btn-settings-save:hover { background: var(--accent-hover); }
+    .settings-msg { font-size: 12px; color: #4A8C62; font-weight: 600; display: none; }
+    .settings-msg.show { display: block; }
+    .settings-err { font-size: 12px; color: #C0392B; font-weight: 500; display: none; }
+    .settings-err.show { display: block; }
+    .design-options { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 480px; }
+    .design-option { border: 2px solid var(--border); border-radius: var(--radius-lg); padding: 18px; cursor: pointer; transition: all 0.15s; }
+    .design-option:hover { border-color: var(--accent); }
+    .design-option.active { border-color: var(--accent); background: var(--accent-light); }
+    .design-option-preview { height: 60px; border-radius: 8px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; letter-spacing: 0.05em; }
+    .design-preview-a { background: linear-gradient(135deg, #FDF5F7 0%, #FAE8EE 100%); color: #D0748A; }
+    .design-preview-b { background: linear-gradient(135deg, #1A1420 0%, #2E2540 100%); color: #D4B896; }
+    .design-option-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .design-option-sub { font-size: 11px; color: var(--text-muted); margin-bottom: 14px; }
+    .btn-design-select { width: 100%; padding: 8px; background: var(--accent); color: #fff; border: none; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .design-option.active .btn-design-select { background: #4A8C62; cursor: default; pointer-events: none; }
+    .design-option.active .btn-design-select::before { content: '✓ '; }
+
     /* 発音添削 */
     .pronunciation-phrases { display: grid; gap: 12px; margin-bottom: 28px; }
     .pronunciation-phrase-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 18px 22px; display: flex; align-items: center; gap: 16px; }
@@ -374,6 +404,7 @@
       <div class="tab" onclick="switchTab('pronunciation')">発音添削</div>
       <div class="tab" onclick="switchTab('report')">成果報告</div>
       <div class="tab" onclick="switchTab('memo')">メモ</div>
+      <div class="tab" onclick="switchTab('settings')">設定</div>
     </div>
 
     <!-- 今日のタスクタブ -->
@@ -578,6 +609,75 @@
     <!-- メモタブ -->
     <div class="tab-panel" id="tab-memo">
       <p style="color:var(--text-muted);font-size:13px;padding:24px 0;">メモはまもなく追加されます。</p>
+    </div>
+
+    <!-- 設定タブ -->
+    <div class="tab-panel" id="tab-settings">
+      <div class="settings-panel">
+
+        <!-- メールアドレス変更 -->
+        <div class="settings-card">
+          <div class="settings-card-title">メールアドレスの変更</div>
+          <div class="settings-card-desc">ログインに使用するメールアドレスを変更できます。</div>
+          <div class="settings-form">
+            <div class="settings-field">
+              <div class="settings-label">現在のメールアドレス</div>
+              <input class="settings-input" type="email" id="current-email-display" disabled>
+            </div>
+            <div class="settings-field">
+              <div class="settings-label">新しいメールアドレス</div>
+              <input class="settings-input" type="email" id="new-email" placeholder="new@example.com">
+            </div>
+            <div class="settings-msg" id="email-msg">✓ メールアドレスを更新しました</div>
+            <div class="settings-err" id="email-err"></div>
+            <button class="btn-settings-save" onclick="saveEmail()">変更する</button>
+          </div>
+        </div>
+
+        <!-- パスワード変更 -->
+        <div class="settings-card">
+          <div class="settings-card-title">パスワードの変更</div>
+          <div class="settings-card-desc">6文字以上のパスワードを設定してください。</div>
+          <div class="settings-form">
+            <div class="settings-field">
+              <div class="settings-label">現在のパスワード</div>
+              <input class="settings-input" type="password" id="current-pw" placeholder="••••••">
+            </div>
+            <div class="settings-field">
+              <div class="settings-label">新しいパスワード（6文字以上）</div>
+              <input class="settings-input" type="password" id="new-pw" placeholder="••••••">
+            </div>
+            <div class="settings-field">
+              <div class="settings-label">新しいパスワード（確認）</div>
+              <input class="settings-input" type="password" id="confirm-pw" placeholder="••••••">
+            </div>
+            <div class="settings-msg" id="pw-msg">✓ パスワードを変更しました</div>
+            <div class="settings-err" id="pw-err"></div>
+            <button class="btn-settings-save" onclick="savePassword()">変更する</button>
+          </div>
+        </div>
+
+        <!-- デザイン選択 -->
+        <div class="settings-card">
+          <div class="settings-card-title">会員サイトのデザイン</div>
+          <div class="settings-card-desc">好みのデザインを選択してください。すぐに切り替わります。</div>
+          <div class="design-options">
+            <div class="design-option" id="design-opt-a">
+              <div class="design-option-preview design-preview-a">Aa</div>
+              <div class="design-option-name">Pattern A</div>
+              <div class="design-option-sub">上品・ナチュラル</div>
+              <button class="btn-design-select" onclick="selectDesign('A')">このデザインにする</button>
+            </div>
+            <div class="design-option" id="design-opt-b">
+              <div class="design-option-preview design-preview-b">Aa</div>
+              <div class="design-option-name">Pattern B</div>
+              <div class="design-option-sub">海外風・スタイリッシュ</div>
+              <button class="btn-design-select" onclick="selectDesign('B')">このデザインにする</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
 
   </div>
@@ -934,7 +1034,7 @@
     }
 
     function switchTab(name) {
-      const names = ['task','lesson','group','manual','pronunciation','report','memo'];
+      const names = ['task','lesson','group','manual','pronunciation','report','memo','settings'];
       document.querySelectorAll('.tab').forEach((t, i) => {
         t.classList.toggle('active', names[i] === name);
       });
@@ -942,7 +1042,69 @@
         p.classList.toggle('active', p.id === 'tab-' + name);
       });
       if (name === 'group') renderGruconSchedule();
+      if (name === 'settings') initSettingsTab();
     }
+
+    // ---- 設定タブ ----
+    function getUserSettings() { return JSON.parse(localStorage.getItem('user_settings') || '{}'); }
+    function saveUserSettings(s) { localStorage.setItem('user_settings', JSON.stringify(s)); }
+
+    function initSettingsTab() {
+      const s = getUserSettings();
+      const emailEl = document.getElementById('current-email-display');
+      if (emailEl) emailEl.value = s.email || 'hanako@example.com';
+      // 現在のデザインをハイライト
+      const design = localStorage.getItem('preferred_design') || 'A';
+      document.getElementById('design-opt-a').classList.toggle('active', design === 'A');
+      document.getElementById('design-opt-b').classList.toggle('active', design === 'B');
+    }
+
+    function saveEmail() {
+      const newEmail = document.getElementById('new-email').value.trim();
+      const msg = document.getElementById('email-msg');
+      const err = document.getElementById('email-err');
+      msg.classList.remove('show'); err.classList.remove('show');
+      if (!newEmail || !newEmail.includes('@')) {
+        err.textContent = '正しいメールアドレスを入力してください。';
+        err.classList.add('show'); return;
+      }
+      const s = getUserSettings();
+      s.email = newEmail;
+      saveUserSettings(s);
+      document.getElementById('current-email-display').value = newEmail;
+      document.getElementById('new-email').value = '';
+      msg.classList.add('show');
+      setTimeout(() => msg.classList.remove('show'), 3000);
+    }
+
+    function savePassword() {
+      const currentPw = document.getElementById('current-pw').value;
+      const newPw = document.getElementById('new-pw').value;
+      const confirmPw = document.getElementById('confirm-pw').value;
+      const msg = document.getElementById('pw-msg');
+      const err = document.getElementById('pw-err');
+      msg.classList.remove('show'); err.classList.remove('show');
+      if (!currentPw) { err.textContent = '現在のパスワードを入力してください。'; err.classList.add('show'); return; }
+      if (newPw.length < 6) { err.textContent = '新しいパスワードは6文字以上で入力してください。'; err.classList.add('show'); return; }
+      if (newPw !== confirmPw) { err.textContent = 'パスワードが一致しません。'; err.classList.add('show'); return; }
+      const s = getUserSettings();
+      s.hasPassword = true;
+      saveUserSettings(s);
+      ['current-pw','new-pw','confirm-pw'].forEach(id => document.getElementById(id).value = '');
+      msg.classList.add('show');
+      setTimeout(() => msg.classList.remove('show'), 3000);
+    }
+
+    function selectDesign(pattern) {
+      localStorage.setItem('preferred_design', pattern);
+      window.location.href = pattern === 'A' ? 'preview-a-dashboard.html' : 'preview-b-dashboard.html';
+    }
+
+    // ページ読み込み時：保存済みデザインが違う場合はリダイレクト
+    (function() {
+      const pref = localStorage.getItem('preferred_design');
+      if (pref === 'B') window.location.href = 'preview-b-dashboard.html';
+    })();
 
     // グルコンセッション定義（管理者ページと同じ）
     const GRUCON_SESSIONS = [
