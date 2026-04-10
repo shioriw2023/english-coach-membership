@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>シャドーイング練習 — 初級</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F4F7FF;
+      --white: #FFFFFF;
+      --text: #1A2340;
+      --text-muted: #6B7A99;
+      --accent: #3B6FE8;
+      --accent-light: #EBF0FD;
+      --accent-hover: #2A5BD4;
+      --green: #3BAE7A;
+      --green-light: #E6F7F0;
+      --red: #E05C5C;
+      --red-light: #FDECEC;
+      --border: rgba(0,0,0,0.08);
+      --radius: 8px;
+      --radius-lg: 14px;
+      --shadow: 0 4px 20px rgba(59,111,232,0.10);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans JP', 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== HEADER ===== */
+    .app-header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .header-back {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--accent); cursor: pointer;
+      background: none; border: none; font-family: inherit;
+    }
+    .header-title {
+      font-size: 14px; font-weight: 600; color: var(--text);
+    }
+    .header-badge {
+      font-size: 11px; background: var(--accent-light); color: var(--accent);
+      padding: 3px 10px; border-radius: 20px; font-weight: 500;
+    }
+
+    /* ===== SCREEN ===== */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ===== THEME SELECTION ===== */
+    .theme-wrap { max-width: 680px; margin: 0 auto; padding: 28px 16px 48px; }
+    .theme-hero { text-align: center; margin-bottom: 32px; }
+    .theme-hero-eyebrow {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 10px;
+    }
+    .theme-hero h1 {
+      font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 8px;
+    }
+    .theme-hero p { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+    .theme-note {
+      background: var(--accent-light); border-radius: var(--radius);
+      padding: 10px 14px; font-size: 12px; color: var(--accent);
+      margin-bottom: 24px; text-align: center;
+    }
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (min-width: 500px) {
+      .theme-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .theme-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 18px 14px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.18s;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .theme-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .theme-icon { font-size: 28px; margin-bottom: 8px; }
+    .theme-name { font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.5; margin-bottom: 4px; }
+    .theme-count { font-size: 11px; color: var(--text-muted); }
+    .theme-done-badge {
+      display: inline-block; font-size: 10px; background: var(--green-light);
+      color: var(--green); padding: 2px 8px; border-radius: 20px; font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* ===== PRACTICE SCREEN ===== */
+    .practice-wrap { max-width: 680px; margin: 0 auto; padding: 20px 16px 48px; }
+
+    .progress-section { margin-bottom: 20px; }
+    .progress-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 6px;
+    }
+    .progress-label { font-size: 12px; color: var(--text-muted); }
+    .progress-count { font-size: 13px; font-weight: 600; color: var(--accent); }
+    .progress-bar-bg {
+      height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; background: var(--accent); border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    /* 文カード */
+    .sentence-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 28px 24px;
+      margin-bottom: 16px;
+    }
+    .sentence-num {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      color: var(--text-muted); text-transform: uppercase; margin-bottom: 16px;
+    }
+    .sentence-en {
+      font-family: 'Inter', sans-serif;
+      font-size: 22px; font-weight: 500; color: var(--text);
+      line-height: 1.5; margin-bottom: 12px;
+      letter-spacing: 0.01em;
+    }
+    .sentence-ja {
+      font-size: 14px; color: var(--text-muted); line-height: 1.7;
+      margin-bottom: 14px; padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sentence-tip {
+      font-size: 12px; color: var(--accent);
+      display: flex; align-items: flex-start; gap: 6px; line-height: 1.6;
+    }
+    .tip-icon { flex-shrink: 0; font-size: 13px; }
+
+    /* スコア表示 */
+    .score-box {
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .score-box.show { display: block; }
+    .score-box.good { background: var(--green-light); border: 1px solid rgba(59,174,122,0.2); }
+    .score-box.ok { background: #FFF8E6; border: 1px solid rgba(230,168,0,0.2); }
+    .score-box.retry { background: var(--red-light); border: 1px solid rgba(224,92,92,0.2); }
+    .score-percent {
+      font-size: 26px; font-weight: 700; margin-bottom: 2px;
+    }
+    .score-box.good .score-percent { color: var(--green); }
+    .score-box.ok .score-percent { color: #B07800; }
+    .score-box.retry .score-percent { color: var(--red); }
+    .score-text { font-size: 12px; color: var(--text-muted); }
+    .score-heard { font-size: 12px; color: var(--text-muted); margin-top: 6px; font-style: italic; }
+
+    /* ボタン群 */
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .btn-listen {
+      padding: 13px;
+      background: var(--accent-light);
+      color: var(--accent);
+      border: 1.5px solid rgba(59,111,232,0.2);
+      border-radius: var(--radius);
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      transition: all 0.15s;
+    }
+    .btn-listen:hover { background: var(--accent); color: #fff; }
+    .btn-listen.playing { background: var(--accent); color: #fff; }
+    .btn-record {
+      padding: 13px;
+      background: var(--white);
+      color: var(--text);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      transition: all 0.15s;
+    }
+    .btn-record:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-record.recording { background: var(--red); color: #fff; border-color: var(--red); }
+
+    .nav-buttons {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .btn-prev, .btn-next {
+      padding: 13px;
+      border-radius: var(--radius);
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.15s;
+    }
+    .btn-prev {
+      background: var(--white); color: var(--text-muted);
+      border: 1.5px solid var(--border);
+    }
+    .btn-prev:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-next {
+      background: var(--accent); color: #fff; border: none;
+    }
+    .btn-next:hover { background: var(--accent-hover); }
+
+    /* Chrome注記 */
+    .chrome-note {
+      font-size: 11px; color: var(--text-muted);
+      text-align: center; padding: 8px 0;
+    }
+
+    /* ===== 完了モーダル ===== */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(26,35,64,0.55);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200;
+      display: none;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-box {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      max-width: 360px; width: 90%;
+      text-align: center;
+    }
+    .modal-emoji { font-size: 48px; margin-bottom: 12px; }
+    .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.7; }
+    .modal-score-big {
+      font-size: 48px; font-weight: 700; color: var(--accent); margin-bottom: 4px;
+    }
+    .modal-score-label { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+    .btn-modal-theme {
+      width: 100%; padding: 13px;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: var(--radius);
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; font-family: inherit; margin-bottom: 8px;
+    }
+    .btn-modal-theme:hover { background: var(--accent-hover); }
+    .btn-modal-retry {
+      width: 100%; padding: 11px;
+      background: none; color: var(--text-muted);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 13px; font-weight: 500;
+      cursor: pointer; font-family: inherit;
+    }
+    .btn-modal-retry:hover { border-color: var(--accent); color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<header class="app-header" id="app-header">
+  <button class="header-back" id="header-back-btn" onclick="goBack()" style="display:none;">← 戻る</button>
+  <div class="header-title" id="header-title">シャドーイング練習</div>
+  <span class="header-badge">初級</span>
+</header>
+
+<!-- ===== SCREEN 1: テーマ選択 ===== -->
+<div class="screen active" id="screen-theme">
+  <div class="theme-wrap">
+    <div class="theme-hero">
+      <div class="theme-hero-eyebrow">Shadowing Practice</div>
+      <h1>テーマを選んで<br>練習を始めよう</h1>
+      <p>1テーマ10文 / 1周約1〜2分<br>毎日少しずつ続けることが上達の近道です</p>
+    </div>
+    <div class="theme-note">🎙️ 録音機能はChrome（PC・Android）推奨です</div>
+    <div class="theme-grid" id="theme-grid"></div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 2: 練習画面 ===== -->
+<div class="screen" id="screen-practice">
+  <div class="practice-wrap">
+
+    <!-- 進捗 -->
+    <div class="progress-section">
+      <div class="progress-row">
+        <span class="progress-label" id="category-label">カテゴリ名</span>
+        <span class="progress-count" id="progress-count">1 / 10</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-bar" style="width:10%"></div>
+      </div>
+    </div>
+
+    <!-- 文カード -->
+    <div class="sentence-card">
+      <div class="sentence-num" id="sentence-num">No. 1</div>
+      <div class="sentence-en" id="sentence-en">Nice to meet you. My name is Hanako.</div>
+      <div class="sentence-ja" id="sentence-ja">はじめまして。花子と申します。</div>
+      <div class="sentence-tip">
+        <span class="tip-icon">💡</span>
+        <span id="sentence-tip">「Nice to」のtはほぼ聞こえない。「ナイストゥミーチュー」とつなげて発音しよう。</span>
+      </div>
+    </div>
+
+    <!-- スコア表示 -->
+    <div class="score-box" id="score-box">
+      <div class="score-percent" id="score-percent">85%</div>
+      <div class="score-text" id="score-text">よくできました！</div>
+      <div class="score-heard" id="score-heard"></div>
+    </div>
+
+    <!-- ボタン -->
+    <div class="action-buttons">
+      <button class="btn-listen" id="btn-listen" onclick="listenSentence()">
+        🔊 音声を聞く
+      </button>
+      <button class="btn-record" id="btn-record" onclick="toggleRecording()">
+        🎤 録音して確認
+      </button>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-prev" onclick="movePrev()">← 戻る</button>
+      <button class="btn-next" id="btn-next" onclick="moveNext()">次へ →</button>
+    </div>
+
+    <div class="chrome-note">🎙 録音機能はChrome推奨 / 初回はマイク許可が必要です</div>
+  </div>
+</div>
+
+<!-- 完了モーダル -->
+<div class="modal-overlay" id="complete-modal">
+  <div class="modal-box">
+    <div class="modal-emoji" id="modal-emoji">🎉</div>
+    <div class="modal-title" id="modal-title">完了！</div>
+    <div class="modal-sub" id="modal-sub">お疲れさまでした！</div>
+    <div class="modal-score-big" id="modal-score">—</div>
+    <div class="modal-score-label">平均スコア</div>
+    <button class="btn-modal-theme" onclick="backToTheme()">テーマ選択へ戻る</button>
+    <button class="btn-modal-retry" onclick="retryCategory()">もう一度このテーマを練習</button>
+  </div>
+</div>
+
+<script>
+// ==================== DATA ====================
+const CATEGORIES = [
+  {
+    id: 0,
+    name: 'あいさつ・自己紹介',
+    icon: '👋',
+    sentences: [
+      { en: "Nice to meet you. My name is Hanako.", ja: "はじめまして。花子と申します。", tip: "「Nice to」のtはほぼ聞こえない。「ナイストゥミーチュー」とつなげて発音しよう。" },
+      { en: "I'm from Tokyo, Japan.", ja: "私は日本の東京出身です。", tip: "「I'm from」はつなげて「アイムフロム」。mとfの間を切らずに続ける。" },
+      { en: "What do you do for a living?", ja: "お仕事は何をされていますか？", tip: "「What do you do」は「ワッドゥーユードゥー」と素早くつなげるのがネイティブ流。" },
+      { en: "I work as a teacher.", ja: "私は教師をしています。", tip: "「work as」はつなげて「ワーカズ」。as のaとwork のkをリンクさせて。" },
+      { en: "How long have you been here?", ja: "こちらにはどのくらいいらっしゃいますか？", tip: "「have you」は短く「ハヴュ」。hをほぼ省いてつなげると自然に聞こえる。" },
+      { en: "It's nice to see you again.", ja: "またお会いできて嬉しいです。", tip: "「It's」のtをはっきり出して「イッツ」。niceのceは「ス」より「s」に近い音。" },
+      { en: "Please call me by my first name.", ja: "ファーストネームで呼んでください。", tip: "「call me」はつなげて「コーミ」。lとmを滑らかにつなぐのがポイント。" },
+      { en: "I'm looking forward to working with you.", ja: "よろしくお願いします。（一緒に働けることを楽しみにしています）", tip: "「looking forward to」は「ルッキンフォワードゥ」とリズムよくつなげよう。" },
+      { en: "Could you tell me a little about yourself?", ja: "少し自己紹介をしていただけますか？", tip: "「Could you」は「クッジュ」と短く。tell meは「テルミ」とつなげる。" },
+      { en: "I'm happy to be here today.", ja: "今日ここに来られて嬉しいです。", tip: "「be here」はつなげて「ビヒア」。happyのyは「イ」に近い音で終わらせる。" }
+    ]
+  },
+  {
+    id: 1,
+    name: '買い物',
+    icon: '🛍️',
+    sentences: [
+      { en: "Do you have this in a different size?", ja: "これの別のサイズはありますか？", tip: "「Do you」は「ドゥーユ」と軽く。have thisは「ハヴディス」とつなげる。" },
+      { en: "How much does this cost?", ja: "これはいくらですか？", tip: "「How much」は「ハウマッチ」。muchのchは「チ」より「ッチ」気味に発音する。" },
+      { en: "Can I try this on?", ja: "試着してもいいですか？", tip: "「Can I」は「キャナイ」とつなげる。tryのrは舌を巻かず軽く添える程度。" },
+      { en: "I'll take this one, please.", ja: "これをください。", tip: "「I'll」は「アイル」。takeのtは強く出して、tがアクセントポイント。" },
+      { en: "Do you accept credit cards?", ja: "クレジットカードは使えますか？", tip: "「credit cards」はtとcをつなげて「クレディットカーズ」。最後のsを忘れずに。" },
+      { en: "Is there a discount on this?", ja: "これは割引になりますか？", tip: "「Is there」は「イズデア」とつなげる。thereのthは舌を歯の間に軽く挟んで。" },
+      { en: "Could you wrap it as a gift?", ja: "ギフト包装にしていただけますか？", tip: "「Could you」は「クッジュ」。wrap itは「ラピット」とつなげてみよう。" },
+      { en: "I'm just browsing, thank you.", ja: "見ているだけです、ありがとうございます。", tip: "「just browsing」はつなげて「ジャストブラウジング」。gは鼻から抜ける音。" },
+      { en: "Where is the fitting room?", ja: "試着室はどこですか？", tip: "「Where is」は「ウェアリズ」とつなげる。fittingのttは軽いd音（フリッピング）。" },
+      { en: "Do you have a loyalty card?", ja: "ポイントカードはありますか？", tip: "「loyalty」は3音節「ロイ・アル・ティ」。lをはっきりと発音するのがポイント。" }
+    ]
+  },
+  {
+    id: 2,
+    name: 'レストラン・カフェ',
+    icon: '☕',
+    sentences: [
+      { en: "A table for two, please.", ja: "2人用のテーブルをお願いします。", tip: "「A table」はつなげて「アテイブル」。forは軽く「フォ」と短く発音する。" },
+      { en: "Could I see the menu, please?", ja: "メニューを見せていただけますか？", tip: "「Could I」は「クッダイ」。seeとtheをつなげて「スィーザ」と流れるように。" },
+      { en: "I'd like to order the pasta.", ja: "パスタを注文したいのですが。", tip: "「I'd like to」は「アイドライクトゥ」。dをはっきり出してから続ける。" },
+      { en: "Could you recommend something?", ja: "何かおすすめはありますか？", tip: "「recommend」はre・com・mendと3音節。comの部分にアクセントを置く。" },
+      { en: "I'm allergic to shellfish.", ja: "私は貝類にアレルギーがあります。", tip: "「allergic to」はつなげて「アラージックトゥ」。lとrが連続するので注意。" },
+      { en: "Could we get the check, please?", ja: "お会計をお願いします。", tip: "「Could we」は「クッドウィ」と軽く。checkのchは「チェ」をはっきりと。" },
+      { en: "Is service included?", ja: "サービス料は含まれていますか？", tip: "「Is service」はつなげて「イズサービス」。serviceのvは上の歯を下唇に当てて。" },
+      { en: "I'll have a black coffee, please.", ja: "ブラックコーヒーをください。", tip: "「I'll have a」は「アイラヴァ」と素早くつなげる。blackのlは明るいl音で。" },
+      { en: "Could you make it to go?", ja: "テイクアウトにしていただけますか？", tip: "「make it」はつなげて「メイキット」。tがkの後でDに近い音になる（フラップT）。" },
+      { en: "This is absolutely delicious.", ja: "これは本当においしいです。", tip: "「absolutely」はab・so・lute・lyの4音節。soにアクセントを置こう。" }
+    ]
+  },
+  {
+    id: 3,
+    name: '交通・道案内',
+    icon: '🚉',
+    sentences: [
+      { en: "Excuse me, how do I get to the station?", ja: "すみません、駅へはどう行けばいいですか？", tip: "「how do I」は「ハウドゥーアイ」とつなげる。getのgは喉の奥から出す音。" },
+      { en: "Turn left at the traffic light.", ja: "信号を左に曲がってください。", tip: "「Turn left」はつなげて「タンレフト」。turnのrは舌を軽く引いて発音する。" },
+      { en: "It's about a ten-minute walk.", ja: "歩いて約10分です。", tip: "「ten-minute」はつなげて「テンミニット」。minuteの最後のeは発音しない。" },
+      { en: "Take the subway to the next stop.", ja: "地下鉄で次の駅まで行ってください。", tip: "「Take the」はつなげて「テイクザ」。subwayのsは「サ」より「スゥ」に近い。" },
+      { en: "Is this the right bus for downtown?", ja: "これはダウンタウン行きのバスですか？", tip: "「Is this the」は「イズディスザ」と流れるように。rightのghは発音しない。" },
+      { en: "How much is the taxi fare?", ja: "タクシー代はいくらですか？", tip: "「How much is」は「ハウマチズ」とつなげる。fareのrは語末で軽く巻き舌に。" },
+      { en: "Could you drop me off here?", ja: "ここで降ろしていただけますか？", tip: "「drop me off」はつなげて「ドロップミオフ」。offのfは上の歯を下唇に当てて。" },
+      { en: "I think I'm lost.", ja: "迷ってしまったようです。", tip: "「I think I'm」はつなげて「アイシンカイム」。thinkのthは舌を歯の間に。" },
+      { en: "Is it within walking distance?", ja: "歩いて行けますか？", tip: "「within walking」はつなげて「ウィジンウォーキング」。withinのthはd音に近い。" },
+      { en: "Does this train stop at Shinjuku?", ja: "この電車は新宿に止まりますか？", tip: "「Does this」は「ダズディス」とつなげる。trainのtrは「チュ」に近い音で始まる。" }
+    ]
+  },
+  {
+    id: 4,
+    name: 'ホテル・旅行',
+    icon: '🏨',
+    sentences: [
+      { en: "I have a reservation under Tanaka.", ja: "田中で予約しています。", tip: "「reservation under」はつなげて「レザヴェイションアンダー」。nの前でrをはっきり。" },
+      { en: "Could I have a room with a view?", ja: "眺めの良い部屋にできますか？", tip: "「Could I have a」は「クッダイハヴァ」と素早く。viewのvは摩擦音をしっかりと。" },
+      { en: "What time is check-out?", ja: "チェックアウトは何時ですか？", tip: "「What time is」は「ワッタイミズ」とつなげる。checkのchは「チェ」をはっきりと。" },
+      { en: "Could you call a taxi for me?", ja: "タクシーを呼んでいただけますか？", tip: "「call a taxi」はつなげて「コーラタクシ」。aがtaxiの前でリエゾンする。" },
+      { en: "Is breakfast included?", ja: "朝食は含まれていますか？", tip: "「Is breakfast」はつなげて「イズブレックファスト」。fastのtは軽く添える程度。" },
+      { en: "I'd like to extend my stay.", ja: "滞在を延長したいのですが。", tip: "「I'd like to」は「アイドライクトゥ」。extendのxは「クス」と2音で発音する。" },
+      { en: "Could you recommend a local restaurant?", ja: "地元のレストランをご紹介いただけますか？", tip: "「Could you recommend」は「クッジュレコメンド」。recommendのcomにアクセント。" },
+      { en: "Where can I exchange money?", ja: "どこで両替できますか？", tip: "「Where can I」は「ウェアキャナイ」とつなげる。exchangeのxは「クス」と発音。" },
+      { en: "Is there a gym in the hotel?", ja: "ホテルにジムはありますか？", tip: "「Is there a」は「イズデアラ」とつなげる。gymのgはジャッと喉から出す音。" },
+      { en: "I've lost my key card.", ja: "キーカードをなくしてしまいました。", tip: "「I've」は「アイヴ」とvをはっきり出す。lost myはつなげて「ロストゥマイ」。" }
+    ]
+  },
+  {
+    id: 5,
+    name: '仕事・職場',
+    icon: '💼',
+    sentences: [
+      { en: "I have a meeting at three o'clock.", ja: "3時に会議があります。", tip: "「a meeting at」はつなげて「アミーリンアット」。meetingのtはd音に近い（フラップT）。" },
+      { en: "Could you send me the report?", ja: "報告書を送っていただけますか？", tip: "「send me the」はつなげて「センドゥミザ」。reportのreはしっかりrから始める。" },
+      { en: "The deadline is this Friday.", ja: "締め切りは今週金曜日です。", tip: "「deadline is」はつなげて「デッドラインイズ」。deadlineのdを2つ忘れずに。" },
+      { en: "I'll follow up with you by email.", ja: "メールでフォローアップします。", tip: "「follow up with」はつなげて「フォロウアップウィズ」。withのthはd音で。" },
+      { en: "Could we reschedule our meeting?", ja: "会議の日程を変更できますか？", tip: "「reschedule」はre・sched・uleの3音節。schedのchは「ス」ではなく「スケ」。" },
+      { en: "I'm working on the proposal now.", ja: "今提案書に取り組んでいます。", tip: "「working on the」はつなげて「ワーキンオンザ」。proposalのpoにアクセント。" },
+      { en: "Let me check my calendar.", ja: "カレンダーを確認します。", tip: "「Let me」は「レッミ」と素早く。calendarはcal・en・darの3音節で。" },
+      { en: "I'll get back to you on that.", ja: "その件についてご連絡します。", tip: "「get back to you」はつなげて「ゲットバックトゥーユ」。getのtはflapt T。" },
+      { en: "Could you give me some feedback?", ja: "フィードバックをいただけますか？", tip: "「give me some」はつなげて「ギヴミサム」。feedbackはfeedにアクセント。" },
+      { en: "I appreciate your hard work.", ja: "ご尽力に感謝します。", tip: "「appreciate」はa・pre・ci・ateの4音節。preにアクセントを置こう。" }
+    ]
+  },
+  {
+    id: 6,
+    name: '健康・病院',
+    icon: '🏥',
+    sentences: [
+      { en: "I'm not feeling well today.", ja: "今日は体調が優れません。", tip: "「not feeling」はつなげて「ノットフィーリング」。feelingのlをはっきりと。" },
+      { en: "I have a headache and a fever.", ja: "頭痛と熱があります。", tip: "「headache and a」はつなげて「ヘデイクアンダ」。headのdとandをリンク。" },
+      { en: "Could I see a doctor today?", ja: "今日医師に診てもらえますか？", tip: "「Could I see a」は「クッダイスィーア」とつなげる。doctorのtはd音で。" },
+      { en: "I've been feeling tired lately.", ja: "最近疲れを感じています。", tip: "「I've been」は「アイヴビン」とつなげる。tiredのtiredはtai・erdの2音節。" },
+      { en: "How often should I take this medicine?", ja: "この薬はどのくらい飲めばいいですか？", tip: "「How often」は「ハウオフン」とつなげる。oftenのtは発音しないことが多い。" },
+      { en: "I have a prescription to fill.", ja: "処方箋があります。", tip: "「prescription」はpre・scrip・tionの3音節。scripにアクセントを置こう。" },
+      { en: "Where is the nearest pharmacy?", ja: "一番近い薬局はどこですか？", tip: "「Where is the」は「ウェアリズザ」とつなげる。pharmacyのphはf音で発音。" },
+      { en: "I'm allergic to penicillin.", ja: "私はペニシリンにアレルギーがあります。", tip: "「allergic to」はつなげて「アラージクトゥ」。penicillinのciは「シ」。" },
+      { en: "I need to make an appointment.", ja: "予約を取りたいのですが。", tip: "「make an appointment」はつなげて「メイカナポイントゥメント」。" },
+      { en: "I've had this pain for three days.", ja: "この痛みは3日続いています。", tip: "「I've had this」は「アイヴハッディス」。hadのdとthisのthをリンクさせる。" }
+    ]
+  },
+  {
+    id: 7,
+    name: '天気・季節の雑談',
+    icon: '🌸',
+    sentences: [
+      { en: "It's a beautiful day today, isn't it?", ja: "今日はいいお天気ですね。", tip: "「isn't it」は「イズントイット」と素早く。付加疑問文は語尾を下げて。" },
+      { en: "I heard it's going to rain tomorrow.", ja: "明日は雨が降るそうですね。", tip: "「going to」は会話では「ゴナ」と短く。rainのrをしっかりと巻き舌で。" },
+      { en: "The cherry blossoms are lovely this year.", ja: "今年の桜はきれいですね。", tip: "「cherry blossoms」はつなげて「チェリブロッサムズ」。blossomsのzに注意。" },
+      { en: "It's been really hot lately, hasn't it?", ja: "最近本当に暑いですね。", tip: "「It's been really」はつなげて「イツビンリアリ」。hotにアクセントを。" },
+      { en: "I love this time of year.", ja: "私はこの季節が大好きです。", tip: "「love this time」はつなげて「ラヴディスタイム」。loveのvをはっきり出す。" },
+      { en: "The weather forecast says it'll clear up.", ja: "天気予報では晴れるそうです。", tip: "「it'll」は「イットル」と素早く。clear upのrとuをつなげて「クリアラップ」。" },
+      { en: "I prefer cooler weather.", ja: "私は涼しい天気の方が好きです。", tip: "「prefer」はpre・ferの2音節。ferにアクセントを置いて、rをしっかりと。" },
+      { en: "It's been raining all week.", ja: "一週間ずっと雨が続いています。", tip: "「It's been raining」はつなげて「イツビンレイニング」。rainingのrから始める。" },
+      { en: "The autumn leaves are beautiful.", ja: "紅葉がきれいです。", tip: "「autumn leaves」はつなげて「オータムリーヴズ」。leavesの語末sはz音。" },
+      { en: "Spring is just around the corner.", ja: "もうすぐ春ですね。", tip: "「around the corner」はつなげて「アラウンドザコーナー」。just は軽く。" }
+    ]
+  },
+  {
+    id: 8,
+    name: '趣味・週末の話',
+    icon: '🎨',
+    sentences: [
+      { en: "What do you like to do on weekends?", ja: "週末は何をするのが好きですか？", tip: "「What do you like to」は「ワッドゥーユライクトゥ」と素早くつなげる。" },
+      { en: "I enjoy hiking and being outdoors.", ja: "私はハイキングや外出が好きです。", tip: "「hiking and」はつなげて「ハイキングアンド」。outdoorsのtはd音（フラップT）。" },
+      { en: "Have you seen any good movies lately?", ja: "最近いい映画を見ましたか？", tip: "「Have you seen」は「ハヴュスィン」と素早く。anyはエニーと明るく。" },
+      { en: "I started learning how to cook.", ja: "料理を習い始めました。", tip: "「started learning」はつなげて「スターテッドラーニング」。cookのkをはっきりと。" },
+      { en: "Do you have any hobbies?", ja: "趣味は何ですか？", tip: "「Do you have any」は「ドゥーユハヴエニ」とつなげる。hobbiesのhはしっかりと。" },
+      { en: "I went to a concert last weekend.", ja: "先週末コンサートに行きました。", tip: "「went to a」は「ウェントゥア」とつなげる。concertのconにアクセント。" },
+      { en: "I'm really into yoga these days.", ja: "最近ヨガにはまっています。", tip: "「really into」はつなげて「リアリーインタ」。yogaのyはjではなくyで始める。" },
+      { en: "I usually spend Sundays at home.", ja: "日曜日はたいてい家で過ごします。", tip: "「spend Sundays」はつなげて「スペンドサンデイズ」。usuallyのuは「ユージュアリ」。" },
+      { en: "I'm trying to read more books.", ja: "もっと本を読もうとしています。", tip: "「trying to」は会話で「トライナ」と短くなることが多い。" },
+      { en: "I love traveling to new places.", ja: "新しい場所への旅が大好きです。", tip: "「traveling to new」はつなげて「トラヴリングトゥニュー」。vをはっきりと。" }
+    ]
+  },
+  {
+    id: 9,
+    name: '電話・オンライン会議',
+    icon: '💻',
+    sentences: [
+      { en: "Could I speak to Mr. Smith, please?", ja: "スミスさんをお願いできますか？", tip: "「Could I speak to」は「クッダイスピークトゥ」とつなげる。Mrは「ミスター」と省略なし。" },
+      { en: "I'll put you on hold for a moment.", ja: "少々お待ちください。", tip: "「put you on hold」はつなげて「プッチュオンホールド」。putのtはd音で。" },
+      { en: "Could you speak up a little, please?", ja: "もう少し大きな声で話していただけますか？", tip: "「speak up a little」はつなげて「スピークアパリトル」。upのpをはっきりと。" },
+      { en: "I'm afraid the line is a bit unclear.", ja: "少し聞き取りにくいです。", tip: "「I'm afraid」は「アイムアフレイド」。afraidのaはあいまい母音。" },
+      { en: "Can everyone hear me all right?", ja: "皆さんに聞こえていますか？", tip: "「Can everyone」はつなげて「キャンエヴリワン」。all rightは「オールライト」。" },
+      { en: "You're breaking up a little.", ja: "少し音声が途切れています。", tip: "「You're breaking up」はつなげて「ユアブレイキンアップ」。breakingのgは鼻音。" },
+      { en: "Could you mute yourself when not speaking?", ja: "話していない時はミュートにしていただけますか？", tip: "「Could you mute yourself」は「クッジュミュートユアセルフ」。muteのmをはっきりと。" },
+      { en: "Let me share my screen.", ja: "画面を共有します。", tip: "「Let me share」は「レッミシェア」とつなげる。screenのscは「スク」と2音で。" },
+      { en: "I'll send you the meeting link.", ja: "会議のリンクを送ります。", tip: "「send you the」はつなげて「センジュザ」。meetingのtはd音（フラップT）。" },
+      { en: "Thank you for joining today's call.", ja: "今日のコールにご参加いただきありがとうございます。", tip: "「Thank you for joining」はつなげて「サンキューフォジョイニング」。" }
+    ]
+  }
+];
+
+// ==================== STATE ====================
+let currentCat = 0;
+let currentIdx = 0;
+let scores = {}; // { catId: [score, score, ...] }
+let catDone = {}; // { catId: true }
+let recognition = null;
+let isRecording = false;
+let synth = window.speechSynthesis;
+
+// ==================== INIT ====================
+function init() {
+  renderThemeGrid();
+}
+
+function renderThemeGrid() {
+  const grid = document.getElementById('theme-grid');
+  grid.innerHTML = CATEGORIES.map(cat => {
+    const done = catDone[cat.id];
+    const avgScore = scores[cat.id] && scores[cat.id].length === 10
+      ? Math.round(scores[cat.id].reduce((a, b) => a + b, 0) / 10)
+      : null;
+    return `
+      <div class="theme-card" onclick="startCategory(${cat.id})">
+        <div class="theme-icon">${cat.icon}</div>
+        <div class="theme-name">${cat.name}</div>
+        <div class="theme-count">10文</div>
+        ${done ? `<div class="theme-done-badge">✓ 完了 ${avgScore !== null ? avgScore + '%' : ''}</div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+function startCategory(catId) {
+  currentCat = catId;
+  currentIdx = 0;
+  showScreen('practice');
+  document.getElementById('header-back-btn').style.display = 'flex';
+  renderSentence();
+}
+
+function goBack() {
+  if (isRecording) stopRecording();
+  if (synth.speaking) synth.cancel();
+  showScreen('theme');
+  document.getElementById('header-back-btn').style.display = 'none';
+  renderThemeGrid();
+}
+
+function backToTheme() {
+  document.getElementById('complete-modal').classList.remove('show');
+  goBack();
+}
+
+function retryCategory() {
+  document.getElementById('complete-modal').classList.remove('show');
+  currentIdx = 0;
+  delete scores[currentCat];
+  document.getElementById('score-box').classList.remove('show');
+  renderSentence();
+}
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+}
+
+// ==================== SENTENCE RENDER ====================
+function renderSentence() {
+  const cat = CATEGORIES[currentCat];
+  const s = cat.sentences[currentIdx];
+  const total = cat.sentences.length;
+
+  document.getElementById('category-label').textContent = cat.icon + ' ' + cat.name;
+  document.getElementById('progress-count').textContent = (currentIdx + 1) + ' / ' + total;
+  document.getElementById('progress-bar').style.width = ((currentIdx + 1) / total * 100) + '%';
+  document.getElementById('sentence-num').textContent = 'No. ' + (currentCat * 10 + currentIdx + 1);
+  document.getElementById('sentence-en').textContent = s.en;
+  document.getElementById('sentence-ja').textContent = s.ja;
+  document.getElementById('sentence-tip').textContent = s.tip;
+
+  // スコアリセット
+  document.getElementById('score-box').classList.remove('show');
+  document.getElementById('btn-listen').classList.remove('playing');
+  document.getElementById('btn-record').classList.remove('recording');
+
+  // 最後の文
+  const isLast = currentIdx === total - 1;
+  document.getElementById('btn-next').textContent = isLast ? '完了 ✓' : '次へ →';
+
+  // 戻るボタン
+  document.querySelector('.btn-prev').disabled = currentIdx === 0;
+  document.querySelector('.btn-prev').style.opacity = currentIdx === 0 ? '0.4' : '1';
+}
+
+// ==================== SPEECH SYNTHESIS ====================
+function listenSentence() {
+  if (synth.speaking) {
+    synth.cancel();
+    document.getElementById('btn-listen').classList.remove('playing');
+    return;
+  }
+  const text = CATEGORIES[currentCat].sentences[currentIdx].en;
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'en-US';
+  utter.rate = 0.8;
+  utter.pitch = 1;
+
+  // 英語音声を優先して選択
+  const voices = synth.getVoices();
+  const enVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Female'))
+    || voices.find(v => v.lang.startsWith('en-US'))
+    || voices.find(v => v.lang.startsWith('en'));
+  if (enVoice) utter.voice = enVoice;
+
+  utter.onstart = () => document.getElementById('btn-listen').classList.add('playing');
+  utter.onend = () => document.getElementById('btn-listen').classList.remove('playing');
+  utter.onerror = () => document.getElementById('btn-listen').classList.remove('playing');
+  synth.speak(utter);
+}
+
+// 音声リスト読み込み待ち
+if (synth.onvoiceschanged !== undefined) {
+  synth.onvoiceschanged = () => {};
+}
+
+// ==================== SPEECH RECOGNITION ====================
+function toggleRecording() {
+  if (isRecording) {
+    stopRecording();
+  } else {
+    startRecording();
+  }
+}
+
+function startRecording() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert('お使いのブラウザは録音機能に対応していません。\nChromeをお使いください。');
+    return;
+  }
+
+  recognition = new SpeechRecognition();
+  recognition.lang = 'en-US';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onstart = () => {
+    isRecording = true;
+    document.getElementById('btn-record').classList.add('recording');
+    document.getElementById('btn-record').textContent = '⏹ 停止';
+  };
+
+  recognition.onresult = (e) => {
+    const heard = e.results[0][0].transcript;
+    const expected = CATEGORIES[currentCat].sentences[currentIdx].en;
+    const score = calcScore(heard, expected);
+    showScore(score, heard);
+    saveScore(score);
+  };
+
+  recognition.onerror = (e) => {
+    isRecording = false;
+    document.getElementById('btn-record').classList.remove('recording');
+    document.getElementById('btn-record').innerHTML = '🎤 録音して確認';
+    if (e.error === 'no-speech') {
+      alert('音声が検出されませんでした。もう一度試してください。');
+    }
+  };
+
+  recognition.onend = () => {
+    isRecording = false;
+    document.getElementById('btn-record').classList.remove('recording');
+    document.getElementById('btn-record').innerHTML = '🎤 録音して確認';
+  };
+
+  recognition.start();
+}
+
+function stopRecording() {
+  if (recognition) recognition.stop();
+}
+
+// ==================== SCORE ====================
+function calcScore(heard, expected) {
+  const normalize = s => s.toLowerCase().replace(/[^a-z\s]/g, '').trim().split(/\s+/);
+  const heardWords = normalize(heard);
+  const expWords = normalize(expected);
+  let match = 0;
+  expWords.forEach(w => {
+    if (heardWords.includes(w)) match++;
+  });
+  return Math.round((match / expWords.length) * 100);
+}
+
+function showScore(score, heard) {
+  const box = document.getElementById('score-box');
+  box.classList.remove('good', 'ok', 'retry', 'show');
+
+  let emoji, msg, cls;
+  if (score >= 80)      { cls = 'good';  emoji = '🎉'; msg = 'すばらしい！完璧に近いです！'; }
+  else if (score >= 55) { cls = 'ok';    emoji = '👍'; msg = 'もう少し！もう一度試してみよう。'; }
+  else                  { cls = 'retry'; emoji = '💪'; msg = '練習あるのみ！繰り返して慣れよう。'; }
+
+  box.classList.add(cls, 'show');
+  document.getElementById('score-percent').textContent = score + '%';
+  document.getElementById('score-text').textContent = emoji + ' ' + msg;
+  document.getElementById('score-heard').textContent = '認識した音声：「' + heard + '」';
+}
+
+function saveScore(score) {
+  if (!scores[currentCat]) scores[currentCat] = [];
+  // 1文につき最高スコアを保持
+  if (scores[currentCat][currentIdx] === undefined || score > scores[currentCat][currentIdx]) {
+    scores[currentCat][currentIdx] = score;
+  }
+}
+
+// ==================== NAVIGATION ====================
+function movePrev() {
+  if (currentIdx > 0) {
+    currentIdx--;
+    renderSentence();
+  }
+}
+
+function moveNext() {
+  const cat = CATEGORIES[currentCat];
+  const isLast = currentIdx === cat.sentences.length - 1;
+
+  if (isLast) {
+    showCompleteModal();
+  } else {
+    currentIdx++;
+    renderSentence();
+  }
+}
+
+function showCompleteModal() {
+  catDone[currentCat] = true;
+  const catScores = scores[currentCat] || [];
+  const avg = catScores.length > 0
+    ? Math.round(catScores.reduce((a, b) => a + (b || 0), 0) / cat.sentences.length)
+    : null;
+  const cat = CATEGORIES[currentCat];
+
+  let emoji = '🎉', title = '完了！', sub;
+  if (avg !== null && avg >= 80)      { emoji = '🏆'; title = '完璧です！'; sub = `「${cat.name}」を高得点でクリアしました！`; }
+  else if (avg !== null && avg >= 55) { emoji = '🎉'; title = '完了！'; sub = `「${cat.name}」お疲れさまでした！\n繰り返して精度を上げましょう。`; }
+  else                                { emoji = '💪'; title = '完了！'; sub = `「${cat.name}」お疲れさまでした！\n毎日の練習が上達への近道です。`; }
+
+  document.getElementById('modal-emoji').textContent = emoji;
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-sub').textContent = sub;
+  document.getElementById('modal-score').textContent = avg !== null ? avg + '%' : '—';
+  document.getElementById('complete-modal').classList.add('show');
+}
+
+init();
+</script>
+</body>
+</html>
