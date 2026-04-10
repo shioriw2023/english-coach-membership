@@ -514,11 +514,11 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
           <div>
             <label style="display:block;font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">期間（開始）</label>
-            <input type="date" value="2026-04-01" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;color:var(--text);background:var(--surface2);outline:none;">
+            <input type="date" id="report-date-start" value="2026-04-01" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;color:var(--text);background:var(--surface2);outline:none;">
           </div>
           <div>
             <label style="display:block;font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">期間（終了）</label>
-            <input type="date" value="2026-04-09" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;color:var(--text);background:var(--surface2);outline:none;">
+            <input type="date" id="report-date-end" value="2026-04-09" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;color:var(--text);background:var(--surface2);outline:none;">
           </div>
         </div>
         <div style="margin-bottom:18px;">
@@ -1036,8 +1036,38 @@
     renderGruconSchedule();
 
     function submitBReport() {
-      document.getElementById('b-submit-btn').style.display = 'none';
-      document.getElementById('b-submit-success').style.display = 'block';
+      const dateStart = document.getElementById('report-date-start').value;
+      const dateEnd   = document.getElementById('report-date-end').value;
+      const effort    = document.getElementById('report-effort').value.trim();
+      const result    = document.getElementById('report-result').value.trim();
+      const goal      = document.getElementById('report-goal').value.trim();
+      const s = getUserSettings();
+      const email = s.email || '';
+
+      if (!effort || !result || !goal) { alert('すべての項目を入力してください。'); return; }
+      if (!email) { alert('設定タブでメールアドレスを登録してください。'); return; }
+
+      const btn = document.getElementById('b-submit-btn');
+      btn.disabled = true;
+      btn.textContent = '送信中...';
+
+      db.collection('students').doc(email).get().then(doc => {
+        const name = doc.exists ? doc.data().name : email;
+        const course = doc.exists ? doc.data().course : '';
+        return db.collection('reports').add({
+          name, email, course,
+          dateStart, dateEnd, effort, result, goal,
+          submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }).then(() => {
+        btn.style.display = 'none';
+        document.getElementById('b-submit-success').style.display = 'block';
+        loadPastReports();
+      }).catch(err => {
+        btn.disabled = false;
+        btn.textContent = 'Submit Report';
+        alert('送信に失敗しました: ' + err.message);
+      });
     }
   </script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -1053,6 +1083,32 @@
     };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+
+    function loadPastReports() {
+      const s = getUserSettings();
+      const email = s.email || '';
+      if (!email) return;
+      const container = document.querySelector('.past-reports');
+      if (!container) return;
+      db.collection('reports').where('email', '==', email)
+        .orderBy('submittedAt', 'desc').limit(10).get()
+        .then(snap => {
+          if (snap.empty) return;
+          const items = snap.docs.map(doc => {
+            const d = doc.data();
+            const sub = d.submittedAt ? d.submittedAt.toDate().toLocaleDateString('ja-JP') : '';
+            return `<div class="past-report-item">
+              <div class="past-report-head">
+                <span class="past-report-period">${d.dateStart} 〜 ${d.dateEnd}</span>
+                <span class="past-report-date">提出日：${sub}</span>
+              </div>
+              <div class="past-report-body">${d.effort}</div>
+            </div>`;
+          });
+          container.innerHTML = items.join('');
+        }).catch(() => {});
+    }
+    loadPastReports();
   </script>
 </body>
 </html>

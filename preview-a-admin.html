@@ -428,7 +428,18 @@
       const course = document.getElementById('add-course').value;
       if (!name || !email || !course) { alert('すべての項目を入力してください'); return; }
 
-      // テーブルに行を追加
+      // Firestoreに保存
+      db.collection('students').doc(email).set({ name, email, course, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
+        .then(() => {
+          addStudentRow(name, email, course);
+          document.querySelector('.modal-footer').style.display = 'none';
+          document.getElementById('add-success').style.display = 'block';
+          setTimeout(() => document.getElementById('add-modal').classList.remove('open'), 2000);
+        })
+        .catch(err => alert('保存に失敗しました: ' + err.message));
+    }
+
+    function addStudentRow(name, email, course) {
       const tbody = document.querySelector('table tbody');
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -437,35 +448,37 @@
         <td>${email}</td>
         <td><span class="badge badge-pending">未設定</span></td>
         <td style="display:flex;gap:10px;align-items:center;">
-          <button class="btn-sm" style="background:transparent;color:var(--accent);padding:4px 0;">編集</button>
           <a href="preview-a-dashboard.html" target="_blank" class="btn-preview">👁️ ページを見る</a>
         </td>`;
       tbody.appendChild(tr);
 
-      // 受講生数の更新
       const count = tbody.querySelectorAll('tr').length;
-      const pendingRows = tbody.querySelectorAll('tr:has(.badge-pending)');
       document.getElementById('stat-total').textContent = count;
-      document.getElementById('stat-pending').textContent = pendingRows.length;
-      const pendingNames = Array.from(pendingRows).map(r => '· ' + r.cells[0].textContent);
-      document.getElementById('stat-pending-names').textContent = pendingNames.join('\n');
 
-      // レッスン管理のチップにも追加
-      const chipId = 'new_' + Date.now();
-      const chip = document.createElement('div');
-      chip.className = 'student-chip';
-      chip.setAttribute('onclick', `selectStudent('${chipId}')`);
-      chip.innerHTML = `${name} <span style="font-size:10px;opacity:0.6;">${course}</span>`;
-      STUDENTS[chipId] = {
-        name, course,
-        today: [],
-        overall: { lessons:{done:0,total:20}, group:{done:0,total:8}, tasks:{done:0,total:60}, reports:0, streak:0 }
-      };
-      document.querySelector('.student-selector').appendChild(chip);
+      const chipId = 'student_' + email;
+      if (!document.querySelector(`[data-chip="${chipId}"]`)) {
+        const chip = document.createElement('div');
+        chip.className = 'student-chip';
+        chip.setAttribute('data-chip', chipId);
+        chip.setAttribute('onclick', `selectStudent('${chipId}')`);
+        chip.innerHTML = `${name} <span style="font-size:10px;opacity:0.6;">${course}</span>`;
+        STUDENTS[chipId] = {
+          name, course,
+          today: [],
+          overall: { lessons:{done:0,total:20}, group:{done:0,total:8}, tasks:{done:0,total:60}, reports:0, streak:0 }
+        };
+        document.querySelector('.student-selector').appendChild(chip);
+      }
+    }
 
-      document.querySelector('.modal-footer').style.display = 'none';
-      document.getElementById('add-success').style.display = 'block';
-      setTimeout(() => document.getElementById('add-modal').classList.remove('open'), 2000);
+    function loadStudents() {
+      db.collection('students').orderBy('createdAt').get().then(snap => {
+        document.querySelector('table tbody').innerHTML = '';
+        snap.forEach(doc => {
+          const { name, email, course } = doc.data();
+          addStudentRow(name, email, course);
+        });
+      }).catch(() => {});
     }
 
     const STUDENTS = {};
@@ -723,6 +736,7 @@
     };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    loadStudents();
     loadReports();
   </script>
 </body>

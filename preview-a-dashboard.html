@@ -1159,10 +1159,14 @@
       const result    = document.getElementById('report-result').value.trim();
       const goal      = document.getElementById('report-goal').value.trim();
       const s = getUserSettings();
-      const name = s.name || '田中 花子';
+      const email = s.email || '';
 
       if (!effort || !result || !goal) {
         alert('すべての項目を入力してください。');
+        return;
+      }
+      if (!email) {
+        alert('設定タブでメールアドレスを登録してください。');
         return;
       }
 
@@ -1170,14 +1174,15 @@
       btn.disabled = true;
       btn.textContent = '送信中...';
 
-      db.collection('reports').add({
-        name,
-        dateStart,
-        dateEnd,
-        effort,
-        result,
-        goal,
-        submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+      // 管理者が登録した名前をFirestoreから取得
+      db.collection('students').doc(email).get().then(doc => {
+        const name = doc.exists ? doc.data().name : email;
+        const course = doc.exists ? doc.data().course : '';
+        return db.collection('reports').add({
+          name, email, course,
+          dateStart, dateEnd, effort, result, goal,
+          submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
       }).then(() => {
         btn.style.display = 'none';
         document.getElementById('submit-success').style.display = 'block';
@@ -1191,14 +1196,12 @@
 
     function loadPastReports() {
       const s = getUserSettings();
-      const name = s.name || '田中 花子';
+      const email = s.email || '';
+      if (!email) return;
       const container = document.querySelector('.past-reports');
       if (!container) return;
-      db.collection('reports')
-        .where('name', '==', name)
-        .orderBy('submittedAt', 'desc')
-        .limit(10)
-        .get()
+      db.collection('reports').where('email', '==', email)
+        .orderBy('submittedAt', 'desc').limit(10).get()
         .then(snap => {
           if (snap.empty) return;
           const items = snap.docs.map(doc => {
