@@ -244,6 +244,8 @@
     }
     .task-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(208,116,138,0.12); }
     .task-card.done { border-color: rgba(74,140,98,0.3); background: #F4FAF6; opacity: 0.75; }
+    .task-card.unselected { opacity: 0.45; border-style: dashed; }
+    .task-card.unselected:hover { border-color: var(--accent); opacity: 0.7; box-shadow: none; }
     .task-card-inner { cursor: pointer; }
     .task-card-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
     .task-card.done .task-card-tag { color: #4A8C62; }
@@ -255,6 +257,10 @@
     .btn-complete { padding: 6px 14px; background: var(--accent); color: #fff; border: none; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
     .btn-complete:hover { background: var(--accent-hover); }
     .task-card.done .btn-complete { background: #4A8C62; cursor: default; }
+    .btn-select { padding: 6px 13px; background: var(--accent-light); border: 1.5px solid rgba(208,116,138,0.3); border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; color: var(--accent); transition: all 0.15s; }
+    .btn-select:hover { background: var(--accent); color: #fff; }
+    .btn-select.skip { background: transparent; border-color: var(--border); color: var(--text-muted); font-size: 10px; }
+    .btn-select.skip:hover { border-color: var(--accent); color: var(--accent); }
     .btn-undo { padding: 5px 11px; background: transparent; color: var(--text-muted); border: 1.5px solid var(--border); border-radius: 20px; font-size: 10px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
     .btn-undo:hover { border-color: var(--accent); color: var(--accent); }
     .btn-delete-custom { padding: 5px 9px; background: transparent; color: var(--text-muted); border: 1.5px solid var(--border); border-radius: 20px; font-size: 10px; cursor: pointer; transition: all 0.15s; }
@@ -626,6 +632,36 @@
     function findTask(id) { return TASKS.find(t => t.id === id) || CUSTOM_TASKS.find(t => t.id === id) || null; }
     function getNextCustomId() { return CUSTOM_TASKS.length === 0 ? 9001 : Math.max(...CUSTOM_TASKS.map(t => t.id)) + 1; }
 
+    // タスク選択（やる/やらない）
+    let suggestedTaskIds = [];
+    let todaySelections = new Set(JSON.parse(localStorage.getItem('task_sel_' + TODAY) || '[]'));
+    function saveTodaySelections() { localStorage.setItem('task_sel_' + TODAY, JSON.stringify([...todaySelections])); }
+    function isSelectedForToday(id) { return todaySelections.has(id); }
+    function toggleSelection(id, event) {
+      event.stopPropagation();
+      if (todaySelections.has(id)) {
+        todaySelections.delete(id);
+      } else {
+        todaySelections.add(id);
+        assignTasks([id]);
+      }
+      saveTodaySelections();
+      // カードだけ再描画（選択状態リセットせず）
+      const filteredTasks = suggestedTaskIds.map(i => findTask(i)).filter(Boolean);
+      document.getElementById('suggested-tasks').innerHTML = filteredTasks.map(t => taskCardHTML(t, TODAY)).join('');
+      updateSummary();
+      updateProgressDisplay();
+    }
+    function updateSummary() {
+      const log = getTaskLog();
+      const todayLog = log[TODAY] || { assigned: [], completed: [] };
+      const activeIds = suggestedTaskIds.filter(id => todaySelections.has(id));
+      const doneCount = todayLog.completed.filter(id => activeIds.includes(id)).length;
+      const summary = document.getElementById('task-done-summary');
+      summary.style.display = doneCount > 0 ? 'block' : 'none';
+      if (doneCount > 0) summary.textContent = `✓ 今日の完了タスク：${doneCount} / ${activeIds.length} 個`;
+    }
+
     function isCompleted(id, date) {
       const log = getTaskLog();
       return (log[date] && log[date].completed && log[date].completed.includes(id));
@@ -649,8 +685,11 @@
       event.stopPropagation();
       if (isCompleted(id, date)) return;
       markComplete(id, date);
-      renderTasks();
+      // カードだけ再描画
+      const filteredTasks = suggestedTaskIds.map(i => findTask(i)).filter(Boolean);
+      if (filteredTasks.length > 0) document.getElementById('suggested-tasks').innerHTML = filteredTasks.map(t => taskCardHTML(t, TODAY)).join('');
       renderCarryover();
+      updateSummary();
       updateProgressDisplay();
     }
 
@@ -661,8 +700,10 @@
         log[date].completed = log[date].completed.filter(i => i !== id);
         saveTaskLog(log);
       }
-      renderTasks();
+      const filteredTasks = suggestedTaskIds.map(i => findTask(i)).filter(Boolean);
+      if (filteredTasks.length > 0) document.getElementById('suggested-tasks').innerHTML = filteredTasks.map(t => taskCardHTML(t, TODAY)).join('');
       renderCarryover();
+      updateSummary();
       updateProgressDisplay();
     }
 
@@ -756,24 +797,19 @@
       document.getElementById('task-level-header-text').innerHTML = selectedLevel + ' <span>' + (selectedLevel === '初級' ? '— 基礎を固めるタスク' : '— 表現力を伸ばすタスク') + '</span>';
 
       const filteredTasks = TASKS.filter(t => t.level === selectedLevel && t.time <= selectedTime);
-      const allIds = filteredTasks.map(t => t.id);
-      assignTasks(allIds);
+      suggestedTaskIds = filteredTasks.map(t => t.id);
+
+      // 新しいタスクはデフォルトでやる（選択済み）にする
+      suggestedTaskIds.forEach(id => { if (!todaySelections.has(id)) todaySelections.add(id); });
+      saveTodaySelections();
+      // 選択済みタスクのみassign
+      assignTasks(suggestedTaskIds.filter(id => todaySelections.has(id)));
 
       suggestedEl.innerHTML = filteredTasks.length
         ? filteredTasks.map(t => taskCardHTML(t, TODAY)).join('')
         : `<p class="task-empty">${selectedTime}分以内でできる${selectedLevel}タスクはありません。もう少し長い時間を選んでみてください。</p>`;
 
-      // 完了サマリー
-      const log = getTaskLog();
-      const todayLog = log[TODAY] || { assigned: [], completed: [] };
-      const doneCount = todayLog.completed.filter(id => allIds.includes(id)).length;
-      const summary = document.getElementById('task-done-summary');
-      if (doneCount > 0) {
-        summary.style.display = 'block';
-        summary.textContent = `✓ 今日の完了タスク：${doneCount} / ${allIds.length} 個`;
-      } else {
-        summary.style.display = 'none';
-      }
+      updateSummary();
       updateProgressDisplay();
     }
 
@@ -810,20 +846,36 @@
 
     function taskCardHTML(t, date, isCarryover = false) {
       const done = isCompleted(t.id, date);
-      const doneClass = done ? ' done' : '';
       const isCustom = t.tag === 'カスタム';
+      const isTodaySuggested = !isCarryover && date === TODAY && suggestedTaskIds.includes(t.id);
+      const selected = isTodaySuggested ? isSelectedForToday(t.id) : true;
       const carryoverLabel = isCarryover ? `<span style="font-size:10px;color:#B07828;">📅 ${date} 未完了</span>` : '';
       const innerClick = isCustom ? '' : `onclick="openModal(${t.id})"`;
       const footer = isCustom ? '' : '<div class="task-card-footer">詳細を見る →</div>';
+
+      let cardClass = 'task-card';
+      if (done) cardClass += ' done';
+      else if (!selected) cardClass += ' unselected';
+
       let actions;
       if (done) {
         actions = `<button class="btn-complete" disabled>✓ 完了</button>
           <button class="btn-undo" onclick="uncompleteTask(${t.id}, '${date}', event)">取り消す</button>`;
-      } else {
-        actions = `<button class="btn-complete" onclick="completeTask(${t.id}, '${date}', event)">完了にする</button>`;
+      } else if (isTodaySuggested) {
+        if (selected) {
+          actions = `<button class="btn-select" onclick="toggleSelection(${t.id}, event)">✓ やる</button>
+            <button class="btn-complete" onclick="completeTask(${t.id}, '${date}', event)">完了にする</button>`;
+        } else {
+          actions = `<button class="btn-select skip" onclick="toggleSelection(${t.id}, event)">やる</button>`;
+        }
         if (isCustom) actions += ` <button class="btn-delete-custom" onclick="deleteCustomTask(${t.id}, event)" title="削除">✕</button>`;
+      } else {
+        // 持ち越しタスクやカスタムタスク（選択なし）
+        actions = `<button class="btn-complete" onclick="completeTask(${t.id}, '${date}', event)">完了にする</button>`;
+        if (isCustom && !isCarryover) actions += ` <button class="btn-delete-custom" onclick="deleteCustomTask(${t.id}, event)" title="削除">✕</button>`;
       }
-      return `<div class="task-card${doneClass}">
+
+      return `<div class="${cardClass}">
         <div class="task-card-inner" ${innerClick}>
           <div class="task-card-tag">${t.tag}</div>
           ${carryoverLabel}
@@ -838,8 +890,11 @@
     function updateProgressDisplay() {
       const log = getTaskLog();
       const todayLog = log[TODAY] || { assigned: [], completed: [] };
-      const total = todayLog.assigned.length;
-      const done = todayLog.completed.length;
+      const activeIds = suggestedTaskIds.filter(id => todaySelections.has(id));
+      const total = activeIds.length || todayLog.assigned.length;
+      const done = total > 0
+        ? todayLog.completed.filter(id => activeIds.length > 0 ? activeIds.includes(id) : true).length
+        : 0;
       const el = document.querySelector('.progress-card .progress-value');
       if (el && total > 0) {
         el.textContent = `${done}/${total}`;
