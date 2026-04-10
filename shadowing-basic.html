@@ -50,6 +50,15 @@
       font-size: 13px; color: var(--accent); cursor: pointer;
       background: none; border: none; font-family: inherit;
     }
+    .btn-home {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 600; color: var(--text-muted);
+      background: none; border: 1px solid var(--border);
+      border-radius: 6px; padding: 6px 12px;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.15s;
+    }
+    .btn-home:hover { border-color: var(--accent); color: var(--accent); }
     .header-title {
       font-size: 14px; font-weight: 600; color: var(--text);
     }
@@ -281,7 +290,7 @@
 <header class="app-header" id="app-header">
   <button class="header-back" id="header-back-btn" onclick="goBack()" style="display:none;">← 戻る</button>
   <div class="header-title" id="header-title">シャドーイング練習</div>
-  <span class="header-badge">初級</span>
+  <button class="btn-home" onclick="goHome()">🏠 ホームに戻る</button>
 </header>
 
 <!-- ===== SCREEN 1: テーマ選択 ===== -->
@@ -545,6 +554,15 @@ let catDone = {}; // { catId: true }
 let recognition = null;
 let isRecording = false;
 let synth = window.speechSynthesis;
+
+// ==================== HOME ====================
+function goHome() {
+  if (isRecording) stopRecording();
+  if (synth.speaking) synth.cancel();
+  const map = { A:'preview-a-dashboard.html', B:'preview-b-dashboard.html', C:'preview-c-dashboard.html', D:'preview-d-dashboard.html', E:'preview-e-dashboard.html' };
+  const pref = localStorage.getItem('preferred_design') || 'A';
+  window.location.href = map[pref] || 'preview-a-dashboard.html';
+}
 
 // ==================== INIT ====================
 function init() {
