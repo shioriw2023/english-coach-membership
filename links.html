@@ -47,6 +47,15 @@
     .card-name { font-size: 15px; font-weight: 600; color: var(--text); }
     .card-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; }
     .card-arrow { font-size: 13px; color: var(--accent); margin-top: 4px; }
+
+    /* 公開リンクセクション */
+    .link-list { display: flex; flex-direction: column; gap: 10px; }
+    .link-row { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; }
+    .link-label { font-size: 13px; font-weight: 600; color: var(--text); min-width: 160px; flex-shrink: 0; }
+    .link-url { font-size: 12px; color: var(--text-muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .btn-copy { padding: 7px 14px; background: var(--accent-light); color: var(--accent); border: 1.5px solid rgba(208,116,138,0.3); border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.15s; flex-shrink: 0; }
+    .btn-copy:hover { background: var(--accent); color: #fff; }
+    .btn-copy.copied { background: #E8F5ED; color: #4A8C62; border-color: rgba(74,140,98,0.3); }
   </style>
 </head>
 <body>
@@ -54,42 +63,6 @@
     <span class="eyebrow">Preview Links</span>
     <h1>英語コーチング<br>デザインプレビュー</h1>
     <p class="page-sub">パターンA（上品・ナチュラル）とパターンB（海外風・スタイリッシュ）の比較</p>
-  </div>
-
-  <div class="section">
-    <div class="section-title">🔗 GitHub Pages 公開リンク</div>
-    <div class="grid">
-      <a href="https://shioriw2023.github.io/english-coach-membership/links.html" target="_blank" class="card">
-        <span class="card-badge badge-a">公開URL</span>
-        <div class="card-name">まとめページ</div>
-        <div class="card-desc">https://shioriw2023.github.io/english-coach-membership/links.html</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
-      <a href="https://shioriw2023.github.io/english-coach-membership/preview-a-admin.html" target="_blank" class="card">
-        <span class="card-badge badge-a">公開URL / Pattern A</span>
-        <div class="card-name">管理者ページ A</div>
-        <div class="card-desc">https://shioriw2023.github.io/english-coach-membership/preview-a-admin.html</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
-      <a href="https://shioriw2023.github.io/english-coach-membership/preview-b-admin.html" target="_blank" class="card">
-        <span class="card-badge badge-b">公開URL / Pattern B</span>
-        <div class="card-name">管理者ページ B</div>
-        <div class="card-desc">https://shioriw2023.github.io/english-coach-membership/preview-b-admin.html</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
-      <a href="https://shioriw2023.github.io/english-coach-membership/preview-a-dashboard.html" target="_blank" class="card">
-        <span class="card-badge badge-a">公開URL / Pattern A</span>
-        <div class="card-name">受講生ページ A</div>
-        <div class="card-desc">https://shioriw2023.github.io/english-coach-membership/preview-a-dashboard.html</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
-      <a href="https://shioriw2023.github.io/english-coach-membership/preview-b-dashboard.html" target="_blank" class="card">
-        <span class="card-badge badge-b">公開URL / Pattern B</span>
-        <div class="card-name">受講生ページ B</div>
-        <div class="card-desc">https://shioriw2023.github.io/english-coach-membership/preview-b-dashboard.html</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
-    </div>
   </div>
 
   <div class="section">
@@ -157,5 +130,49 @@
       </a>
     </div>
   </div>
+
+  <div class="section">
+    <div class="section-title">🔗 公開リンク（GitHub Pages）</div>
+    <div class="link-list">
+      <div class="link-row">
+        <span class="link-label">まとめページ</span>
+        <span class="link-url">https://shioriw2023.github.io/english-coach-membership/links.html</span>
+        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/links.html')">リンクをコピー</button>
+      </div>
+      <div class="link-row">
+        <span class="link-label">管理者ページ A</span>
+        <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-a-admin.html</span>
+        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-a-admin.html')">リンクをコピー</button>
+      </div>
+      <div class="link-row">
+        <span class="link-label">管理者ページ B</span>
+        <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-b-admin.html</span>
+        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-b-admin.html')">リンクをコピー</button>
+      </div>
+      <div class="link-row">
+        <span class="link-label">受講生ページ A</span>
+        <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-a-dashboard.html</span>
+        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-a-dashboard.html')">リンクをコピー</button>
+      </div>
+      <div class="link-row">
+        <span class="link-label">受講生ページ B</span>
+        <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-b-dashboard.html</span>
+        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-b-dashboard.html')">リンクをコピー</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function copyLink(btn, url) {
+      navigator.clipboard.writeText(url).then(() => {
+        btn.textContent = '✓ コピーしました';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'リンクをコピー';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
 </body>
 </html>
