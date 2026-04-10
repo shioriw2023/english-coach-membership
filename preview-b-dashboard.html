@@ -549,7 +549,14 @@
       </div>
     </div>
 
-    <div class="tab-panel" id="tab-memo"><p style="color:var(--text-muted);font-size:13px;padding:24px 0;font-weight:300;">ノートは追加予定です。</p></div>
+    <div class="tab-panel" id="tab-memo">
+      <div style="background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:24px 28px;margin-bottom:20px;">
+        <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:14px;">メモを追加</div>
+        <textarea id="memo-input" placeholder="自由にメモを書いてください..." style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13px;color:var(--text);background:var(--surface2);outline:none;resize:vertical;min-height:90px;line-height:1.7;transition:border-color 0.15s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+        <button onclick="addMemo()" style="margin-top:10px;padding:9px 22px;background:var(--accent);color:#0D0D12;border:none;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;">＋ メモを追加</button>
+      </div>
+      <div id="memo-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+    </div>
 
     <!-- Settings Tab -->
     <div class="tab-panel" id="tab-settings">
@@ -1034,6 +1041,43 @@
     }
 
     renderGruconSchedule();
+
+    function addMemo() {
+      const input = document.getElementById('memo-input');
+      const text = input.value.trim();
+      if (!text) return;
+      const memos = JSON.parse(localStorage.getItem('user_memos') || '[]');
+      memos.unshift({ id: Date.now(), text, date: new Date().toLocaleDateString('ja-JP') });
+      localStorage.setItem('user_memos', JSON.stringify(memos));
+      input.value = '';
+      renderMemos();
+    }
+
+    function deleteMemo(id) {
+      const memos = JSON.parse(localStorage.getItem('user_memos') || '[]').filter(m => m.id !== id);
+      localStorage.setItem('user_memos', JSON.stringify(memos));
+      renderMemos();
+    }
+
+    function renderMemos() {
+      const list = document.getElementById('memo-list');
+      if (!list) return;
+      const memos = JSON.parse(localStorage.getItem('user_memos') || '[]');
+      if (memos.length === 0) {
+        list.innerHTML = '<p style="color:var(--text-muted);font-size:13px;padding:8px 0;">メモはまだありません。</p>';
+        return;
+      }
+      list.innerHTML = memos.map(m => `
+        <div style="background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);padding:16px 20px;display:flex;gap:12px;align-items:flex-start;">
+          <div style="flex:1;">
+            <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;">${m.date}</div>
+            <div style="font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;">${m.text.replace(/</g,'&lt;')}</div>
+          </div>
+          <button onclick="deleteMemo(${m.id})" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0;line-height:1;flex-shrink:0;" title="削除">×</button>
+        </div>`).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => { renderMemos(); });
 
     function submitBReport() {
       const dateStart = document.getElementById('report-date-start').value;
