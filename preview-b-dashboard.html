@@ -207,11 +207,22 @@
     .task-card.done .task-card-title { text-decoration: line-through; color: var(--text-muted); }
     .task-card-time { font-size: 12px; color: var(--text-muted); font-weight: 300; }
     .task-card-footer { margin-top: 10px; font-size: 11px; color: var(--accent); font-weight: 600; letter-spacing: 0.04em; }
-    .task-card-actions { margin-top: 12px; }
+    .task-card-actions { margin-top: 12px; display: flex; align-items: center; gap: 8px; }
     .btn-complete { padding: 6px 14px; background: var(--accent); color: #0D0D12; border: none; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; letter-spacing: 0.06em; transition: background 0.15s; }
     .btn-complete:hover { background: #C9A882; }
     .task-card.done .btn-complete { background: rgba(74,140,98,0.6); color: #fff; cursor: default; }
+    .btn-undo { padding: 5px 11px; background: transparent; color: var(--text-muted); border: 1px solid var(--border); border-radius: 20px; font-size: 10px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+    .btn-undo:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-delete-custom { padding: 5px 9px; background: transparent; color: var(--text-muted); border: 1px solid var(--border); border-radius: 20px; font-size: 10px; cursor: pointer; transition: all 0.15s; }
+    .btn-delete-custom:hover { color: #E05555; border-color: #E05555; }
     .task-empty { font-size: 13px; color: var(--text-muted); padding: 12px 0; font-weight: 300; }
+    .custom-task-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; padding: 16px; background: rgba(255,255,255,0.03); border-radius: var(--radius); border: 1px dashed var(--border); }
+    .custom-task-input { flex: 1; min-width: 140px; padding: 9px 14px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; outline: none; background: var(--surface); color: var(--text); transition: border-color 0.15s; font-family: inherit; }
+    .custom-task-input:focus { border-color: var(--accent); }
+    .custom-task-time-input { width: 64px; padding: 9px 10px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; outline: none; background: var(--surface); color: var(--text); text-align: center; transition: border-color 0.15s; }
+    .custom-task-time-input:focus { border-color: var(--accent); }
+    .btn-add-custom { padding: 9px 18px; background: var(--accent); color: #0D0D12; border: none; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: background 0.15s; }
+    .btn-add-custom:hover { background: #C9A882; }
     .carryover-section { margin-bottom: 24px; }
     .carryover-header { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #C9A050; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid rgba(201,160,80,0.2); display: flex; align-items: center; gap: 8px; }
     .carryover-badge { background: rgba(201,160,80,0.12); color: #C9A050; border-radius: 4px; padding: 2px 7px; font-size: 10px; border: 1px solid rgba(201,160,80,0.2); }
@@ -316,9 +327,10 @@
             <div class="level-btns">
               <button class="level-btn" id="level-btn-beginner" onclick="setLevel('初級', this)">初級</button>
               <button class="level-btn" id="level-btn-intermediate" onclick="setLevel('中級', this)">中級</button>
+              <button class="level-btn" id="level-btn-custom" onclick="setLevel('カスタム', this)">カスタム</button>
             </div>
           </div>
-          <div>
+          <div id="time-select-section">
             <div class="time-select-row-label">Time Available Today</div>
             <div class="time-btns">
               <button class="time-btn" onclick="setTime(15, this)">15分</button>
@@ -343,6 +355,15 @@
       <div class="task-results" id="task-results">
         <div class="task-level-header" id="task-level-header-text"></div>
         <div class="task-grid" id="suggested-tasks"></div>
+        <div id="custom-task-section" style="display:none;">
+          <div class="custom-task-form">
+            <input type="text" class="custom-task-input" id="custom-task-title" placeholder="Task name..." onkeydown="if(event.key==='Enter')addCustomTask()">
+            <input type="number" class="custom-task-time-input" id="custom-task-time" min="1" max="180" placeholder="min">
+            <span style="font-size:12px;color:var(--text-muted);">min</span>
+            <button class="btn-add-custom" onclick="addCustomTask()">Add</button>
+          </div>
+          <div class="task-grid" id="custom-task-grid"></div>
+        </div>
         <div class="task-done-summary" id="task-done-summary"></div>
       </div>
     </div>
@@ -571,11 +592,67 @@
       markComplete(id, date);
       renderTasks(); renderCarryover();
     }
+    function uncompleteTask(id, date, event) {
+      event.stopPropagation();
+      const log = getTaskLog();
+      if (log[date] && log[date].completed) {
+        log[date].completed = log[date].completed.filter(i => i !== id);
+        saveTaskLog(log);
+      }
+      renderTasks(); renderCarryover();
+    }
+
+    // カスタムタスク
+    let CUSTOM_TASKS = JSON.parse(localStorage.getItem('custom_tasks') || '[]');
+    function saveCustomTasks() { localStorage.setItem('custom_tasks', JSON.stringify(CUSTOM_TASKS)); }
+    function findTask(id) { return TASKS.find(t => t.id === id) || CUSTOM_TASKS.find(t => t.id === id) || null; }
+    function getNextCustomId() { return CUSTOM_TASKS.length === 0 ? 9001 : Math.max(...CUSTOM_TASKS.map(t => t.id)) + 1; }
+
+    function addCustomTask() {
+      const titleEl = document.getElementById('custom-task-title');
+      const timeEl = document.getElementById('custom-task-time');
+      const title = titleEl.value.trim();
+      const time = parseInt(timeEl.value);
+      if (!title) { titleEl.focus(); return; }
+      if (!time || time < 1) { timeEl.focus(); return; }
+      const task = { id: getNextCustomId(), title, time, level: 'カスタム', tag: 'カスタム', desc: '', video: false };
+      CUSTOM_TASKS.push(task);
+      saveCustomTasks();
+      assignTasks([task.id]);
+      titleEl.value = ''; timeEl.value = '';
+      titleEl.focus();
+      renderCustomTasks();
+    }
+
+    function deleteCustomTask(id, event) {
+      event.stopPropagation();
+      CUSTOM_TASKS = CUSTOM_TASKS.filter(t => t.id !== id);
+      saveCustomTasks();
+      const log = getTaskLog();
+      if (log[TODAY]) {
+        log[TODAY].assigned = (log[TODAY].assigned || []).filter(i => i !== id);
+        log[TODAY].completed = (log[TODAY].completed || []).filter(i => i !== id);
+        saveTaskLog(log);
+      }
+      renderCustomTasks();
+    }
+
+    function renderCustomTasks() {
+      const grid = document.getElementById('custom-task-grid');
+      if (!grid) return;
+      if (CUSTOM_TASKS.length === 0) {
+        grid.innerHTML = '<p class="task-empty">Enter a task name and time to add.</p>';
+        return;
+      }
+      grid.innerHTML = CUSTOM_TASKS.map(t => taskCardHTML(t, TODAY)).join('');
+    }
 
     function setLevel(level, btn) {
       selectedLevel = level;
       document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('selected'));
       if (btn) btn.classList.add('selected');
+      const timeSection = document.getElementById('time-select-section');
+      if (timeSection) timeSection.style.display = level === 'カスタム' ? 'none' : 'block';
       renderTasks();
     }
 
@@ -589,6 +666,28 @@
 
     function renderTasks() {
       const results = document.getElementById('task-results');
+      const suggestedEl = document.getElementById('suggested-tasks');
+      const customSection = document.getElementById('custom-task-section');
+
+      if (selectedLevel === 'カスタム') {
+        results.style.display = 'block';
+        document.getElementById('task-level-header-text').innerHTML = 'Custom <span>— Add your own tasks</span>';
+        suggestedEl.style.display = 'none';
+        customSection.style.display = 'block';
+        renderCustomTasks();
+        const log = getTaskLog();
+        const todayLog = log[TODAY] || { assigned: [], completed: [] };
+        const customIds = CUSTOM_TASKS.map(t => t.id);
+        const doneCount = todayLog.completed.filter(id => customIds.includes(id)).length;
+        const summary = document.getElementById('task-done-summary');
+        summary.style.display = doneCount > 0 ? 'block' : 'none';
+        if (doneCount > 0) summary.textContent = `✓ Today's progress: ${doneCount} / ${customIds.length} completed`;
+        return;
+      }
+
+      customSection.style.display = 'none';
+      suggestedEl.style.display = '';
+
       if (!selectedLevel || !selectedTime) { results.style.display = 'none'; return; }
       results.style.display = 'block';
 
@@ -598,7 +697,7 @@
       const allIds = filteredTasks.map(t => t.id);
       assignTasks(allIds);
 
-      document.getElementById('suggested-tasks').innerHTML = filteredTasks.length
+      suggestedEl.innerHTML = filteredTasks.length
         ? filteredTasks.map(t => taskCardHTML(t, TODAY)).join('')
         : `<p class="task-empty">No ${selectedLevel} tasks fit within ${selectedTime} min. Try a longer duration.</p>`;
 
@@ -623,30 +722,40 @@
       if (carryoverIds.length === 0) { section.style.display = 'none'; return; }
       section.style.display = 'block';
       document.getElementById('carryover-count').textContent = carryoverIds.length + ' tasks';
-      grid.innerHTML = TASKS.filter(t => carryoverIds.includes(t.id)).map(t => taskCardHTML(t, carryoverDates[t.id], true)).join('');
+      const carryoverTasks = carryoverIds.map(id => findTask(id)).filter(Boolean);
+      grid.innerHTML = carryoverTasks.map(t => taskCardHTML(t, carryoverDates[t.id], true)).join('');
     }
 
     function taskCardHTML(t, date, isCarryover = false) {
       const done = isCompleted(t.id, date);
+      const isCustom = t.tag === 'カスタム';
       const carryoverLabel = isCarryover ? `<span style="font-size:10px;color:#C9A050;">📅 ${date} — not completed</span><br>` : '';
+      const innerClick = isCustom ? '' : `onclick="openModal(${t.id})"`;
+      const footer = isCustom ? '' : '<div class="task-card-footer">Details →</div>';
+      let actions;
+      if (done) {
+        actions = `<button class="btn-complete" disabled>✓ Done</button>
+          <button class="btn-undo" onclick="uncompleteTask(${t.id}, '${date}', event)">Undo</button>`;
+      } else {
+        actions = `<button class="btn-complete" onclick="completeTask(${t.id}, '${date}', event)">Mark Complete</button>`;
+        if (isCustom) actions += ` <button class="btn-delete-custom" onclick="deleteCustomTask(${t.id}, event)" title="Delete">✕</button>`;
+      }
       return `<div class="task-card${done ? ' done' : ''}">
-        <div class="task-card-inner" onclick="openModal(${t.id})">
+        <div class="task-card-inner" ${innerClick}>
           <div class="task-card-tag">${t.tag}</div>
           ${carryoverLabel}
           <div class="task-card-title">${t.title}</div>
           <div class="task-card-time">⏱ ${t.time}分</div>
-          <div class="task-card-footer">Details →</div>
+          ${footer}
         </div>
-        <div class="task-card-actions">
-          <button class="btn-complete" onclick="completeTask(${t.id}, '${date}', event)" ${done ? 'disabled' : ''}>${done ? '✓ Done' : 'Mark Complete'}</button>
-        </div>
+        <div class="task-card-actions">${actions}</div>
       </div>`;
     }
 
     renderCarryover();
 
     function openModal(id) {
-      const t = TASKS.find(x => x.id === id);
+      const t = findTask(id);
       if (!t) return;
       document.getElementById('modal-tag').textContent = t.tag + ' / ' + t.level;
       document.getElementById('modal-title').textContent = t.title;
