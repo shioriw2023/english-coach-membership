@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>デザインA — 受講生マイページ</title>
+  <title>デザインE — 受講生マイページ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:           #FDF5F7;
+      --bg:           #F2F5FA;
       --white:        #FFFFFF;
       --text:         #1A1419;
-      --text-muted:   #9A8890;
-      --accent:       #D0748A;
-      --accent-hover: #BC6078;
-      --accent-light: #FAE8EE;
+      --text-muted:   #6B7E9A;
+      --accent:       #2C4A7E;
+      --accent-hover: #3A5C9A;
+      --accent-light: #E8EFFF;
       --border:       rgba(0,0,0,0.08);
       --radius:       6px;
       --radius-lg:    10px;
@@ -22,7 +22,7 @@
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; font-size: 14px; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; font-size: 14px; }
 
     /* ヘッダー */
     .header {
@@ -38,7 +38,7 @@
       z-index: 10;
     }
     .header-left { display: flex; align-items: center; gap: 16px; }
-    .header-logo { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 500; letter-spacing: 0.03em; }
+    .header-logo { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 500; letter-spacing: 0.03em; }
     .header-badge {
       font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
       background: var(--accent-light); color: var(--accent); padding: 3px 10px; border-radius: 20px;
@@ -64,7 +64,7 @@
       color: #fff;
     }
     .welcome-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 6px; }
-    .welcome h2 { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 500; margin-bottom: 6px; }
+    .welcome h2 { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 500; margin-bottom: 6px; }
     .welcome p { font-size: 13px; opacity: 0.85; }
 
     /* 進捗 */
@@ -74,7 +74,7 @@
       box-shadow: var(--shadow);
     }
     .progress-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 8px; }
-    .progress-value { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 500; color: var(--text); }
+    .progress-value { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 500; color: var(--text); }
     .progress-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
     .progress-bar-wrap { height: 4px; background: var(--accent-light); border-radius: 2px; margin-top: 10px; }
     .progress-bar { height: 4px; background: var(--accent); border-radius: 2px; }
@@ -95,7 +95,7 @@
     /* 設定タブ */
     .settings-panel { display: flex; flex-direction: column; gap: 24px; }
     .settings-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 28px 32px; }
-    .settings-card-title { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .settings-card-title { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
     .settings-card-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.6; }
     .settings-field { display: flex; flex-direction: column; gap: 5px; max-width: 400px; }
     .settings-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
@@ -128,7 +128,7 @@
     /* 発音添削 */
     .pronunciation-phrases { display: grid; gap: 12px; margin-bottom: 28px; }
     .pronunciation-phrase-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 18px 22px; display: flex; align-items: center; gap: 16px; }
-    .phrase-num { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500; color: var(--accent); min-width: 28px; }
+    .phrase-num { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 500; color: var(--accent); min-width: 28px; }
     .phrase-content { flex: 1; }
     .phrase-en { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
     .phrase-ja { font-size: 12px; color: var(--text-muted); }
@@ -148,12 +148,12 @@
 
     /* 成果報告フォーム */
     .report-form { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 28px 32px; margin-bottom: 28px; }
-    .report-form-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 20px; }
+    .report-form-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 20px; }
     .form-row { margin-bottom: 18px; }
     .form-label { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
-    .form-input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s; }
+    .form-input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'Inter', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s; }
     .form-input:focus { border-color: var(--accent); }
-    .form-textarea { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); outline: none; resize: vertical; min-height: 80px; transition: border-color 0.15s; line-height: 1.6; }
+    .form-textarea { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'Inter', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); outline: none; resize: vertical; min-height: 80px; transition: border-color 0.15s; line-height: 1.6; }
     .form-textarea:focus { border-color: var(--accent); }
     .form-row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .btn-submit-report { width: 100%; padding: 13px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; margin-top: 8px; }
@@ -180,7 +180,7 @@
       text-align: center; min-width: 44px; flex-shrink: 0;
     }
     .schedule-month { font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
-    .schedule-day { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 500; color: var(--text); line-height: 1; }
+    .schedule-day { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 500; color: var(--text); line-height: 1; }
     .schedule-divider { width: 1px; height: 32px; background: var(--border); flex-shrink: 0; }
     .schedule-info { flex: 1; }
     .schedule-title { font-size: 13px; font-weight: 600; color: var(--text); }
@@ -323,10 +323,10 @@
       background: var(--white); border-radius: 14px; max-width: 500px; width: 100%;
       box-shadow: 0 20px 60px rgba(0,0,0,0.15); overflow: hidden;
     }
-    .modal-top { height: 5px; background: linear-gradient(90deg, var(--accent), #E898AC); }
+    .modal-top { height: 5px; background: linear-gradient(90deg, var(--accent), #4A6AAE); }
     .modal-body { padding: 28px 32px 32px; }
     .modal-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
-    .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
     .modal-time { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
     .modal-desc { font-size: 13.5px; color: var(--text); line-height: 1.7; margin-bottom: 20px; }
     .modal-video {
@@ -381,13 +381,13 @@
     <div class="progress-row">
       <div class="progress-card">
         <div class="progress-label">視聴済み</div>
-        <div class="progress-value">7 <span style="font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text-muted);">/ 20</span></div>
+        <div class="progress-value">7 <span style="font-size:14px;font-family:'Inter',sans-serif;color:var(--text-muted);">/ 20</span></div>
         <div class="progress-sub">レッスン</div>
         <div class="progress-bar-wrap"><div class="progress-bar" style="width:35%"></div></div>
       </div>
       <div class="progress-card">
         <div class="progress-label">グルコン</div>
-        <div class="progress-value">3 <span style="font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text-muted);">/ 8</span></div>
+        <div class="progress-value">3 <span style="font-size:14px;font-family:'Inter',sans-serif;color:var(--text-muted);">/ 8</span></div>
         <div class="progress-sub">アーカイブ視聴済み</div>
         <div class="progress-bar-wrap"><div class="progress-bar" style="width:37%"></div></div>
       </div>
@@ -1074,7 +1074,7 @@
       const s = getUserSettings();
       const emailEl = document.getElementById('current-email-display');
       if (emailEl) emailEl.value = s.email || 'hanako@example.com';
-      const design = localStorage.getItem('preferred_design') || 'A';
+      const design = localStorage.getItem('preferred_design') || 'E';
       ['a','b','c','d','e'].forEach(p => {
         const el = document.getElementById('design-opt-' + p);
         if (el) el.classList.toggle('active', design === p.toUpperCase());
@@ -1126,7 +1126,8 @@
     // ページ読み込み時：保存済みデザインが違う場合はリダイレクト
     (function() {
       const pref = localStorage.getItem('preferred_design');
-      if (pref === 'B') window.location.href = 'preview-b-dashboard.html';
+      const _map={A:'preview-a-dashboard.html',B:'preview-b-dashboard.html',C:'preview-c-dashboard.html',D:'preview-d-dashboard.html'};
+      if(pref && _map[pref]) window.location.href=_map[pref];
     })();
 
     // グルコンセッション定義（管理者ページと同じ）

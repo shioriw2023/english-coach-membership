@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>英語コーチング — デザインプレビュー一覧</title>
+  <title>英語コーチング — リンク一覧</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -26,12 +26,12 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
 
     .card {
-      background: var(--white); border-radius: 10px; padding: 24px 26px;
+      background: var(--white); border-radius: 10px; padding: 22px 24px;
       border: 1px solid var(--border); text-decoration: none; color: inherit;
-      display: flex; flex-direction: column; gap: 10px;
+      display: flex; flex-direction: column; gap: 8px;
       transition: box-shadow 0.2s, transform 0.2s;
     }
     .card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.1); transform: translateY(-2px); }
@@ -41,123 +41,164 @@
       font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
       padding: 3px 8px; border-radius: 4px;
     }
+    .badge-admin { background: #F0EAF8; color: #7A5A9C; }
     .badge-a { background: var(--accent-light); color: var(--accent); }
     .badge-b { background: #0D0D12; color: #D4B896; }
+    .badge-c { background: #EBF3E6; color: #6B8C5A; }
+    .badge-d { background: #F0E8FF; color: #8B6BAE; }
+    .badge-e { background: #E8EFFF; color: #2C4A7E; }
 
-    .card-name { font-size: 15px; font-weight: 600; color: var(--text); }
-    .card-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; }
-    .card-arrow { font-size: 13px; color: var(--accent); margin-top: 4px; }
+    .card-name { font-size: 14px; font-weight: 600; color: var(--text); }
+    .card-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+    .card-arrow { font-size: 12px; color: var(--accent); margin-top: 2px; }
 
-    /* 公開リンクセクション */
+    /* リンクリスト */
     .link-list { display: flex; flex-direction: column; gap: 10px; }
-    .link-row { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; }
-    .link-label { font-size: 13px; font-weight: 600; color: var(--text); min-width: 160px; flex-shrink: 0; }
-    .link-url { font-size: 12px; color: var(--text-muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .btn-copy { padding: 7px 14px; background: var(--accent-light); color: var(--accent); border: 1.5px solid rgba(208,116,138,0.3); border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.15s; flex-shrink: 0; }
+    .link-row { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
+    .link-label { font-size: 13px; font-weight: 600; color: var(--text); min-width: 180px; flex-shrink: 0; }
+    .link-url { font-size: 11px; color: var(--text-muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .btn-copy { padding: 6px 14px; background: var(--accent-light); color: var(--accent); border: 1.5px solid rgba(208,116,138,0.3); border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.15s; flex-shrink: 0; }
     .btn-copy:hover { background: var(--accent); color: #fff; }
     .btn-copy.copied { background: #E8F5ED; color: #4A8C62; border-color: rgba(74,140,98,0.3); }
+
+    /* デザインプレビュースウォッチ */
+    .design-swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; max-width: 600px; }
+    .swatch { height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; }
+    .sw-a { background: linear-gradient(135deg,#FDF5F7,#FAE8EE); color: #D0748A; }
+    .sw-b { background: linear-gradient(135deg,#1A1420,#2E2540); color: #D4B896; }
+    .sw-c { background: linear-gradient(135deg,#F5F8F2,#EBF3E6); color: #6B8C5A; }
+    .sw-d { background: linear-gradient(135deg,#F8F5FF,#F0E8FF); color: #8B6BAE; }
+    .sw-e { background: linear-gradient(135deg,#F2F5FA,#E8EFFF); color: #2C4A7E; }
   </style>
 </head>
 <body>
   <div class="page-header">
     <span class="eyebrow">Preview Links</span>
     <h1>英語コーチング<br>デザインプレビュー</h1>
-    <p class="page-sub">パターンA（上品・ナチュラル）とパターンB（海外風・スタイリッシュ）の比較</p>
+    <p class="page-sub">受講生は設定タブから自分でデザインを選択できます</p>
   </div>
 
+  <!-- 管理者 -->
   <div class="section">
-    <div class="section-title">Pattern A — 上品・ナチュラル</div>
+    <div class="section-title">管理者ページ</div>
     <div class="grid">
-      <a href="preview-a.html" class="card">
-        <span class="card-badge badge-a">Pattern A</span>
-        <div class="card-name">受講生ログイン</div>
-        <div class="card-desc">テラコッタ×ベージュのカード型ログインページ。Cormorant Garamondの上品なセリフフォント使用。</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
       <a href="preview-a-admin.html" class="card">
-        <span class="card-badge badge-a">Pattern A</span>
-        <div class="card-name">管理者パネル</div>
-        <div class="card-desc">ダークサイドバー＋ライトコンテンツの管理画面。受講生ページのプレビュー機能付き。</div>
+        <span class="card-badge badge-admin">Admin</span>
+        <div class="card-name">管理者パネル A</div>
+        <div class="card-desc">受講生管理・グルコンURL・成果報告一覧</div>
         <div class="card-arrow">→ 開く</div>
       </a>
-      <a href="preview-a-dashboard.html" class="card">
-        <span class="card-badge badge-a">Pattern A</span>
-        <div class="card-name">受講生マイページ</div>
-        <div class="card-desc">受講生が見るダッシュボード。レッスン一覧・進捗・グルコン・メモのタブ付き。</div>
+      <a href="preview-b-admin.html" class="card">
+        <span class="card-badge badge-admin">Admin</span>
+        <div class="card-name">管理者パネル B</div>
+        <div class="card-desc">ダーク版管理画面</div>
         <div class="card-arrow">→ 開く</div>
       </a>
     </div>
   </div>
 
+  <!-- 受講生デザインプレビュー -->
   <div class="section">
-    <div class="section-title">発音チェック</div>
+    <div class="section-title">受講生マイページ — デザイン 5 パターン</div>
     <div class="grid">
+      <a href="preview-a-dashboard.html" class="card">
+        <span class="card-badge badge-a">Pattern A</span>
+        <div class="card-name">上品・ナチュラル</div>
+        <div class="card-desc">ピンク×ベージュ / Cormorant Garamond</div>
+        <div class="card-arrow">→ 開く</div>
+      </a>
+      <a href="preview-b-dashboard.html" class="card">
+        <span class="card-badge badge-b">Pattern B</span>
+        <div class="card-name">海外風・スタイリッシュ</div>
+        <div class="card-desc">ダーク×ゴールド / Playfair Display</div>
+        <div class="card-arrow">→ 開く</div>
+      </a>
+      <a href="preview-c-dashboard.html" class="card">
+        <span class="card-badge badge-c">Pattern C</span>
+        <div class="card-name">ナチュラル・グリーン</div>
+        <div class="card-desc">セージグリーン×ホワイト / Cormorant Garamond</div>
+        <div class="card-arrow">→ 開く</div>
+      </a>
+      <a href="preview-d-dashboard.html" class="card">
+        <span class="card-badge badge-d">Pattern D</span>
+        <div class="card-name">ラベンダー・ソフト</div>
+        <div class="card-desc">ラベンダー×ホワイト / Cormorant Garamond</div>
+        <div class="card-arrow">→ 開く</div>
+      </a>
+      <a href="preview-e-dashboard.html" class="card">
+        <span class="card-badge badge-e">Pattern E</span>
+        <div class="card-name">ネイビー・クール</div>
+        <div class="card-desc">ネイビー×ライトグレー / Playfair Display</div>
+        <div class="card-arrow">→ 開く</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ログインページ -->
+  <div class="section">
+    <div class="section-title">ログインページ</div>
+    <div class="grid">
+      <a href="preview-a.html" class="card">
+        <span class="card-badge badge-a">Pattern A</span>
+        <div class="card-name">受講生ログイン A</div>
+        <div class="card-arrow">→ 開く</div>
+      </a>
+      <a href="preview-b.html" class="card">
+        <span class="card-badge badge-b">Pattern B</span>
+        <div class="card-name">受講生ログイン B</div>
+        <div class="card-arrow">→ 開く</div>
+      </a>
       <a href="pronunciation-a.html" class="card">
         <span class="card-badge badge-a">Pattern A</span>
         <div class="card-name">発音チェック</div>
-        <div class="card-desc">マイクで話す→認識→送信/修正→一致度スコア表示。5フレーズ収録。</div>
         <div class="card-arrow">→ 開く</div>
       </a>
       <a href="pronunciation-b.html" class="card">
         <span class="card-badge badge-b">Pattern B</span>
         <div class="card-name">Pronunciation Check</div>
-        <div class="card-desc">ダーク版の発音チェックページ。同じ機能をスタイリッシュなデザインで。</div>
         <div class="card-arrow">→ 開く</div>
       </a>
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-title">Pattern B — 海外風・スタイリッシュ</div>
-    <div class="grid">
-      <a href="preview-b.html" class="card">
-        <span class="card-badge badge-b">Pattern B</span>
-        <div class="card-name">受講生ログイン</div>
-        <div class="card-desc">ロンドン写真×ダーク背景の2カラムログインページ。Playfair Displayの洗練されたフォント使用。</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
-      <a href="preview-b-admin.html" class="card">
-        <span class="card-badge badge-b">Pattern B</span>
-        <div class="card-name">管理者パネル</div>
-        <div class="card-desc">ダーク統一のスタイリッシュな管理画面。受講生ページのプレビュー機能付き。</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
-      <a href="preview-b-dashboard.html" class="card">
-        <span class="card-badge badge-b">Pattern B</span>
-        <div class="card-name">受講生マイページ</div>
-        <div class="card-desc">受講生が見るダーク統一のダッシュボード。ゴールドアクセントのタブ・進捗・レッスン一覧。</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
-    </div>
-  </div>
-
+  <!-- 公開リンク -->
   <div class="section">
     <div class="section-title">🔗 公開リンク（GitHub Pages）</div>
     <div class="link-list">
       <div class="link-row">
         <span class="link-label">まとめページ</span>
         <span class="link-url">https://shioriw2023.github.io/english-coach-membership/links.html</span>
-        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/links.html')">リンクをコピー</button>
+        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/links.html')">コピー</button>
       </div>
       <div class="link-row">
         <span class="link-label">管理者ページ A</span>
         <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-a-admin.html</span>
-        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-a-admin.html')">リンクをコピー</button>
+        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-a-admin.html')">コピー</button>
       </div>
       <div class="link-row">
-        <span class="link-label">管理者ページ B</span>
-        <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-b-admin.html</span>
-        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-b-admin.html')">リンクをコピー</button>
-      </div>
-      <div class="link-row">
-        <span class="link-label">受講生ページ A</span>
+        <span class="link-label">受講生マイページ A</span>
         <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-a-dashboard.html</span>
-        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-a-dashboard.html')">リンクをコピー</button>
+        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-a-dashboard.html')">コピー</button>
       </div>
       <div class="link-row">
-        <span class="link-label">受講生ページ B</span>
+        <span class="link-label">受講生マイページ B</span>
         <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-b-dashboard.html</span>
-        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-b-dashboard.html')">リンクをコピー</button>
+        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-b-dashboard.html')">コピー</button>
+      </div>
+      <div class="link-row">
+        <span class="link-label">受講生マイページ C</span>
+        <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-c-dashboard.html</span>
+        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-c-dashboard.html')">コピー</button>
+      </div>
+      <div class="link-row">
+        <span class="link-label">受講生マイページ D</span>
+        <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-d-dashboard.html</span>
+        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-d-dashboard.html')">コピー</button>
+      </div>
+      <div class="link-row">
+        <span class="link-label">受講生マイページ E</span>
+        <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-e-dashboard.html</span>
+        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-e-dashboard.html')">コピー</button>
       </div>
     </div>
   </div>
@@ -165,10 +206,10 @@
   <script>
     function copyLink(btn, url) {
       navigator.clipboard.writeText(url).then(() => {
-        btn.textContent = '✓ コピーしました';
+        btn.textContent = '✓ コピー済み';
         btn.classList.add('copied');
         setTimeout(() => {
-          btn.textContent = 'リンクをコピー';
+          btn.textContent = 'コピー';
           btn.classList.remove('copied');
         }, 2000);
       });
