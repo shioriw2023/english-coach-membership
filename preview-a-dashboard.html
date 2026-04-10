@@ -1247,8 +1247,7 @@ function addMemo() {
           name, email,
           effort, result, goal,
           submittedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      }).then(() => {
+        }).then(() => {
         btn.style.display = 'none';
         document.getElementById('submit-success').style.display = 'block';
         loadPastReports();
