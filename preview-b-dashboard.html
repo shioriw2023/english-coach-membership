@@ -369,6 +369,18 @@
           </div>
         </div>
       </div>
+
+      <!-- 今日のタスク決定ボタン -->
+      <div id="task-confirm-btn-wrap" style="display:none;margin-bottom:16px;">
+        <button onclick="confirmTodayTasks()" style="width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;transition:background 0.15s;">✓ 今日のタスクを決定する</button>
+      </div>
+
+      <!-- 決定済み表示バー -->
+      <div id="task-decided-bar" style="display:none;background:var(--accent-light);border-radius:var(--radius);padding:10px 16px;margin-bottom:16px;display:none;align-items:center;justify-content:space-between;">
+        <span style="font-size:13px;font-weight:600;color:var(--accent);">✓ 今日のタスクが決定されました</span>
+        <button onclick="resetTodayDecision()" style="font-size:12px;color:var(--accent);background:none;border:1px solid rgba(var(--accent-rgb,208,116,138),0.3);border-radius:4px;padding:4px 10px;cursor:pointer;font-family:inherit;">変更する</button>
+      </div>
+
       <!-- 持ち越しタスク -->
       <div class="carryover-section" id="carryover-section" style="display:block;">
         <div class="carryover-header">⚠ Carryover Tasks <span class="carryover-badge" id="carryover-count"></span></div>
@@ -728,6 +740,10 @@
     let todaySelections = new Set(JSON.parse(localStorage.getItem('task_sel_' + TODAY) || '[]'));
     function saveTodaySelections() { localStorage.setItem('task_sel_' + TODAY, JSON.stringify([...todaySelections])); }
     function isSelectedForToday(id) { return todaySelections.has(id); }
+    function isTaskDone(id, date) {
+      const log = getTaskLog();
+      return (log[date] && log[date].completed && log[date].completed.includes(id)) || false;
+    }
     function toggleSelection(id, event) {
       event.stopPropagation();
       if (todaySelections.has(id)) { todaySelections.delete(id); }
@@ -926,6 +942,48 @@
       if (!e || e.target === document.getElementById('modal-overlay')) {
         document.getElementById('modal-overlay').classList.remove('open');
       }
+    }
+
+
+    // ---- 今日のタスク決定 ----
+    function getTodayDecided() {
+      return localStorage.getItem('task_decided_' + TODAY) === 'true';
+    }
+    function setTodayDecided(val) {
+      if (val) localStorage.setItem('task_decided_' + TODAY, 'true');
+      else localStorage.removeItem('task_decided_' + TODAY);
+    }
+
+    function updateConfirmBtnVisibility() {
+      const decided = getTodayDecided();
+      const btnWrap = document.getElementById('task-confirm-btn-wrap');
+      const decidedBar = document.getElementById('task-decided-bar');
+      const selectWrap = document.querySelector('.time-select-wrap');
+
+      if (decided) {
+        if (btnWrap) btnWrap.style.display = 'none';
+        if (decidedBar) { decidedBar.style.display = 'flex'; }
+        if (selectWrap) selectWrap.style.display = 'none';
+      } else {
+        if (selectWrap) selectWrap.style.display = '';
+        if (decidedBar) decidedBar.style.display = 'none';
+        // レベルと時間が両方選択済みのときだけ決定ボタンを表示
+        const canConfirm = (selectedLevel === 'カスタム' && CUSTOM_TASKS.length > 0) ||
+                           (selectedLevel && selectedLevel !== 'カスタム' && selectedTime);
+        if (btnWrap) btnWrap.style.display = canConfirm ? 'block' : 'none';
+      }
+    }
+
+    function confirmTodayTasks() {
+      setTodayDecided(true);
+      updateConfirmBtnVisibility();
+      renderTasks();
+    }
+
+    function resetTodayDecision() {
+      setTodayDecided(false);
+      updateConfirmBtnVisibility();
+      renderTasks();
     }
 
     function switchTab(name) {
