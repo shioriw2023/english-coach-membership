@@ -285,6 +285,42 @@
       .header { padding: 0 16px; }
       .container { padding: 20px 16px; }
     }
+
+    /* 学習時間バナー */
+    .study-time-banner {
+      background: var(--accent-light);
+      border-radius: var(--radius-lg);
+      padding: 11px 20px;
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 20px; font-size: 13px; font-weight: 500;
+      color: var(--text-muted);
+    }
+    .study-time-banner strong { font-size: 22px; font-weight: 700; color: var(--accent); line-height: 1; }
+
+    /* タスク完了時間入力 */
+    .time-input-wrap {
+      display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+      padding: 8px 10px; background: var(--accent-light); border-radius: var(--radius);
+      width: 100%;
+    }
+    .time-input-label { font-size: 11px; font-weight: 600; color: var(--text-muted); flex-shrink: 0; }
+    .time-input-field {
+      width: 58px; padding: 4px 8px; border: 1.5px solid var(--border); border-radius: 4px;
+      font-size: 14px; font-weight: 600; text-align: center;
+      background: var(--white); color: var(--text); font-family: inherit;
+    }
+    .time-input-unit { font-size: 12px; color: var(--text-muted); }
+    .btn-confirm-time {
+      padding: 5px 12px; background: var(--accent); color: #fff; border: none;
+      border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;
+      white-space: nowrap; transition: background 0.15s; font-family: inherit;
+    }
+    .btn-confirm-time:hover { background: var(--accent-hover, var(--accent)); filter: brightness(0.9); }
+    .btn-skip-time {
+      padding: 5px 10px; background: none; color: var(--text-muted);
+      border: 1px solid var(--border); border-radius: 4px; font-size: 11px;
+      cursor: pointer; white-space: nowrap; font-family: inherit;
+    }
   </style>
 </head>
 <body>
@@ -327,6 +363,14 @@
         <div class="progress-sub">件投稿済み</div>
         <div class="progress-bar-wrap"><div class="progress-bar" style="width:50%"></div></div>
       </div>
+    </div>
+
+    <!-- 今日の学習時間バナー -->
+    <div class="study-time-banner" id="study-time-bar">
+      <span>📚</span>
+      <span>今日の学習時間：</span>
+      <strong id="study-time-value">0</strong>
+      <span>分</span>
     </div>
 
     <div class="tabs">
@@ -770,7 +814,7 @@
       const time = parseInt(timeEl.value);
       if (!title) { titleEl.focus(); return; }
       if (!time || time < 1) { timeEl.focus(); return; }
-      const task = { id: getNextCustomId(), title, time, level: 'カスタム', tag: 'カスタム', desc: '', video: false };
+      const task = { id: getNextCustomId(), title, time, level: 'カスタム', tag: 'カスタム', desc: '', video: false, is_study_time: true };
       CUSTOM_TASKS.push(task);
       saveCustomTasks();
       assignTasks([task.id]);
@@ -895,18 +939,18 @@
 
       let actions;
       if (done) {
-        actions = `<button class="btn-complete" disabled>✓ Done</button>
-          <button class="btn-undo" onclick="uncompleteTask(${t.id}, '${date}', event)">Undo</button>`;
+        actions = `<button class="btn-complete" disabled>✓ 完了</button>
+          <button class="btn-undo" onclick="uncompleteTask(${t.id}, '${date}', event)">取り消す</button>`;
       } else if (isTodaySuggested) {
         if (selected) {
-          actions = `<button class="btn-select" onclick="toggleSelection(${t.id}, event)">✓ Do This</button>
-            <button class="btn-complete" onclick="completeTask(${t.id}, '${date}', event)">Mark Complete</button>`;
+          actions = `<button class="btn-select" onclick="toggleSelection(${t.id}, event)">✓ やる</button>
+            <button class="btn-complete" onclick="requestComplete(${t.id}, '${date}', event)">完了にする</button>`;
         } else {
           actions = `<button class="btn-select skip" onclick="toggleSelection(${t.id}, event)">やらない</button>`;
         }
-        if (isCustom) actions += ` <button class="btn-delete-custom" onclick="deleteCustomTask(${t.id}, event)" title="Delete">✕</button>`;
+        if (isCustom) actions += ` <button class="btn-delete-custom" onclick="deleteCustomTask(${t.id}, event)" title="削除">✕</button>`;
       } else {
-        actions = `<button class="btn-complete" onclick="completeTask(${t.id}, '${date}', event)">Mark Complete</button>`;
+        actions = `<button class="btn-complete" onclick="requestComplete(${t.id}, '${date}', event)">完了にする</button>`;
         if (isCustom && !isCarryover) actions += ` <button class="btn-delete-custom" onclick="deleteCustomTask(${t.id}, event)" title="Delete">✕</button>`;
       }
 
@@ -980,10 +1024,64 @@
       renderTasks();
     }
 
+
     function resetTodayDecision() {
       setTodayDecided(false);
       updateConfirmBtnVisibility();
       renderTasks();
+    }
+
+    // ---- 学習時間記録 ----
+    function getStudyTime(date) { return parseInt(localStorage.getItem('study_time_' + date) || '0'); }
+    function addStudyTime(date, mins) {
+      const cur = getStudyTime(date);
+      localStorage.setItem('study_time_' + date, String(cur + mins));
+      updateStudyTimeDisplay();
+    }
+    function updateStudyTimeDisplay() {
+      const el = document.getElementById('study-time-value');
+      if (el) el.textContent = String(getStudyTime(TODAY));
+    }
+
+    function requestComplete(id, date, event) {
+      event.stopPropagation();
+      if (isCompleted(id, date)) return;
+      const btn = event.currentTarget;
+      const actionsDiv = btn.closest('.task-card-actions');
+      const task = findTask(id);
+      const shouldTrack = !task || task.is_study_time !== false;
+      if (shouldTrack) {
+        const defaultMins = (task && task.time) ? task.time : 15;
+        actionsDiv.innerHTML =
+          '<div class="time-input-wrap">' +
+          '<span class="time-input-label">何分取り組みましたか？</span>' +
+          '<input type="number" class="time-input-field" id="ti-' + id + '" min="1" max="480" value="' + defaultMins + '">' +
+          '<span class="time-input-unit">分</span>' +
+          '<button class="btn-confirm-time" onclick="confirmComplete(' + id + ', \'' + date + '\', event)">記録して完了</button>' +
+          '<button class="btn-skip-time" onclick="confirmComplete(' + id + ', \'' + date + '\', event, true)">時間なし</button>' +
+          '</div>';
+      } else {
+        confirmComplete(id, date, event, true);
+      }
+    }
+
+    function confirmComplete(id, date, event, skipTime) {
+      event.stopPropagation();
+      if (!skipTime) {
+        const inputEl = document.getElementById('ti-' + id);
+        const mins = inputEl ? parseInt(inputEl.value) || 0 : 0;
+        const task = findTask(id);
+        if (mins > 0 && (!task || task.is_study_time !== false)) {
+          addStudyTime(TODAY, mins);
+        }
+      }
+      markComplete(id, date);
+      const filteredTasks = suggestedTaskIds.map(i => findTask(i)).filter(Boolean);
+      if (filteredTasks.length > 0) document.getElementById('suggested-tasks').innerHTML = filteredTasks.map(t => taskCardHTML(t, TODAY)).join('');
+      renderCarryover();
+      updateSummary();
+      updateProgressDisplay();
+      updateStudyTimeDisplay();
     }
 
     function switchTab(name) {
@@ -1093,6 +1191,7 @@
     }
 
     renderGruconSchedule();
+    updateStudyTimeDisplay();
 
 function addMemo() {
       const input = document.getElementById('memo-input');
