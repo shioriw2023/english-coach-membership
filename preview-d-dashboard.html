@@ -433,6 +433,45 @@
       .st-donut-wrap { width: 90px; height: 90px; }
       .st-goal-pct { font-size: 15px; }
     }
+
+    /* 今日の目標（タスクタブ） */
+    .daily-goal-row {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+      background: var(--white); border-radius: var(--radius-lg); padding: 11px 20px;
+      box-shadow: var(--shadow); font-size: 13px;
+    }
+    .daily-goal-label { font-weight: 600; color: var(--text); flex: 1; }
+    .daily-goal-input {
+      width: 64px; padding: 5px 8px; border: 1.5px solid var(--border); border-radius: var(--radius);
+      font-size: 15px; font-weight: 600; text-align: center; font-family: inherit;
+      background: var(--bg); color: var(--text);
+    }
+    .daily-goal-input:focus { outline: none; border-color: var(--accent); }
+    .daily-goal-unit { font-size: 13px; color: var(--text-muted); }
+    .daily-goal-btn {
+      padding: 6px 16px; background: var(--accent); color: #fff; border: none;
+      border-radius: var(--radius); font-size: 12px; font-weight: 600; cursor: pointer;
+      font-family: inherit; transition: background 0.15s;
+    }
+    .daily-goal-btn:hover { filter: brightness(0.9); }
+    .daily-goal-saved {
+      font-size: 11px; color: var(--accent); font-weight: 600;
+      opacity: 0; transition: opacity 0.3s; margin-left: 2px;
+    }
+    .daily-goal-saved.show { opacity: 1; }
+    /* 学習時間タブ: 目標表示 */
+    .st-goal-display {
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+      background: var(--white); border-radius: var(--radius-lg); padding: 12px 20px;
+      box-shadow: var(--shadow); margin-bottom: 18px; font-size: 13px;
+    }
+    .st-goal-display-label { font-weight: 600; color: var(--text); }
+    .st-goal-display-val { font-size: 16px; font-weight: 700; color: var(--accent); }
+    .st-goal-display-link {
+      font-size: 11px; color: var(--text-muted); text-decoration: underline; cursor: pointer;
+      margin-left: auto;
+    }
+    .st-goal-display-link:hover { color: var(--accent); }
   </style>
 </head>
 <body>
@@ -476,7 +515,13 @@
       </div>
     </div>
 
-    <!-- 今日の学習時間バナー -->
+    <!-- 今日の目標 & 学習時間バナー -->
+    <div class="daily-goal-row" id="daily-goal-row">
+      <span class="daily-goal-label">🎯 今日の目標</span>
+      <input type="number" class="daily-goal-input" id="daily-goal-input" min="5" max="480" placeholder="60">
+      <span class="daily-goal-unit">分</span>
+      <button class="daily-goal-btn" onclick="saveDailyGoal()">保存</button>
+    </div>
     <div class="study-time-banner" id="study-time-bar">
       <span>📚</span>
       <span>今日の学習時間：</span>
@@ -733,11 +778,10 @@
             </div>
           </div>
         </div>
-        <div class="st-goal-row">
-          <span class="st-goal-label">📎 今日の目標</span>
-          <input type="number" class="st-goal-input" id="st-goal-input" min="10" max="480" value="60">
-          <span class="st-unit">分</span>
-          <button class="st-goal-btn" onclick="saveStudyGoal()">保存</button>
+        <div class="st-goal-display">
+          <span class="st-goal-display-label">📎 今日の目標：</span>
+          <span class="st-goal-display-val" id="st-goal-display-val">—</span>
+          <span class="st-goal-display-link" onclick="switchTab('task')">今日のタスクタブで変更</span>
         </div>
         <div class="st-chart-title">時間帯別 学習記録</div>
         <div class="st-chart-wrap"><canvas id="chart-today-hourly"></canvas></div>
@@ -1324,11 +1368,38 @@
     // ---- 学習時間グラフ ----
     var _stCharts = {};
     function getStudyLogs() { return JSON.parse(localStorage.getItem('study_logs') || '[]'); }
-    function getStudyGoal() { return parseInt(localStorage.getItem('study_goal') || '60'); }
-    function saveStudyGoal() {
-      var val = parseInt(document.getElementById('st-goal-input').value) || 60;
-      localStorage.setItem('study_goal', String(val));
-      renderStToday();
+    function getStudyGoal() {
+      var v = parseInt(localStorage.getItem('daily_goal_minutes'));
+      return isNaN(v) ? null : v;
+    }
+    function saveDailyGoal() {
+      var inp = document.getElementById('daily-goal-input');
+      var val = parseInt(inp ? inp.value : '') || 0;
+      if (val < 1) return;
+      localStorage.setItem('daily_goal_minutes', String(val));
+      var row = document.getElementById('daily-goal-row');
+      if (row) {
+        var saved = row.querySelector('.daily-goal-saved');
+        if (!saved) {
+          saved = document.createElement('span');
+          saved.className = 'daily-goal-saved';
+          saved.textContent = '✓ 保存しました';
+          row.appendChild(saved);
+        }
+        saved.classList.add('show');
+        setTimeout(function(){ saved.classList.remove('show'); }, 2000);
+      }
+    }
+    function initDailyGoalInput() {
+      var goal = getStudyGoal();
+      var inp = document.getElementById('daily-goal-input');
+      if (inp && goal) inp.value = String(goal);
+    }
+    function updateStGoalDisplay() {
+      var el = document.getElementById('st-goal-display-val');
+      if (!el) return;
+      var goal = getStudyGoal();
+      el.textContent = goal ? goal + '分' : '未設定';
     }
     function switchStTab(name) {
       ['today','week','month'].forEach(function(n) {
@@ -1347,8 +1418,8 @@
       if (typeof Chart === 'undefined') return;
       var total = getStudyTime(TODAY);
       var el = document.getElementById('st-today-total'); if (el) el.textContent = String(total);
-      var goal = getStudyGoal();
-      var gi = document.getElementById('st-goal-input'); if (gi) gi.value = goal;
+      updateStGoalDisplay();
+      var goal = getStudyGoal() || 0;
       var pct = goal > 0 ? Math.min(Math.round(total / goal * 100), 100) : 0;
       var pe = document.getElementById('st-goal-pct'); if (pe) pe.textContent = pct + '%';
       var dCtx = document.getElementById('chart-goal');
@@ -1473,7 +1544,7 @@
       });
       if (name === 'group') renderGruconSchedule();
       if (name === 'settings') initSettingsTab();
-      if (name === 'studytime') switchStTab('today');
+      if (name === 'studytime') { switchStTab('today'); updateStGoalDisplay(); }
     }
 
     // ---- 設定タブ ----
@@ -1648,6 +1719,7 @@ function addMemo() {
     renderGruconSchedule();
     updateConfirmBtnVisibility();
     updateStudyTimeDisplay();
+    initDailyGoalInput();
 
     function checkReportForm() {
       const name   = (document.getElementById('report-name')?.value || '').trim();
