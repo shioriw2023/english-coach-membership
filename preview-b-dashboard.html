@@ -429,6 +429,99 @@
       margin-left: auto;
     }
     .st-goal-display-link:hover { color: var(--accent); }
+
+    /* ---- 録音・添削モーダル ---- */
+    .pronun-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200; opacity: 0; pointer-events: none;
+      transition: opacity 0.22s; padding: 20px;
+    }
+    .pronun-overlay.open { opacity: 1; pointer-events: all; }
+    .pronun-modal {
+      background: var(--white); border-radius: 18px; width: 100%; max-width: 420px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+      transform: translateY(24px); transition: transform 0.25s;
+    }
+    .pronun-overlay.open .pronun-modal { transform: translateY(0); }
+    .pronun-modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 15px 20px; border-bottom: 1px solid var(--border);
+    }
+    .pronun-modal-title { font-size: 13px; font-weight: 700; color: var(--text); }
+    .pronun-close {
+      width: 28px; height: 28px; border: none; background: var(--bg);
+      border-radius: 50%; font-size: 13px; cursor: pointer; color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pronun-close:hover { background: var(--accent-light); color: var(--accent); }
+    .pronun-phrase-box {
+      margin: 16px 20px 0; padding: 14px 18px;
+      background: var(--accent-light); border-radius: var(--radius-lg);
+    }
+    .pronun-phrase-en { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .pronun-phrase-ja { font-size: 12px; color: var(--text-muted); }
+    .pronun-record-area {
+      padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 14px;
+    }
+    .pronun-mic-btn {
+      width: 88px; height: 88px; border-radius: 50%;
+      background: var(--accent-light); border: 3px solid var(--accent);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 5px; cursor: pointer; transition: all 0.2s; font-family: inherit;
+    }
+    .pronun-mic-btn:hover { background: var(--accent); }
+    .pronun-mic-btn:hover .pronun-mic-label { color: #fff; }
+    .pronun-mic-icon { font-size: 26px; line-height: 1; }
+    .pronun-mic-label { font-size: 10px; font-weight: 600; color: var(--accent); text-align: center; line-height: 1.3; }
+    @keyframes pronunPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(255,68,85,0.35); }
+      50%      { box-shadow: 0 0 0 14px rgba(255,68,85,0); }
+    }
+    .pronun-mic-btn.recording {
+      background: #FF4455; border-color: #FF4455;
+      animation: pronunPulse 1.1s infinite;
+    }
+    .pronun-mic-btn.recording .pronun-mic-label { color: #fff; }
+    .pronun-recognized {
+      width: 100%; background: var(--bg); border-radius: var(--radius);
+      padding: 10px 14px;
+    }
+    .pronun-recognized-label { font-size: 10px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .pronun-recognized-text { font-size: 14px; color: var(--text); font-weight: 500; min-height: 20px; }
+    .pronun-submit-btn {
+      display: block; width: calc(100% - 40px); margin: 0 20px 20px;
+      padding: 13px; background: var(--accent); color: #fff; border: none;
+      border-radius: var(--radius); font-size: 14px; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background 0.15s;
+    }
+    .pronun-submit-btn:hover { filter: brightness(0.9); }
+    .pronun-feedback-area { padding: 0 20px 20px; }
+    .pronun-score-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 14px; }
+    .pronun-score { font-size: 50px; font-weight: 700; color: var(--accent); line-height: 1; }
+    .pronun-grade {
+      font-size: 20px; font-weight: 700; padding: 3px 10px;
+      border-radius: 6px; background: var(--accent-light); color: var(--accent);
+    }
+    .pronun-grade.grade-s { background: #FFF3CD; color: #B07828; }
+    .pronun-grade.grade-b { background: #E8F5ED; color: #4A8C62; }
+    .pronun-grade.grade-c { background: #FDE8E8; color: #C04040; }
+    .pronun-score-label { font-size: 13px; color: var(--text-muted); }
+    .pronun-feedback-text {
+      font-size: 13px; color: var(--text); line-height: 1.8;
+      background: var(--bg); border-radius: var(--radius);
+      padding: 12px 16px; margin-bottom: 14px;
+    }
+    .pronun-audio-row { display: flex; gap: 8px; }
+    .pronun-audio-btn, .pronun-retry-btn {
+      flex: 1; padding: 9px 10px; border-radius: var(--radius);
+      font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+      transition: all 0.15s;
+    }
+    .pronun-audio-btn { background: var(--accent); color: #fff; border: none; }
+    .pronun-audio-btn:hover { filter: brightness(0.9); }
+    .pronun-retry-btn { background: none; color: var(--text-muted); border: 1.5px solid var(--border); }
+    .pronun-retry-btn:hover { border-color: var(--accent); color: var(--accent); }
   </style>
 </head>
 <body>
@@ -645,7 +738,7 @@
             <div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:2px;">Nice to meet you.</div>
             <div style="font-size:12px;color:var(--text-muted);font-weight:300;">はじめまして。</div>
           </div>
-          <button style="padding:8px 16px;background:var(--accent);color:#0D0D12;border:none;border-radius:var(--radius);font-size:11px;font-weight:700;letter-spacing:0.08em;cursor:pointer;" onclick="this.textContent='✓ Submitted';this.style.background='#4A8C62';this.style.color='#fff';this.disabled=true;">🎤 録音して提出</button>
+          <button style="padding:8px 16px;background:var(--accent);color:#0D0D12;border:none;border-radius:var(--radius);font-size:11px;font-weight:700;letter-spacing:0.08em;cursor:pointer;" onclick="openPronunModal('Nice to meet you.', 'はじめまして。')">🎤 録音して提出</button>
         </div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 22px;display:flex;align-items:center;gap:16px;">
           <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--accent);min-width:28px;">02</div>
@@ -653,7 +746,7 @@
             <div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:2px;">I really appreciate it.</div>
             <div style="font-size:12px;color:var(--text-muted);font-weight:300;">本当にありがとうございます。</div>
           </div>
-          <button style="padding:8px 16px;background:var(--accent);color:#0D0D12;border:none;border-radius:var(--radius);font-size:11px;font-weight:700;letter-spacing:0.08em;cursor:pointer;" onclick="this.textContent='✓ Submitted';this.style.background='#4A8C62';this.style.color='#fff';this.disabled=true;">🎤 録音して提出</button>
+          <button style="padding:8px 16px;background:var(--accent);color:#0D0D12;border:none;border-radius:var(--radius);font-size:11px;font-weight:700;letter-spacing:0.08em;cursor:pointer;" onclick="openPronunModal('I really appreciate it.', '本当にありがとうございます。')">🎤 録音して提出</button>
         </div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 22px;display:flex;align-items:center;gap:16px;">
           <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--accent);min-width:28px;">03</div>
@@ -661,7 +754,7 @@
             <div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:2px;">Could you say that again?</div>
             <div style="font-size:12px;color:var(--text-muted);font-weight:300;">もう一度言っていただけますか？</div>
           </div>
-          <button style="padding:8px 16px;background:var(--accent);color:#0D0D12;border:none;border-radius:var(--radius);font-size:11px;font-weight:700;letter-spacing:0.08em;cursor:pointer;" onclick="this.textContent='✓ Submitted';this.style.background='#4A8C62';this.style.color='#fff';this.disabled=true;">🎤 録音して提出</button>
+          <button style="padding:8px 16px;background:var(--accent);color:#0D0D12;border:none;border-radius:var(--radius);font-size:11px;font-weight:700;letter-spacing:0.08em;cursor:pointer;" onclick="openPronunModal('Could you say that again?', 'もう一度言っていただけますか？')">🎤 録音して提出</button>
         </div>
       </div>
       <div style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);">Coach Feedback</div>
@@ -901,6 +994,43 @@
         <div class="modal-footer">
           <button class="btn-modal-start">Start Task</button>
           <button class="btn-modal-close" onclick="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 録音・添削モーダル -->
+  <div class="pronun-overlay" id="pronun-overlay" onclick="closePronunModal(event)">
+    <div class="pronun-modal" id="pronun-modal">
+      <div class="pronun-modal-header">
+        <span class="pronun-modal-title">🎤 発音添削</span>
+        <button class="pronun-close" onclick="closePronunModal()">✕</button>
+      </div>
+      <div class="pronun-phrase-box">
+        <div class="pronun-phrase-en" id="pm-phrase-en"></div>
+        <div class="pronun-phrase-ja" id="pm-phrase-ja"></div>
+      </div>
+      <div class="pronun-record-area" id="pm-record-area">
+        <button class="pronun-mic-btn" id="pm-mic-btn" onclick="togglePronunRecording()">
+          <span class="pronun-mic-icon">🎤</span>
+          <span class="pronun-mic-label" id="pm-mic-label">タップして録音</span>
+        </button>
+        <div class="pronun-recognized" id="pm-recognized" style="display:none">
+          <div class="pronun-recognized-label">認識されたテキスト</div>
+          <div class="pronun-recognized-text" id="pm-recognized-text"></div>
+        </div>
+      </div>
+      <button class="pronun-submit-btn" id="pm-submit-btn" onclick="submitPronunReview()" style="display:none">✨ 添削する</button>
+      <div class="pronun-feedback-area" id="pm-feedback-area" style="display:none">
+        <div class="pronun-score-row">
+          <span class="pronun-score" id="pm-score">85</span>
+          <span class="pronun-grade" id="pm-grade">A</span>
+          <span class="pronun-score-label">/ 100点</span>
+        </div>
+        <div class="pronun-feedback-text" id="pm-feedback-text"></div>
+        <div class="pronun-audio-row">
+          <button class="pronun-audio-btn" onclick="playPronunFeedback()">🔊 フィードバックを聞く</button>
+          <button class="pronun-retry-btn" onclick="retryPronunRecording()">🔄 もう一度</button>
         </div>
       </div>
     </div>
@@ -1699,6 +1829,89 @@ function addMemo() {
           container.innerHTML = items.join('');
         }).catch(() => {});
     }
+    // ---- 発音添削モーダル ----
+    var _ps = { phrase:'', ja:'', spoken:'', feedback:'' };
+    var _pr = null, _prRecording = false;
+    function openPronunModal(en, ja) {
+      _ps.phrase = en; _ps.ja = ja; _ps.spoken = ''; _ps.feedback = '';
+      document.getElementById('pm-phrase-en').textContent = en;
+      document.getElementById('pm-phrase-ja').textContent = ja;
+      document.getElementById('pm-recognized').style.display = 'none';
+      document.getElementById('pm-recognized-text').textContent = '';
+      document.getElementById('pm-submit-btn').style.display = 'none';
+      document.getElementById('pm-feedback-area').style.display = 'none';
+      document.getElementById('pm-record-area').style.display = 'flex';
+      document.getElementById('pm-mic-btn').className = 'pronun-mic-btn';
+      document.getElementById('pm-mic-label').textContent = 'タップして録音';
+      document.getElementById('pronun-overlay').classList.add('open');
+    }
+    function closePronunModal(e) {
+      if (e && e.target !== document.getElementById('pronun-overlay')) return;
+      _stopPronunRec();
+      document.getElementById('pronun-overlay').classList.remove('open');
+    }
+    function togglePronunRecording() {
+      if (_prRecording) _stopPronunRec(); else _startPronunRec();
+    }
+    function _startPronunRec() {
+      var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { alert('音声認識はChromeブラウザでご利用ください。'); return; }
+      _pr = new SR(); _pr.lang = 'en-US'; _pr.continuous = false; _pr.interimResults = true;
+      _prRecording = true;
+      document.getElementById('pm-mic-btn').classList.add('recording');
+      document.getElementById('pm-mic-label').textContent = '録音中… タップで停止';
+      _pr.onresult = function(e) {
+        var t = ''; for (var i=0;i<e.results.length;i++) t+=e.results[i][0].transcript;
+        _ps.spoken=t; document.getElementById('pm-recognized-text').textContent=t; document.getElementById('pm-recognized').style.display='block';
+      };
+      _pr.onend = function() {
+        _prRecording=false; document.getElementById('pm-mic-btn').classList.remove('recording');
+        if(_ps.spoken){document.getElementById('pm-mic-label').textContent='✓ 録音完了';document.getElementById('pm-submit-btn').style.display='block';}
+        else{document.getElementById('pm-mic-label').textContent='タップして録音';}
+      };
+      _pr.onerror = function(ev) {
+        _prRecording=false; document.getElementById('pm-mic-btn').classList.remove('recording');
+        document.getElementById('pm-mic-label').textContent='タップして録音';
+        if(ev.error!=='no-speech') alert('エラー: '+ev.error);
+      };
+      _pr.start();
+    }
+    function _stopPronunRec() { _prRecording=false; if(_pr){try{_pr.stop();}catch(e){}} }
+    function submitPronunReview() {
+      var r=_analyzePronun(_ps.phrase,_ps.spoken); _ps.feedback=r.feedbackText;
+      document.getElementById('pm-record-area').style.display='none';
+      document.getElementById('pm-submit-btn').style.display='none';
+      document.getElementById('pm-feedback-area').style.display='block';
+      document.getElementById('pm-score').textContent=String(r.score);
+      var g=document.getElementById('pm-grade'); g.textContent=r.grade; g.className='pronun-grade grade-'+r.grade.toLowerCase();
+      document.getElementById('pm-feedback-text').textContent=r.feedbackText;
+    }
+    function _analyzePronun(target,spoken) {
+      var norm=function(s){return s.toLowerCase().replace(/[.,!?'";:]/g,'').trim();};
+      var tw=norm(target).split(/\s+/),sw=norm(spoken).split(/\s+/),match=0,missed=[];
+      tw.forEach(function(w){var ok=sw.some(function(s){return s===w||s.indexOf(w)===0||w.indexOf(s)===0;});if(ok)match++;else missed.push(w);});
+      var score=Math.round(match/tw.length*100),grade,feedbackText;
+      if(score>=90){grade='S';feedbackText='素晴らしい！とても自然な発音です。フレーズ全体を流暢に話せています。このまま自信を持って練習を続けてください！';}
+      else if(score>=75){grade='A';feedbackText='良い発音です！全体的によく聞き取れています。';if(missed.length)feedbackText+='「'+missed.join('」「')+'」の部分をもう少しはっきり発音するとさらに良くなります。';}
+      else if(score>=50){grade='B';feedbackText='基本的な発音はできています。';if(missed.length)feedbackText+='特に「'+missed.join('」「')+'」の発音を丁寧に確認してみてください。';feedbackText+='ゆっくり一語一語練習してから通しで言ってみましょう。';}
+      else{grade='C';feedbackText='もう少し練習が必要です。まずはお手本の音声をよく聴いて、一語一語確認しながらゆっくり練習してみましょう。繰り返し練習することで必ず上達します！';}
+      return{score:score,grade:grade,feedbackText:feedbackText};
+    }
+    function playPronunFeedback() {
+      if(!window.speechSynthesis)return; window.speechSynthesis.cancel();
+      var u=new SpeechSynthesisUtterance(_ps.feedback); u.lang='ja-JP'; u.rate=0.88; window.speechSynthesis.speak(u);
+    }
+    function retryPronunRecording() {
+      _ps.spoken='';_ps.feedback='';
+      document.getElementById('pm-recognized').style.display='none';
+      document.getElementById('pm-recognized-text').textContent='';
+      document.getElementById('pm-submit-btn').style.display='none';
+      document.getElementById('pm-feedback-area').style.display='none';
+      document.getElementById('pm-record-area').style.display='flex';
+      document.getElementById('pm-mic-btn').className='pronun-mic-btn';
+      document.getElementById('pm-mic-label').textContent='タップして録音';
+    }
+
     loadPastReports();
   </script>
 </body>
