@@ -374,6 +374,65 @@
       border: 1px solid var(--border); border-radius: 4px; font-size: 11px;
       cursor: pointer; white-space: nowrap; font-family: inherit;
     }
+
+    /* ---- 学習時間タブ ---- */
+    .st-tabs {
+      display: flex; gap: 3px; margin-bottom: 22px;
+      background: var(--accent-light); padding: 4px; border-radius: var(--radius-lg);
+    }
+    .st-tab {
+      flex: 1; padding: 9px 6px; border: none; background: none; border-radius: var(--radius);
+      font-size: 13px; font-weight: 600; color: var(--text-muted); cursor: pointer;
+      transition: all 0.15s; font-family: inherit;
+    }
+    .st-tab.active { background: var(--white); color: var(--accent); box-shadow: 0 1px 6px rgba(0,0,0,0.1); }
+    @keyframes stFadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+    .st-panel { animation: stFadeIn 0.2s; }
+    .st-hero-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      background: var(--white); border-radius: var(--radius-lg); padding: 24px 28px;
+      margin-bottom: 14px; box-shadow: var(--shadow); flex-wrap: wrap;
+    }
+    .st-hero-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 10px; }
+    .st-hero-val { line-height: 1; }
+    .st-big { font-size: 52px; font-weight: 700; color: var(--accent); line-height: 1; }
+    .st-unit { font-size: 15px; color: var(--text-muted); margin-left: 3px; }
+    .st-donut-wrap { position: relative; width: 110px; height: 110px; flex-shrink: 0; }
+    .st-donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; pointer-events: none; }
+    .st-goal-pct { font-size: 18px; font-weight: 700; color: var(--accent); }
+    .st-donut-sub { font-size: 10px; color: var(--text-muted); letter-spacing: 0.05em; }
+    .st-goal-row {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 18px; font-size: 13px;
+      color: var(--text-muted); background: var(--white); border-radius: var(--radius-lg);
+      padding: 12px 20px; box-shadow: var(--shadow);
+    }
+    .st-goal-label { font-weight: 600; color: var(--text); flex: 1; }
+    .st-goal-input {
+      width: 64px; padding: 5px 8px; border: 1.5px solid var(--border); border-radius: var(--radius);
+      font-size: 15px; font-weight: 600; text-align: center; font-family: inherit; background: var(--bg); color: var(--text);
+    }
+    .st-goal-btn {
+      padding: 6px 16px; background: var(--accent); color: #fff; border: none;
+      border-radius: var(--radius); font-size: 12px; font-weight: 600; cursor: pointer;
+      font-family: inherit; transition: background 0.15s;
+    }
+    .st-goal-btn:hover { filter: brightness(0.9); }
+    .st-stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; margin-bottom: 14px; }
+    .st-stat-card { background: var(--white); border-radius: var(--radius-lg); padding: 18px 18px 16px; box-shadow: var(--shadow); }
+    .st-stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 8px; }
+    .st-highlight {
+      background: var(--accent-light); border-radius: var(--radius); padding: 11px 18px;
+      font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 16px;
+      min-height: 42px; display: flex; align-items: center;
+    }
+    .st-chart-title { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .st-chart-wrap { background: var(--white); border-radius: var(--radius-lg); padding: 20px 14px 14px; box-shadow: var(--shadow); }
+    @media (max-width: 500px) {
+      .st-hero-row { padding: 18px 16px; }
+      .st-big { font-size: 42px; }
+      .st-donut-wrap { width: 90px; height: 90px; }
+      .st-goal-pct { font-size: 15px; }
+    }
   </style>
 </head>
 <body>
@@ -433,6 +492,7 @@
       <div class="tab" onclick="switchTab('pronunciation')">発音添削</div>
       <div class="tab" onclick="switchTab('report')">成果報告</div>
       <div class="tab" onclick="switchTab('memo')">メモ</div>
+      <div class="tab" onclick="switchTab('studytime')">学習時間</div>
       <div class="tab" onclick="switchTab('settings')">設定</div>
     </div>
 
@@ -649,6 +709,75 @@
         <button onclick="addMemo()" style="margin-top:10px;padding:9px 22px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;">＋ メモを追加</button>
       </div>
       <div id="memo-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+    </div>
+
+    <!-- 学習時間タブ -->
+    <div class="tab-panel" id="tab-studytime">
+      <div class="st-tabs">
+        <button class="st-tab active" data-stname="today" onclick="switchStTab('today')">今日</button>
+        <button class="st-tab" data-stname="week" onclick="switchStTab('week')">今週</button>
+        <button class="st-tab" data-stname="month" onclick="switchStTab('month')">今月</button>
+      </div>
+      <!-- 今日 -->
+      <div class="st-panel" id="stp-today">
+        <div class="st-hero-row">
+          <div>
+            <div class="st-hero-label">今日の学習時間</div>
+            <div class="st-hero-val"><span class="st-big" id="st-today-total">0</span><span class="st-unit">分</span></div>
+          </div>
+          <div class="st-donut-wrap">
+            <canvas id="chart-goal" width="110" height="110"></canvas>
+            <div class="st-donut-center">
+              <div class="st-goal-pct" id="st-goal-pct">0%</div>
+              <div class="st-donut-sub">達成</div>
+            </div>
+          </div>
+        </div>
+        <div class="st-goal-row">
+          <span class="st-goal-label">📎 今日の目標</span>
+          <input type="number" class="st-goal-input" id="st-goal-input" min="10" max="480" value="60">
+          <span class="st-unit">分</span>
+          <button class="st-goal-btn" onclick="saveStudyGoal()">保存</button>
+        </div>
+        <div class="st-chart-title">時間帯別 学習記録</div>
+        <div class="st-chart-wrap"><canvas id="chart-today-hourly"></canvas></div>
+      </div>
+      <!-- 今週 -->
+      <div class="st-panel" id="stp-week" style="display:none">
+        <div class="st-stats-row">
+          <div class="st-stat-card">
+            <div class="st-stat-label">今週の合計</div>
+            <div><span class="st-big" id="st-week-total">0</span><span class="st-unit">分</span></div>
+          </div>
+          <div class="st-stat-card">
+            <div class="st-stat-label">1日平均</div>
+            <div><span class="st-big" id="st-week-avg">0</span><span class="st-unit">分</span></div>
+          </div>
+        </div>
+        <div class="st-highlight" id="st-week-best"></div>
+        <div class="st-chart-title">曜日別 学習時間</div>
+        <div class="st-chart-wrap"><canvas id="chart-week"></canvas></div>
+      </div>
+      <!-- 今月 -->
+      <div class="st-panel" id="stp-month" style="display:none">
+        <div class="st-stats-row">
+          <div class="st-stat-card">
+            <div class="st-stat-label">今月の合計</div>
+            <div><span class="st-big" id="st-month-total">0</span><span class="st-unit">分</span></div>
+          </div>
+          <div class="st-stat-card">
+            <div class="st-stat-label">1日平均</div>
+            <div><span class="st-big" id="st-month-avg">0</span><span class="st-unit">分</span></div>
+          </div>
+          <div class="st-stat-card">
+            <div class="st-stat-label">学習した日数</div>
+            <div><span class="st-big" id="st-month-days">0</span><span class="st-unit">日</span></div>
+          </div>
+        </div>
+        <div class="st-highlight" id="st-streak"></div>
+        <div class="st-chart-title">日別 学習時間</div>
+        <div class="st-chart-wrap"><canvas id="chart-month"></canvas></div>
+      </div>
     </div>
 
     <!-- 設定タブ -->
@@ -1150,6 +1279,19 @@
     function addStudyTime(date, mins) {
       const cur = getStudyTime(date);
       localStorage.setItem('study_time_' + date, String(cur + mins));
+      // study_logs 配列に記録
+      const logs = JSON.parse(localStorage.getItem('study_logs') || '[]');
+      const existing = logs.find(function(l){ return l.date === date; });
+      if (existing) { existing.minutes += mins; } else { logs.push({ date: date, minutes: mins }); }
+      localStorage.setItem('study_logs', JSON.stringify(logs));
+      // 時間帯別記録（今日のみ）
+      if (date === TODAY) {
+        const hour = String(new Date().getHours()).padStart(2, '0');
+        const hKey = 'study_hourly_' + date;
+        const hourly = JSON.parse(localStorage.getItem(hKey) || '{}');
+        hourly[hour] = (hourly[hour] || 0) + mins;
+        localStorage.setItem(hKey, JSON.stringify(hourly));
+      }
       updateStudyTimeDisplay();
     }
     function updateStudyTimeDisplay() {
@@ -1179,6 +1321,129 @@
       }
     }
 
+    // ---- 学習時間グラフ ----
+    var _stCharts = {};
+    function getStudyLogs() { return JSON.parse(localStorage.getItem('study_logs') || '[]'); }
+    function getStudyGoal() { return parseInt(localStorage.getItem('study_goal') || '60'); }
+    function saveStudyGoal() {
+      var val = parseInt(document.getElementById('st-goal-input').value) || 60;
+      localStorage.setItem('study_goal', String(val));
+      renderStToday();
+    }
+    function switchStTab(name) {
+      ['today','week','month'].forEach(function(n) {
+        var p = document.getElementById('stp-' + n); if (p) p.style.display = n === name ? 'block' : 'none';
+      });
+      document.querySelectorAll('.st-tab').forEach(function(t) { t.classList.toggle('active', t.dataset.stname === name); });
+      if (name === 'today') renderStToday();
+      else if (name === 'week') renderStWeek();
+      else if (name === 'month') renderStMonth();
+    }
+    function stAccent() { return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#D0748A'; }
+    function stLight()  { return getComputedStyle(document.documentElement).getPropertyValue('--accent-light').trim() || '#FAE8EE'; }
+    function stIsDark() { var bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim(); return bg.startsWith('#0') || bg.startsWith('#1'); }
+
+    function renderStToday() {
+      if (typeof Chart === 'undefined') return;
+      var total = getStudyTime(TODAY);
+      var el = document.getElementById('st-today-total'); if (el) el.textContent = String(total);
+      var goal = getStudyGoal();
+      var gi = document.getElementById('st-goal-input'); if (gi) gi.value = goal;
+      var pct = goal > 0 ? Math.min(Math.round(total / goal * 100), 100) : 0;
+      var pe = document.getElementById('st-goal-pct'); if (pe) pe.textContent = pct + '%';
+      var dCtx = document.getElementById('chart-goal');
+      if (dCtx) {
+        if (_stCharts.goal) _stCharts.goal.destroy();
+        _stCharts.goal = new Chart(dCtx, {
+          type: 'doughnut',
+          data: { datasets: [{ data: [Math.max(pct,1), Math.max(100-pct,0)], backgroundColor: [stAccent(), stLight()], borderWidth: 0, hoverOffset: 0 }] },
+          options: { cutout: '78%', animation: { duration: 500 }, plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+        });
+      }
+      var hourly = JSON.parse(localStorage.getItem('study_hourly_' + TODAY) || '{}');
+      var hLabels = Array.from({length:24}, function(_,i){ return i % 3 === 0 ? i+'時' : ''; });
+      var hData   = Array.from({length:24}, function(_,i){ return hourly[String(i).padStart(2,'0')] || 0; });
+      var dk = stIsDark();
+      var hCtx = document.getElementById('chart-today-hourly');
+      if (hCtx) {
+        if (_stCharts.todayHourly) _stCharts.todayHourly.destroy();
+        var a2 = stAccent(), l2 = stLight();
+        _stCharts.todayHourly = new Chart(hCtx, {
+          type: 'bar',
+          data: { labels: hLabels, datasets: [{ data: hData, backgroundColor: hData.map(function(v){ return v>0?a2:l2; }), borderRadius: 4, borderSkipped: false }] },
+          options: { responsive: true, plugins: { legend: { display: false } },
+            scales: {
+              x: { grid: { display:false }, ticks: { color: dk?'rgba(255,255,255,0.5)':undefined, font:{size:10} } },
+              y: { beginAtZero:true, grid: { color: dk?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)' }, ticks: { color: dk?'rgba(255,255,255,0.5)':undefined, font:{size:10}, stepSize:10 } }
+            }
+          }
+        });
+      }
+    }
+
+    function renderStWeek() {
+      if (typeof Chart === 'undefined') return;
+      var logs = getStudyLogs(), today = new Date(), dow = today.getDay();
+      var monday = new Date(today); monday.setDate(today.getDate() - (dow===0?6:dow-1));
+      var dayN = ['月','火','水','木','金','土','日'];
+      var wDates = Array.from({length:7}, function(_,i){ var d=new Date(monday); d.setDate(monday.getDate()+i); return d.toISOString().slice(0,10); });
+      var data = wDates.map(function(date){ if(date===TODAY) return getStudyTime(TODAY); var l=logs.find(function(x){return x.date===date;}); return l?l.minutes:0; });
+      var total = data.reduce(function(a,b){return a+b;},0);
+      var active = data.filter(function(v){return v>0;}).length;
+      var avg = active>0?Math.round(total/active):0;
+      var maxVal = Math.max.apply(null,data), maxIdx = data.indexOf(maxVal);
+      var te=document.getElementById('st-week-total'); if(te) te.textContent=String(total);
+      var ae=document.getElementById('st-week-avg'); if(ae) ae.textContent=String(avg);
+      var be=document.getElementById('st-week-best');
+      if(be) be.textContent = total>0&&maxVal>0 ? '✨ 最も頑張った曜日：'+dayN[maxIdx]+'曜日（'+maxVal+'分）' : 'まだ今週のデータがありません。学習を記録してみましょう！';
+      var dk=stIsDark(), a=stAccent(), l=stLight();
+      var ctx=document.getElementById('chart-week');
+      if(ctx) {
+        if(_stCharts.week) _stCharts.week.destroy();
+        _stCharts.week = new Chart(ctx, {
+          type: 'bar',
+          data: { labels: dayN.map(function(d){return d+'曜';}), datasets: [{ data:data, backgroundColor:data.map(function(v,i){return i===maxIdx&&v>0?a:l;}), borderRadius:6, borderSkipped:false }] },
+          options: { responsive:true, plugins:{legend:{display:false}},
+            scales: {
+              x: { grid:{display:false}, ticks:{color:dk?'rgba(255,255,255,0.5)':undefined,font:{size:12}} },
+              y: { beginAtZero:true, grid:{color:dk?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)'}, ticks:{color:dk?'rgba(255,255,255,0.5)':undefined,font:{size:11}} }
+            }
+          }
+        });
+      }
+    }
+
+    function renderStMonth() {
+      if (typeof Chart === 'undefined') return;
+      var logs=getStudyLogs(), now=new Date(), y=now.getFullYear(), m=now.getMonth();
+      var dim=new Date(y,m+1,0).getDate();
+      var data=Array.from({length:dim},function(_,i){ var date=new Date(y,m,i+1).toISOString().slice(0,10); if(date===TODAY) return getStudyTime(TODAY); var l=logs.find(function(x){return x.date===date;}); return l?l.minutes:0; });
+      var total=data.reduce(function(a,b){return a+b;},0);
+      var sd=data.filter(function(v){return v>0;}).length;
+      var avg=sd>0?Math.round(total/sd):0;
+      var streak=0; for(var i=now.getDate()-1;i>=0;i--){ if(data[i]>0) streak++; else break; }
+      var te=document.getElementById('st-month-total'); if(te) te.textContent=String(total);
+      var ae=document.getElementById('st-month-avg'); if(ae) ae.textContent=String(avg);
+      var de=document.getElementById('st-month-days'); if(de) de.textContent=String(sd);
+      var se=document.getElementById('st-streak');
+      if(se) se.textContent = streak>=3?'🔥 '+streak+'日連続学習中！すごい！': streak>=1?'📚 '+streak+'日連続学習中！継続しましょう！':'学習を始めて連続記録を作りましょう！';
+      var dk=stIsDark(), a=stAccent(), l=stLight();
+      var ctx=document.getElementById('chart-month');
+      if(ctx) {
+        if(_stCharts.month) _stCharts.month.destroy();
+        _stCharts.month = new Chart(ctx, {
+          type: 'bar',
+          data: { labels:Array.from({length:dim},function(_,i){return (i+1)+'日';}), datasets:[{data:data, backgroundColor:data.map(function(v){return v>0?a:l;}), borderRadius:3, borderSkipped:false}] },
+          options: { responsive:true, plugins:{legend:{display:false}},
+            scales: {
+              x: { grid:{display:false}, ticks:{color:dk?'rgba(255,255,255,0.5)':undefined,font:{size:9},maxRotation:0,callback:function(v,i){return (i+1)%5===1?(i+1)+'日':'';}  } },
+              y: { beginAtZero:true, grid:{color:dk?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)'}, ticks:{color:dk?'rgba(255,255,255,0.5)':undefined,font:{size:10}} }
+            }
+          }
+        });
+      }
+    }
+
     function confirmComplete(id, date, event, skipTime) {
       event.stopPropagation();
       if (!skipTime) {
@@ -1199,7 +1464,7 @@
     }
 
     function switchTab(name) {
-      const names = ['task','lesson','group','manual','pronunciation','report','memo','settings'];
+      const names = ['task','lesson','group','manual','pronunciation','report','memo','studytime','settings'];
       document.querySelectorAll('.tab').forEach((t, i) => {
         t.classList.toggle('active', names[i] === name);
       });
@@ -1208,6 +1473,7 @@
       });
       if (name === 'group') renderGruconSchedule();
       if (name === 'settings') initSettingsTab();
+      if (name === 'studytime') switchStTab('today');
     }
 
     // ---- 設定タブ ----
@@ -1452,6 +1718,7 @@ function addMemo() {
     // ページ読み込み時に過去の報告を取得
     loadPastReports();
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script>
