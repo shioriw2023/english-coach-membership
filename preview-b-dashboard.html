@@ -395,6 +395,16 @@
     }
     .daily-goal-input:focus { outline: none; border-color: var(--accent); }
     .daily-goal-unit { font-size: 13px; color: var(--text-muted); }
+    .daily-goal-val {
+      font-size: 18px; font-weight: 700; color: var(--accent); margin-right: 2px;
+    }
+    .daily-goal-edit-btn {
+      padding: 5px 13px; background: none; color: var(--accent);
+      border: 1.5px solid var(--accent); border-radius: var(--radius);
+      font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+      transition: all 0.15s; white-space: nowrap;
+    }
+    .daily-goal-edit-btn:hover { background: var(--accent); color: #fff; }
     .daily-goal-btn {
       padding: 6px 16px; background: var(--accent); color: #fff; border: none;
       border-radius: var(--radius); font-size: 12px; font-weight: 600; cursor: pointer;
@@ -465,10 +475,17 @@
 
     <!-- 今日の目標 & 学習時間バナー -->
     <div class="daily-goal-row" id="daily-goal-row">
-      <span class="daily-goal-label">🎯 今日の目標</span>
-      <input type="number" class="daily-goal-input" id="daily-goal-input" min="5" max="480" placeholder="60">
-      <span class="daily-goal-unit">分</span>
-      <button class="daily-goal-btn" onclick="saveDailyGoal()">保存</button>
+      <span class="daily-goal-label">🎯 今日の学習時間目標</span>
+      <div id="daily-goal-view" style="display:flex;align-items:center;gap:8px;">
+        <span class="daily-goal-val" id="daily-goal-val-text">—</span>
+        <span class="daily-goal-unit" id="daily-goal-val-unit" style="display:none">分</span>
+        <button class="daily-goal-edit-btn" onclick="editDailyGoal()">編集</button>
+      </div>
+      <div id="daily-goal-edit" style="display:none;align-items:center;gap:8px;">
+        <input type="number" class="daily-goal-input" id="daily-goal-input" min="5" max="480" placeholder="60">
+        <span class="daily-goal-unit">分</span>
+        <button class="daily-goal-btn" onclick="saveDailyGoal()">保存</button>
+      </div>
     </div>
     <div class="study-time-banner" id="study-time-bar">
       <span>📚</span>
@@ -1263,23 +1280,31 @@
       var val = parseInt(inp ? inp.value : '') || 0;
       if (val < 1) return;
       localStorage.setItem('daily_goal_minutes', String(val));
-      var row = document.getElementById('daily-goal-row');
-      if (row) {
-        var saved = row.querySelector('.daily-goal-saved');
-        if (!saved) {
-          saved = document.createElement('span');
-          saved.className = 'daily-goal-saved';
-          saved.textContent = '✓ 保存しました';
-          row.appendChild(saved);
-        }
-        saved.classList.add('show');
-        setTimeout(function(){ saved.classList.remove('show'); }, 2000);
-      }
+      _showDailyGoalView(val);
+      updateStGoalDisplay();
     }
-    function initDailyGoalInput() {
+    function editDailyGoal() {
       var goal = getStudyGoal();
       var inp = document.getElementById('daily-goal-input');
       if (inp && goal) inp.value = String(goal);
+      var view = document.getElementById('daily-goal-view');
+      var edit = document.getElementById('daily-goal-edit');
+      if (view) view.style.display = 'none';
+      if (edit) { edit.style.display = 'flex'; if (inp) inp.focus(); }
+    }
+    function _showDailyGoalView(val) {
+      var view = document.getElementById('daily-goal-view');
+      var edit = document.getElementById('daily-goal-edit');
+      var txt  = document.getElementById('daily-goal-val-text');
+      var unit = document.getElementById('daily-goal-val-unit');
+      if (txt)  txt.textContent = val ? String(val) : '未設定';
+      if (unit) unit.style.display = val ? 'inline' : 'none';
+      if (view) view.style.display = 'flex';
+      if (edit) edit.style.display = 'none';
+    }
+    function initDailyGoalInput() {
+      var goal = getStudyGoal();
+      _showDailyGoalView(goal);
     }
     function updateStGoalDisplay() {
       var el = document.getElementById('st-goal-display-val');
