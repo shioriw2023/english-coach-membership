@@ -73,6 +73,8 @@
     .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
     .topbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 32px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
     .topbar-title { font-size: 15px; font-weight: 600; }
+    .btn-logout { padding: 7px 16px; background: transparent; color: var(--text-muted); border: 1.5px solid var(--border); border-radius: var(--radius); font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; letter-spacing: 0.03em; }
+    .btn-logout:hover { background: #FBE8EC; color: var(--accent); border-color: rgba(208,116,138,0.4); }
     .content { padding: 32px; overflow-y: auto; flex: 1; }
 
     /* 統計カード */
@@ -258,6 +260,7 @@
   <div class="main">
     <div class="topbar">
       <div class="topbar-title">受講生管理</div>
+      <button class="btn-logout" onclick="doLogout()">ログアウト</button>
     </div>
     <div class="content">
 
@@ -786,16 +789,50 @@
     };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
+    // ===== AUTH & AUTO-LOGOUT =====
+    var inactivityTimer = null;
+    var TIMEOUT_MS = 60 * 60 * 1000; // 60分
+
+    function resetInactivityTimer() {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(function() {
+        doLogout(true);
+      }, TIMEOUT_MS);
+    }
+
+    function startInactivityWatch() {
+      ['click','keydown','mousemove','touchstart','scroll'].forEach(function(ev) {
+        document.addEventListener(ev, resetInactivityTimer, { passive: true });
+      });
+      resetInactivityTimer();
+    }
+
     function doLogin() {
       var pw = document.getElementById('login-pw').value;
       if (pw === 'coach2026') {
         document.getElementById('login-gate').classList.add('hidden');
+        startInactivityWatch();
       } else {
         document.getElementById('login-error').textContent = 'パスワードが違います';
         document.getElementById('login-pw').value = '';
         document.getElementById('login-pw').focus();
       }
     }
+
+    function doLogout(isAuto) {
+      clearTimeout(inactivityTimer);
+      ['click','keydown','mousemove','touchstart','scroll'].forEach(function(ev) {
+        document.removeEventListener(ev, resetInactivityTimer);
+      });
+      var gate = document.getElementById('login-gate');
+      gate.classList.remove('hidden');
+      var sub = gate.querySelector('.login-sub');
+      if (sub) sub.textContent = isAuto ? '60分操作がなかったためログアウトしました' : 'ADMIN PANEL';
+      document.getElementById('login-pw').value = '';
+      document.getElementById('login-error').textContent = '';
+      document.getElementById('login-pw').focus();
+    }
+
     const db = firebase.firestore();
     loadStudents();
     loadReports();
