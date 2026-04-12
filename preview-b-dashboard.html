@@ -459,6 +459,14 @@
       margin: 16px 20px 0; padding: 14px 18px;
       background: var(--accent-light); border-radius: var(--radius-lg);
     }
+    .pronun-demo-btn {
+      margin-top: 10px; padding: 5px 14px; background: var(--white);
+      border: 1.5px solid var(--accent); border-radius: 20px;
+      font-size: 12px; font-weight: 600; color: var(--accent); cursor: pointer;
+      font-family: inherit; transition: all 0.15s; display: inline-flex; align-items: center; gap: 5px;
+    }
+    .pronun-demo-btn:hover { background: var(--accent); color: #fff; }
+    .pronun-demo-btn.playing { background: var(--accent); color: #fff; }
     .pronun-phrase-en { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
     .pronun-phrase-ja { font-size: 12px; color: var(--text-muted); }
     .pronun-record-area {
@@ -1009,6 +1017,9 @@
       <div class="pronun-phrase-box">
         <div class="pronun-phrase-en" id="pm-phrase-en"></div>
         <div class="pronun-phrase-ja" id="pm-phrase-ja"></div>
+        <button class="pronun-demo-btn" id="pm-demo-btn" onclick="playDemoAudio()">
+          <span id="pm-demo-icon">🔊</span> お手本を聞く
+        </button>
       </div>
       <div class="pronun-record-area" id="pm-record-area">
         <button class="pronun-mic-btn" id="pm-mic-btn" onclick="togglePronunRecording()">
@@ -1832,6 +1843,26 @@ function addMemo() {
     // ---- 発音添削モーダル ----
     var _ps = { phrase:'', ja:'', spoken:'', feedback:'' };
     var _pr = null, _prRecording = false;
+    function playDemoAudio() {
+      if (!window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      var btn = document.getElementById('pm-demo-btn');
+      var icon = document.getElementById('pm-demo-icon');
+      if (btn) { btn.classList.add('playing'); btn.disabled = true; }
+      if (icon) icon.textContent = '▶';
+      var u = new SpeechSynthesisUtterance(_ps.phrase);
+      u.lang = 'en-US'; u.rate = 0.82; u.pitch = 1.05;
+      var voices = window.speechSynthesis.getVoices();
+      var enVoice = voices.find(function(v){ return v.lang === 'en-US' && v.localService; })
+                 || voices.find(function(v){ return v.lang.startsWith('en'); });
+      if (enVoice) u.voice = enVoice;
+      u.onend = function() {
+        if (btn) { btn.classList.remove('playing'); btn.disabled = false; }
+        if (icon) icon.textContent = '🔊';
+      };
+      window.speechSynthesis.speak(u);
+    }
+
     function openPronunModal(en, ja) {
       _ps.phrase = en; _ps.ja = ja; _ps.spoken = ''; _ps.feedback = '';
       document.getElementById('pm-phrase-en').textContent = en;
