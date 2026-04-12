@@ -789,7 +789,6 @@
     function doLogin() {
       var pw = document.getElementById('login-pw').value;
       if (pw === 'coach2026') {
-        sessionStorage.setItem('admin_auth', '1');
         document.getElementById('login-gate').classList.add('hidden');
       } else {
         document.getElementById('login-error').textContent = 'パスワードが違います';
@@ -798,10 +797,6 @@
       }
     }
     const db = firebase.firestore();
-    // ログイン確認
-    if (sessionStorage.getItem('admin_auth') === '1') {
-      document.getElementById('login-gate').classList.add('hidden');
-    }
     loadStudents();
     loadReports();
   </script>
