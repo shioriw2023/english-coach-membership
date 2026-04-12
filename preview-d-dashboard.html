@@ -2093,7 +2093,7 @@
     }
 
     function switchTab(name) {
-      const names = ['task','lesson','group','manual','pronunciation','report','memo','studytime','settings'];
+      const names = ['task','lesson','pronunciation','group','studytime','report','manual','memo','settings'];
       document.querySelectorAll('.tab').forEach((t, i) => {
         t.classList.toggle('active', names[i] === name);
       });
