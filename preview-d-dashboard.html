@@ -608,6 +608,15 @@
     .m-item-icon { font-size: 20px; flex-shrink: 0; }
     .m-item-title { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; }
     .m-item-count { font-size: 11px; color: var(--text-muted); background: #f3f3f3; padding: 2px 8px; border-radius: 20px; }
+    .m-item-btn {
+      padding: 5px 14px; font-size: 11px; font-weight: 600; font-family: inherit;
+      background: var(--accent-light); color: var(--accent);
+      border: 1.5px solid rgba(0,0,0,0.06); border-radius: 20px;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+      transition: background 0.15s, color 0.15s;
+    }
+    .m-item-btn:hover { background: var(--accent); color: #fff; }
+    .m-item.open .m-item-btn { background: var(--accent); color: #fff; }
     .m-item-arrow { font-size: 14px; color: var(--text-muted); transition: transform 0.25s; line-height: 1; }
     .m-item.open .m-item-arrow { transform: rotate(180deg); }
     .m-item-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
@@ -832,7 +841,7 @@
         <div class="m-item-header" onclick="toggleManual(0)">
           <span class="m-item-icon">🖥️</span>
           <span class="m-item-title">会員サイトの使い方</span>
-          <span class="m-item-count">6セクション</span>
+          <button class="m-item-btn" onclick="toggleManual(0);event.stopPropagation()">使い方を見る</button>
           <span class="m-item-arrow">▾</span>
         </div>
         <div class="m-item-body"><div class="m-item-inner">
@@ -905,7 +914,7 @@
         <div class="m-item-header" onclick="toggleManual(1)">
           <span class="m-item-icon">💬</span>
           <span class="m-item-title">Discordの使い方</span>
-          <span class="m-item-count">7セクション</span>
+          <button class="m-item-btn" onclick="toggleManual(1);event.stopPropagation()">使い方を見る</button>
           <span class="m-item-arrow">▾</span>
         </div>
         <div class="m-item-body"><div class="m-item-inner">
@@ -986,7 +995,7 @@
         <div class="m-item-header" onclick="toggleManual(2)">
           <span class="m-item-icon">📚</span>
           <span class="m-item-title">Quizletの使い方</span>
-          <span class="m-item-count">7セクション</span>
+          <button class="m-item-btn" onclick="toggleManual(2);event.stopPropagation()">使い方を見る</button>
           <span class="m-item-arrow">▾</span>
         </div>
         <div class="m-item-body"><div class="m-item-inner">
@@ -1068,7 +1077,7 @@
         <div class="m-item-header" onclick="toggleManual(3)">
           <span class="m-item-icon">📹</span>
           <span class="m-item-title">Zoomの使い方</span>
-          <span class="m-item-count">8セクション</span>
+          <button class="m-item-btn" onclick="toggleManual(3);event.stopPropagation()">使い方を見る</button>
           <span class="m-item-arrow">▾</span>
         </div>
         <div class="m-item-body"><div class="m-item-inner">

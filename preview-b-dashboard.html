@@ -555,6 +555,15 @@
     .m-item-icon { font-size: 20px; flex-shrink: 0; }
     .m-item-title { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; }
     .m-item-count { font-size: 11px; color: var(--text-muted); background: #f3f3f3; padding: 2px 8px; border-radius: 20px; }
+    .m-item-btn {
+      padding: 5px 14px; font-size: 11px; font-weight: 600; font-family: inherit;
+      background: var(--accent-light); color: var(--accent);
+      border: 1.5px solid rgba(0,0,0,0.06); border-radius: 20px;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+      transition: background 0.15s, color 0.15s;
+    }
+    .m-item-btn:hover { background: var(--accent); color: #fff; }
+    .m-item.open .m-item-btn { background: var(--accent); color: #fff; }
     .m-item-arrow { font-size: 14px; color: var(--text-muted); transition: transform 0.25s; line-height: 1; }
     .m-item.open .m-item-arrow { transform: rotate(180deg); }
     .m-item-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
@@ -788,7 +797,343 @@
       <p class="schedule-header">グループコーチング日程（暫定）— 毎週水曜 21:00〜</p>
       <div class="schedule-grid" id="grucon-schedule"></div>
     </div>
-    <div class="tab-panel" id="tab-manual"><p style="color:var(--text-muted);font-size:13px;padding:24px 0;font-weight:300;">マニュアルは追加予定です。</p></div>
+    <!-- マニュアルタブ -->
+    <div class="tab-panel" id="tab-manual">
+
+      <div class="manual-search-wrap">
+        <input type="text" class="manual-search-box" id="m-search" placeholder="キーワードで検索（例：ログイン、通知、画面共有）" oninput="filterManual(this.value)">
+      </div>
+      <div class="manual-search-empty" id="m-search-empty">該当する内容が見つかりませんでした</div>
+
+      <!-- 1. 会員サイト -->
+      <div class="m-item" id="m-item-0">
+        <div class="m-item-header" onclick="toggleManual(0)">
+          <span class="m-item-icon">🖥️</span>
+          <span class="m-item-title">会員サイトの使い方</span>
+          <button class="m-item-btn" onclick="toggleManual(0);event.stopPropagation()">使い方を見る</button>
+          <span class="m-item-arrow">▾</span>
+        </div>
+        <div class="m-item-body"><div class="m-item-inner">
+          <div class="m-section" data-text="ログイン方法 メールアドレス パスワード ログインボタン">
+            <div class="m-section-title">🔑 ログイン方法</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>ブラウザで会員サイトのURLを開きます。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>メールアドレスとパスワードを入力します。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>「ログイン」ボタンをクリックしてください。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>ダッシュボードが表示されたらログイン完了です。</span></li>
+            </ul>
+            <div class="m-tip">💡 ブラウザの「パスワードを保存」機能を使うと次回から楽になります。</div>
+          </div>
+          <div class="m-section" data-text="今日のタスク 使い方 チェック 完了 タスク一覧">
+            <div class="m-section-title">✅ 今日のタスクの使い方</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>ダッシュボード上部の「今日のタスク」セクションを確認します。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>各タスクカードをクリックすると詳細ページが開きます。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>練習を完了したらチェックボタンを押して記録します。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>完了したタスクはチェックマークで表示されます。</span></li>
+            </ul>
+            <div class="m-tip">💡 毎日タスクをこなすことで学習ストリークが記録されます。</div>
+          </div>
+          <div class="m-section" data-text="学習時間 記録 タイマー スタート ストップ">
+            <div class="m-section-title">⏱ 学習時間の記録方法</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>ダッシュボードの「学習時間」カードを確認します。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>各練習ページ（音読・スピーキングなど）を開いて学習を進めます。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>練習完了後、自動的に学習ログが更新されます。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>週間・月間の累計時間がグラフで確認できます。</span></li>
+            </ul>
+            <div class="m-tip">💡 1日の目標時間は設定画面から変更できます。</div>
+          </div>
+          <div class="m-section" data-text="発音添削 録音 送信 フィードバック 音声">
+            <div class="m-section-title">🎙️ 発音添削の使い方</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>ダッシュボードの「発音添削」タスクをクリックします。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>お手本音声を聞き、英文を確認します。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>「録音」ボタンを押して声を録音します（マイクの許可が必要です）。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>録音を確認し、問題なければ「送信」ボタンを押します。</span></li>
+              <li class="m-step"><span class="m-num">5</span><span>コーチからのフィードバックを通知で受け取れます。</span></li>
+            </ul>
+            <div class="m-tip">💡 静かな環境で録音するとフィードバックの精度が上がります。</div>
+          </div>
+          <div class="m-section" data-text="成果報告 投稿 コメント 報告">
+            <div class="m-section-title">📣 成果報告の投稿方法</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>ダッシュボードの「成果報告」セクションを開きます。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>テキストエリアに今日の学習内容や気づきを入力します。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>「投稿する」ボタンをクリックして送信します。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>管理者・他の受講生からのコメントが届きます。</span></li>
+            </ul>
+            <div class="m-tip">💡 短い文でも OK！「今日は○○を練習しました」などシンプルな報告で大丈夫です。</div>
+          </div>
+          <div class="m-section" data-text="設定 パスワード変更 メールアドレス プロフィール アカウント">
+            <div class="m-section-title">⚙️ 設定・パスワード変更</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>右上またはメニューから「設定」アイコンをクリックします。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>「パスワード変更」を選択します。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>現在のパスワードと新しいパスワードを入力します。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>「保存」ボタンで変更完了です。</span></li>
+            </ul>
+            <div class="m-tip">💡 パスワードを忘れた場合はログイン画面の「パスワードを忘れた方」から再設定できます。</div>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- 2. Discord -->
+      <div class="m-item" id="m-item-1">
+        <div class="m-item-header" onclick="toggleManual(1)">
+          <span class="m-item-icon">💬</span>
+          <span class="m-item-title">Discordの使い方</span>
+          <button class="m-item-btn" onclick="toggleManual(1);event.stopPropagation()">使い方を見る</button>
+          <span class="m-item-arrow">▾</span>
+        </div>
+        <div class="m-item-body"><div class="m-item-inner">
+          <div class="m-section" data-text="アカウント作成 Discord 登録 メール 認証">
+            <div class="m-section-title">👤 アカウント作成方法</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>discord.com にアクセスし「Discordを開く」をクリックします。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>「登録」をクリックし、メールアドレス・ユーザー名・パスワードを入力します。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>生年月日を入力して「完了」をクリックします。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>届いた確認メールの「メールアドレスを認証する」をクリックします。</span></li>
+            </ul>
+            <div class="m-tip">💡 ユーザー名は後から変更できるので、まずは仮の名前でも大丈夫です。</div>
+          </div>
+          <div class="m-section" data-text="サーバー 参加 招待リンク">
+            <div class="m-section-title">🚪 サーバーへの参加方法</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>コーチから送られた招待リンク（discord.gg/〇〇）を開きます。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>「招待を受ける」または「サーバーに参加する」をクリックします。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>左側のサイドバーにサーバーアイコンが追加されれば参加完了です。</span></li>
+            </ul>
+            <div class="m-tip">💡 招待リンクには有効期限があります。届いたらなるべく早めに参加しましょう。</div>
+          </div>
+          <div class="m-section" data-text="チャンネル 見方 使い方 テキスト ボイス カテゴリ">
+            <div class="m-section-title">📋 チャンネルの見方・使い方</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>サーバーを開くと左側にチャンネル一覧が表示されます。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>「#」マークはテキストチャンネル、「🔊」マークはボイスチャンネルです。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>チャンネル名をクリックすると内容を見たり書き込んだりできます。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>チャンネルはカテゴリでグループ分けされています。</span></li>
+            </ul>
+            <div class="m-tip">💡 最初は「#はじめに」や「#自己紹介」チャンネルから確認するとわかりやすいです。</div>
+          </div>
+          <div class="m-section" data-text="テキスト メッセージ 送り方 入力 送信 絵文字 返信">
+            <div class="m-section-title">✉️ テキストメッセージの送り方</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>テキストチャンネルをクリックして開きます。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>画面下部の入力欄にメッセージを入力します。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>Enterキーを押すか、送信ボタンをクリックして送信します。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>メッセージにカーソルを当てると絵文字リアクションや返信ができます。</span></li>
+            </ul>
+            <div class="m-tip">💡 Shift+Enter で改行できます。Enterだけだと送信されてしまいます。</div>
+          </div>
+          <div class="m-section" data-text="ボイスチャンネル 入り方 音声 マイク スピーカー">
+            <div class="m-section-title">🎙️ ボイスチャンネルへの入り方</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>「🔊」マークのボイスチャンネルをクリックします。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>マイクとスピーカーの許可を求められたら「許可」を選択します。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>チャンネルに入ると画面下部に音声コントロールが表示されます。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>退出するときは下部の「切断（赤い受話器アイコン）」を押します。</span></li>
+            </ul>
+            <div class="m-tip">💡 入室時はマイクがONになっています。話す前に周囲の雑音を確認しましょう。</div>
+          </div>
+          <div class="m-section" data-text="スマホ アプリ モバイル iPhone Android インストール">
+            <div class="m-section-title">📱 スマホアプリでの使い方</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>App Store（iPhone）または Google Play（Android）で「Discord」を検索します。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>アプリをインストールしてログインします。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>左端のアイコン一覧からサーバーを選択します。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>操作方法はPCとほぼ同じです。</span></li>
+            </ul>
+            <div class="m-tip">💡 スマホのDiscordはバッテリー消費が多いため、長時間使うときはPCをおすすめします。</div>
+          </div>
+          <div class="m-section" data-text="通知 設定 カスタマイズ 通知オフ ミュート">
+            <div class="m-section-title">🔔 通知設定のカスタマイズ</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>通知を変えたいサーバー名を右クリック（スマホは長押し）します。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>「通知設定」を選択します。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>「すべてのメッセージ」「@メンションのみ」「何も通知しない」から選びます。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>特定のチャンネルだけ通知をオフにすることもできます。</span></li>
+            </ul>
+            <div class="m-tip">💡 学習に集中したいときは「@メンションのみ」に設定するのがおすすめです。</div>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- 3. Quizlet -->
+      <div class="m-item" id="m-item-2">
+        <div class="m-item-header" onclick="toggleManual(2)">
+          <span class="m-item-icon">📚</span>
+          <span class="m-item-title">Quizletの使い方</span>
+          <button class="m-item-btn" onclick="toggleManual(2);event.stopPropagation()">使い方を見る</button>
+          <span class="m-item-arrow">▾</span>
+        </div>
+        <div class="m-item-body"><div class="m-item-inner">
+          <div class="m-section" data-text="アカウント作成 Quizlet 登録 メール サインアップ">
+            <div class="m-section-title">👤 アカウント作成方法</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>quizlet.com にアクセスし「サインアップ」をクリックします。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>Googleアカウントで登録するか、メールアドレスとパスワードを入力します。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>生年月日を入力してアカウントを作成します。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>メール認証が届いた場合はリンクをクリックして認証します。</span></li>
+            </ul>
+            <div class="m-tip">💡 Googleアカウントで登録すると手間が省けて便利です。</div>
+          </div>
+          <div class="m-section" data-text="単語セット 探し方 検索 クラス 共有">
+            <div class="m-section-title">🔍 単語セットの探し方</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>画面上部の検索窓にキーワード（例：TOEIC、英検）を入力します。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>検索結果からセットを選んでクリックします。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>コーチから共有されたセットのURLを直接開くこともできます。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>よく使うセットは「スター」でお気に入り登録できます。</span></li>
+            </ul>
+            <div class="m-tip">💡 コーチが作成したセットのURLはDiscordで共有されます。見逃さないようにしましょう。</div>
+          </div>
+          <div class="m-section" data-text="単語セット 作り方 作成 追加 インポート">
+            <div class="m-section-title">✏️ 単語セットの作り方</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>画面右上の「＋ 作成」ボタンをクリックします。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>セットのタイトルを入力します（例：英検2級 頻出単語）。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>単語（表）と意味（裏）を入力していきます。「＋追加」で行を増やせます。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>「作成」ボタンをクリックして保存します。</span></li>
+            </ul>
+            <div class="m-tip">💡 テキストをコピーして「インポート」機能でまとめて追加することもできます。</div>
+          </div>
+          <div class="m-section" data-text="フラッシュカード 学ぶ 表示 めくる 単語カード">
+            <div class="m-section-title">🃏 フラッシュカードで学ぶ方法</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>単語セットを開き「フラッシュカード」を選択します。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>カードをクリックすると表と裏が切り替わります。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>「→」で次のカード、「←」で前のカードに移動します。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>スターマークを押すと「わからなかった単語」に印がつきます。</span></li>
+            </ul>
+            <div class="m-tip">💡 「シャッフル」にチェックを入れるとランダムな順序で学べます。</div>
+          </div>
+          <div class="m-section" data-text="テストモード 使い方 問題 採点 正解 スコア">
+            <div class="m-section-title">📝 テストモードの使い方</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>単語セットを開き「テスト」を選択します。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>問題の形式（記述・選択・一致・正誤）と問題数を設定します。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>「テストを作成」ボタンをクリックして開始します。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>回答後「採点する」を押すとスコアと正解が確認できます。</span></li>
+            </ul>
+            <div class="m-tip">💡 間違えた問題だけを集めて再テストする機能もあります。苦手単語の克服に活用しましょう。</div>
+          </div>
+          <div class="m-section" data-text="スマホ アプリ モバイル iPhone Android">
+            <div class="m-section-title">📱 スマホアプリでの使い方</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>App Store または Google Play で「Quizlet」を検索してインストールします。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>アカウントにログインします。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>「ライブラリ」から保存したセットにアクセスできます。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>オフラインでも学習できます（事前にセットをダウンロードしてください）。</span></li>
+            </ul>
+            <div class="m-tip">💡 スキマ時間に電車の中でフラッシュカードをめくるだけでも語彙力が上がります。</div>
+          </div>
+          <div class="m-section" data-text="学習記録 確認方法 進捗 達成 統計">
+            <div class="m-section-title">📊 学習記録の確認方法</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>右上のプロフィールアイコンをクリックします。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>「プロフィール」を選択すると学習統計が表示されます。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>各セットの学習ページでは習熟度（%）が確認できます。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>毎日ログインするとストリーク（連続学習日数）が記録されます。</span></li>
+            </ul>
+            <div class="m-tip">💡 習熟度100%を目指してコツコツ続けましょう！</div>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- 4. Zoom -->
+      <div class="m-item" id="m-item-3">
+        <div class="m-item-header" onclick="toggleManual(3)">
+          <span class="m-item-icon">📹</span>
+          <span class="m-item-title">Zoomの使い方</span>
+          <button class="m-item-btn" onclick="toggleManual(3);event.stopPropagation()">使い方を見る</button>
+          <span class="m-item-arrow">▾</span>
+        </div>
+        <div class="m-item-body"><div class="m-item-inner">
+          <div class="m-section" data-text="インストール アプリ ダウンロード Zoom">
+            <div class="m-section-title">💾 アプリのインストール方法</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>zoom.us にアクセスし「ダウンロード」ページを開きます。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>「Zoomデスクトップクライアント」の「ダウンロード」をクリックします。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>ダウンロードされたファイルを開いてインストールを完了します。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>インストール後、Zoomアプリが自動で起動します。</span></li>
+            </ul>
+            <div class="m-tip">💡 ブラウザだけでも参加できますが、アプリ版の方が機能が充実しています。</div>
+          </div>
+          <div class="m-section" data-text="アカウント作成 ログイン Zoom サインアップ メール">
+            <div class="m-section-title">👤 アカウント作成・ログイン</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>zoom.us で「サインアップは無料です」をクリックします。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>メールアドレスを入力し、届いた確認メールのリンクを開きます。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>名前とパスワードを設定してアカウント作成完了です。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>Zoomアプリを開き、メールアドレスとパスワードでログインします。</span></li>
+            </ul>
+            <div class="m-tip">💡 Googleアカウントでもサインアップできます。</div>
+          </div>
+          <div class="m-section" data-text="ミーティング 参加方法 URL リンク ミーティングID">
+            <div class="m-section-title">🚪 ミーティングへの参加方法</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>コーチから送られたZoomリンク（zoom.us/j/〇〇）をクリックします。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>「Zoomミーティングを開く」を選択します。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>パスコードが必要な場合は入力します。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>「コンピューターオーディオに参加する」を選択して入室します。</span></li>
+            </ul>
+            <div class="m-tip">💡 開始5分前には準備を済ませておくとスムーズです。</div>
+          </div>
+          <div class="m-section" data-text="カメラ マイク オン オフ ミュート ビデオ">
+            <div class="m-section-title">📷 カメラ・マイクのオン／オフ</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>画面左下に「マイク」と「ビデオ」のアイコンがあります。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>アイコンをクリックすると赤い斜線が入りOFF（ミュート・カメラオフ）になります。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>もう一度クリックするとONに戻ります。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>話すときだけミュートを解除するとハウリング防止になります。</span></li>
+            </ul>
+            <div class="m-tip">💡 スペースキーを長押しすると一時的にミュート解除できます。</div>
+          </div>
+          <div class="m-section" data-text="画面共有 やり方 シェア スクリーン 資料">
+            <div class="m-section-title">🖥️ 画面共有のやり方</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>ツールバーの「画面を共有」ボタンをクリックします。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>共有したい画面またはウィンドウを選択します。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>「共有」ボタンをクリックすると参加者に画面が見えます。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>終了するときは「共有の停止」をクリックします。</span></li>
+            </ul>
+            <div class="m-tip">💡 共有前にプライベートな通知が届かないよう「おやすみモード」にしておくと安心です。</div>
+          </div>
+          <div class="m-section" data-text="チャット 機能 使い方 メッセージ テキスト">
+            <div class="m-section-title">💬 チャット機能の使い方</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>ツールバーの「チャット」ボタンをクリックします。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>画面右側にチャット欄が表示されます。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>送信先（全員または個人）を選択してメッセージを入力します。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>Enterキーを押して送信します。</span></li>
+            </ul>
+            <div class="m-tip">💡 URLや資料リンクをチャットで共有すると参加者が開きやすくなります。</div>
+          </div>
+          <div class="m-section" data-text="背景 バーチャル背景 変更 ぼかし 設定">
+            <div class="m-section-title">🌅 背景設定の変更方法</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>ビデオアイコンの横の「▲」をクリックします。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>「バーチャル背景を選択」をクリックします。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>用意された背景を選ぶか、「＋」から自分の画像を追加します。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>「ぼかし」を選ぶと実際の背景をぼかすことができます。</span></li>
+            </ul>
+            <div class="m-tip">💡 グリーンスクリーン（緑の布）があると背景合成がより綺麗に仕上がります。</div>
+          </div>
+          <div class="m-section" data-text="スマホ モバイル iPhone Android アプリ 参加">
+            <div class="m-section-title">📱 スマホからの参加方法</div>
+            <ul class="m-steps">
+              <li class="m-step"><span class="m-num">1</span><span>App Store または Google Play で「Zoom」をインストールします。</span></li>
+              <li class="m-step"><span class="m-num">2</span><span>アプリを開いてログインします。</span></li>
+              <li class="m-step"><span class="m-num">3</span><span>コーチから届いたZoomリンクをタップするとアプリが自動で開きます。</span></li>
+              <li class="m-step"><span class="m-num">4</span><span>マイク・カメラの許可を求められたら「許可」を選択します。</span></li>
+            </ul>
+            <div class="m-tip">💡 スマホはスタンドなどで固定すると両手が使えて便利です。Wi-Fi環境でのご参加を推奨します。</div>
+          </div>
+        </div></div>
+      </div>
+
+    </div>
 
     <!-- 発音添削タブ -->
     <div class="tab-panel" id="tab-pronunciation">
