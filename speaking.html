@@ -237,12 +237,6 @@
   <span class="header-badge" id="header-badge">初級</span>
 </header>
 
-<div class="level-toggle-wrap">
-  <div class="level-toggle">
-    <button class="level-btn active" id="btn-beginner" onclick="setLevel('beginner')">初級</button>
-    <button class="level-btn" id="btn-intermediate" onclick="setLevel('intermediate')">中級</button>
-  </div>
-</div>
 
 <div class="main-wrap">
 
@@ -255,7 +249,7 @@
       完璧でなくても OK！まず口を動かすことが大切です。<br>
       話した内容や気づいたことをメモしておきましょう。
     </div>
-    <div style="font-size:12px;color:var(--text-muted);margin-bottom:28px;">⏱ 目安 20分 / 全20お題</div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:28px;">100お題からランダムに10お題を出題 / ⏱ 目安 10分</div>
     <button class="btn-start" style="max-width:280px;margin:0 auto;" onclick="startPractice()">練習を始める</button>
   </div>
 
@@ -295,7 +289,7 @@
     </div>
 
     <button class="btn-start" id="btn-start-timer" onclick="startTimer()">▶ スタート</button>
-    <button class="btn-stop" id="btn-stop-timer" onclick="stopTimer()">■ 時間終了</button>
+    <button class="btn-stop" id="btn-stop-timer" onclick="stopTimer()">■ ストップ</button>
     <button class="btn-next" id="btn-next" onclick="nextTopic()">次のお題へ →</button>
   </div>
 
@@ -303,7 +297,7 @@
   <div class="complete-screen" id="complete-screen">
     <div class="complete-icon">🎊</div>
     <div class="complete-title">お疲れ様でした！</div>
-    <div class="complete-sub">20お題すべて完了！<br>毎日続けることで、英語で考える力がつきます。</div>
+    <div class="complete-sub">10お題すべて完了！<br>毎日続けることで、英語で考える力がつきます。</div>
     <div class="memo-list" id="memo-list">
       <div class="memo-list-title">📝 今日のメモまとめ</div>
       <div id="memo-list-content"></div>
@@ -315,54 +309,119 @@
 </div>
 
 <script>
-  var TOPICS = {
-    beginner: [
-      { text: "自己紹介をしてください", hint: "名前・出身・仕事・趣味など。「My name is... I'm from... I enjoy...」 を使ってみましょう。" },
-      { text: "今日の朝ごはんについて話してください", hint: "何を食べたか、おいしかったかなど。「I had... for breakfast. It was...」" },
-      { text: "好きな季節とその理由を教えてください", hint: "「My favorite season is... because...」 で理由を2〜3つ挙げましょう。" },
-      { text: "週末に何をしましたか？", hint: "過去形を使って話しましょう。「Last weekend, I went to... / I stayed at home and...」" },
-      { text: "好きな食べ物について話してください", hint: "何が好きか、どこで食べるか、誰と食べるか。「I love... It's my favorite because...」" },
-      { text: "毎日のルーティンを紹介してください", hint: "起きてから寝るまでの流れ。「I usually wake up at... Then I...」" },
-      { text: "趣味について話してください", hint: "いつ始めたか、なぜ好きか。「One of my hobbies is... I started it because...」" },
-      { text: "住んでいる場所（街）について話してください", hint: "どんな街か、好きなところ・不便なところ。「I live in... It's a... place. I like it because...」" },
-      { text: "好きなテレビ番組や映画について話してください", hint: "どんな内容か、なぜ好きかを紹介。「My favorite show is... It's about... I like it because...」" },
-      { text: "最近うれしかったことを話してください", hint: "いつ・何があったか・どんな気持ちだったか。「Recently, I was really happy when...」" },
-      { text: "家族について教えてください", hint: "何人家族か、仲は良いか、どんな人たちか。「I have a family of... My mom is...」" },
-      { text: "今住んでいる家（部屋）について話してください", hint: "場所・広さ・好きな点など。「I live in a... apartment. It's located in...」" },
-      { text: "好きな音楽とその理由を話してください", hint: "ジャンル・アーティスト・いつ聴くか。「I love... music because... My favorite artist is...」" },
-      { text: "苦手なことや克服したいことを話してください", hint: "何が苦手か、なぜか、どうしたいか。「One thing I'm not good at is... I'd like to improve because...」" },
-      { text: "最近おすすめしたいものやサービスを紹介してください", hint: "何か、なぜ良いか、誰に勧めたいか。「Recently, I've been really into... I recommend it because...」" },
-      { text: "小学生のころのことを話してください", hint: "好きだったこと・思い出・どんな子だったか。「When I was in elementary school, I used to...」" },
-      { text: "今ハマっているものや気になっていることを話してください", hint: "最近の関心事・始めたきっかけなど。「Lately, I've been really into... I got into it when...」" },
-      { text: "昨日何をしたか話してください", hint: "朝から夜まで時系列で。「Yesterday, I woke up at... Then I... After that...」" },
-      { text: "友達との思い出を話してください", hint: "どんな友達か、どんな経験をしたか。「One of my best friends is... We once...」" },
-      { text: "これからやってみたいことを話してください", hint: "夢・目標・挑戦したいこと。「One thing I'd really like to try is... because...」" },
-    ],
-    intermediate: [
-      { text: "SNSの良い点と悪い点について話してください", hint: "両面から話しましょう。「On one hand... On the other hand... Personally, I think...」" },
-      { text: "最近チャレンジしたことについて教えてください", hint: "何に挑戦したか、なぜ・結果はどうか。「Recently, I challenged myself to... because...」" },
-      { text: "理想の働き方について話してください", hint: "リモートか出社か、時間の使い方など。「My ideal work style would be... because...」" },
-      { text: "テクノロジーが日常生活に与える影響を話してください", hint: "便利になったこと・変わったこと。「Technology has changed the way I... For example...」" },
-      { text: "人生で大切にしていることを話してください", hint: "価値観・信念など。「One thing I really value in life is... because...」" },
-      { text: "日本の文化で外国人に紹介したいものを話してください", hint: "具体的に1〜2つ選んで説明。「If I had to introduce Japanese culture, I'd talk about...」" },
-      { text: "ストレス発散の方法について話してください", hint: "何をするか・なぜ効果的かを話しましょう。「When I feel stressed, I usually... because...」" },
-      { text: "理想の旅行先とその理由を話してください", hint: "どこへ行きたいか・何をしたいか・なぜか。「If I could travel anywhere, I'd go to... because...」" },
-      { text: "英語を学ぶ理由と目標について話してください", hint: "なぜ英語を学んでいるか、将来どう使いたいか。「I'm learning English because... My goal is to...」" },
-      { text: "もし1日だけ有名人になれるとしたら、誰になりたいですか？", hint: "誰か・なぜか・何をするかを話しましょう。「If I could be a celebrity for one day, I'd choose... because...」" },
-      { text: "教育の在り方について考えを話してください", hint: "学校教育・詰め込み vs 思考力育成など。「I think education should focus on... because...」" },
-      { text: "環境問題について、自分が取り組んでいることを話してください", hint: "普段の行動・心がけていること。「When it comes to the environment, I try to...」" },
-      { text: "お金と幸せの関係について話してください", hint: "お金があれば幸せか、大切なものは何か。「In my opinion, money and happiness are... because...」" },
-      { text: "グローバル化が社会に与える影響を話してください", hint: "良い点・悪い点、自分への影響。「Globalization has brought... but on the other hand...」" },
-      { text: "リーダーシップに必要な資質について話してください", hint: "どんな能力が大切か、理想のリーダー像。「I believe a good leader needs to have... For example...」" },
-      { text: "子どものころの自分と今の自分について話してください", hint: "何が変わったか、変わっていないことは。「When I was young, I was... Now I'm... but one thing that hasn't changed is...」" },
-      { text: "失敗から学んだ大切な教訓を話してください", hint: "どんな失敗をしたか、何を学んだか。「One of the biggest lessons I've learned from failure is...」" },
-      { text: "人工知能（AI）の可能性と課題について話してください", hint: "便利になること・懸念点・自分の見方。「AI has the potential to... However, I'm concerned about...」" },
-      { text: "日本社会が抱える問題の中で最も重要だと思うものを話してください", hint: "少子化・格差・働き方など。「I think one of the most serious issues in Japan today is... because...」" },
-      { text: "10年後の自分はどうなっていたいかを話してください", hint: "キャリア・生活・なりたい自分。「In ten years, I hope to be... I want to achieve... because...」" },
-    ]
-  };
+var ALL_TOPICS = [
+    { text: "自己紹介をしてください", hint: "名前・出身・仕事・趣味など。「My name is... I\'m from... I enjoy...」を使ってみましょう。" },
+    { text: "今日の朝ごはんについて話してください", hint: "何を食べたか、おいしかったかなど。「I had... for breakfast. It was...」" },
+    { text: "好きな季節とその理由を教えてください", hint: "「My favorite season is... because...」で理由を2〜3つ挙げましょう。" },
+    { text: "週末に何をしましたか？", hint: "過去形を使って話しましょう。「Last weekend, I went to... / I stayed at home and...」" },
+    { text: "好きな食べ物について話してください", hint: "何が好きか、どこで食べるか、誰と食べるか。「I love... It\'s my favorite because...」" },
+    { text: "毎日のルーティンを紹介してください", hint: "起きてから寝るまでの流れ。「I usually wake up at... Then I...」" },
+    { text: "趣味について話してください", hint: "いつ始めたか、なぜ好きか。「One of my hobbies is... I started it because...」" },
+    { text: "住んでいる場所（街）について話してください", hint: "どんな街か、好きなところ・不便なところ。「I live in... It\'s a... place. I like it because...」" },
+    { text: "好きなテレビ番組や映画について話してください", hint: "どんな内容か、なぜ好きかを紹介。「My favorite show is... It\'s about... I like it because...」" },
+    { text: "最近うれしかったことを話してください", hint: "いつ・何があったか・どんな気持ちだったか。「Recently, I was really happy when...」" },
+    { text: "家族について教えてください", hint: "何人家族か、仲は良いか、どんな人たちか。「I have a family of... My mom is...」" },
+    { text: "今住んでいる家（部屋）について話してください", hint: "場所・広さ・好きな点など。「I live in a... apartment. It\'s located in...」" },
+    { text: "好きな音楽とその理由を話してください", hint: "ジャンル・アーティスト・いつ聴くか。「I love... music because... My favorite artist is...」" },
+    { text: "苦手なことや克服したいことを話してください", hint: "何が苦手か、なぜか、どうしたいか。「One thing I\'m not good at is... I\'d like to improve because...」" },
+    { text: "最近おすすめしたいものやサービスを紹介してください", hint: "何か、なぜ良いか、誰に勧めたいか。「Recently, I\'ve been really into... I recommend it because...」" },
+    { text: "小学生のころのことを話してください", hint: "好きだったこと・思い出・どんな子だったか。「When I was in elementary school, I used to...」" },
+    { text: "今ハマっているものや気になっていることを話してください", hint: "最近の関心事・始めたきっかけなど。「Lately, I\'ve been really into... I got into it when...」" },
+    { text: "昨日何をしたか話してください", hint: "朝から夜まで時系列で。「Yesterday, I woke up at... Then I... After that...」" },
+    { text: "友達との思い出を話してください", hint: "どんな友達か、どんな経験をしたか。「One of my best friends is... We once...」" },
+    { text: "これからやってみたいことを話してください", hint: "夢・目標・挑戦したいこと。「One thing I\'d really like to try is... because...」" },
+    { text: "SNSの良い点と悪い点について話してください", hint: "両面から話しましょう。「On one hand... On the other hand... Personally, I think...」" },
+    { text: "最近チャレンジしたことについて教えてください", hint: "何に挑戦したか、なぜ・結果はどうか。「Recently, I challenged myself to... because...」" },
+    { text: "理想の働き方について話してください", hint: "リモートか出社か、時間の使い方など。「My ideal work style would be... because...」" },
+    { text: "テクノロジーが日常生活に与える影響を話してください", hint: "便利になったこと・変わったこと。「Technology has changed the way I... For example...」" },
+    { text: "人生で大切にしていることを話してください", hint: "価値観・信念など。「One thing I really value in life is... because...」" },
+    { text: "日本の文化で外国人に紹介したいものを話してください", hint: "具体的に1〜2つ選んで説明。「If I had to introduce Japanese culture, I\'d talk about...」" },
+    { text: "ストレス発散の方法について話してください", hint: "何をするか・なぜ効果的かを話しましょう。「When I feel stressed, I usually... because...」" },
+    { text: "理想の旅行先とその理由を話してください", hint: "どこへ行きたいか・何をしたいか・なぜか。「If I could travel anywhere, I\'d go to... because...」" },
+    { text: "英語を学ぶ理由と目標について話してください", hint: "なぜ英語を学んでいるか、将来どう使いたいか。「I\'m learning English because... My goal is to...」" },
+    { text: "もし1日だけ有名人になれるとしたら、誰になりたいですか？", hint: "誰か・なぜか・何をするかを話しましょう。「If I could be a celebrity for one day, I\'d choose... because...」" },
+    { text: "教育の在り方について考えを話してください", hint: "学校教育・詰め込み vs 思考力育成など。「I think education should focus on... because...」" },
+    { text: "環境問題について、自分が取り組んでいることを話してください", hint: "普段の行動・心がけていること。「When it comes to the environment, I try to...」" },
+    { text: "お金と幸せの関係について話してください", hint: "お金があれば幸せか、大切なものは何か。「In my opinion, money and happiness are... because...」" },
+    { text: "グローバル化が社会に与える影響を話してください", hint: "良い点・悪い点、自分への影響。「Globalization has brought... but on the other hand...」" },
+    { text: "リーダーシップに必要な資質について話してください", hint: "どんな能力が大切か、理想のリーダー像。「I believe a good leader needs to have... For example...」" },
+    { text: "子どものころの自分と今の自分について話してください", hint: "何が変わったか、変わっていないことは。「When I was young, I was... Now I\'m... but one thing that hasn\'t changed is...」" },
+    { text: "失敗から学んだ大切な教訓を話してください", hint: "どんな失敗をしたか、何を学んだか。「One of the biggest lessons I\'ve learned from failure is...」" },
+    { text: "人工知能（AI）の可能性と課題について話してください", hint: "便利になること・懸念点・自分の見方。「AI has the potential to... However, I\'m concerned about...」" },
+    { text: "日本社会が抱える問題の中で最も重要だと思うものを話してください", hint: "少子化・格差・働き方など。「I think one of the most serious issues in Japan today is... because...」" },
+    { text: "10年後の自分はどうなっていたいかを話してください", hint: "キャリア・生活・なりたい自分。「In ten years, I hope to be... I want to achieve... because...」" },
+    { text: "今の仕事（学業）について話してください", hint: "どんな仕事・勉強か、やりがい・大変なことを。「I work as... The best part is... The challenge is...」" },
+    { text: "最近行ったレストランやカフェを紹介してください", hint: "どこか・何を食べたか・雰囲気はどうか。「I recently went to... I had... The atmosphere was...」" },
+    { text: "旅行に行くなら国内と海外、どちらが好きですか？", hint: "理由を含めて話しましょう。「I prefer... travel because... For example, when I...」" },
+    { text: "尊敬している人物について話してください", hint: "誰か・なぜ・どんな影響を受けたか。「Someone I really admire is... because...」" },
+    { text: "健康のために心がけていることを話してください", hint: "食事・運動・睡眠など。「To stay healthy, I try to... I believe...」" },
+    { text: "日本と海外の違いで面白いと思うことを話してください", hint: "文化・習慣の違いを具体的に。「One thing I find interesting is that in Japan... whereas abroad...」" },
+    { text: "最近見た映画やドラマの感想を話してください", hint: "タイトル・内容・感じたこと。「Recently, I watched... It\'s about... What I liked about it was...」" },
+    { text: "友人に感謝していることを話してください", hint: "誰に・何について感謝しているか。「I\'m really grateful to my friend... because they...」" },
+    { text: "今の生活で変えたいことを話してください", hint: "何が不満か・どう変えたいか・理由。「One thing I\'d like to change is... because...」" },
+    { text: "子どもに伝えたい大切なことを話してください", hint: "価値観・経験・アドバイスなど。「If I could tell children one important thing, it would be...」" },
+    { text: "スマートフォンが生活に与える影響を話してください", hint: "便利な点・依存の問題など。「Smartphones have made life... but I also think...」" },
+    { text: "今まで経験した一番大変だったことを話してください", hint: "何が大変だったか・どう乗り越えたか。「One of the hardest things I\'ve ever gone through was...」" },
+    { text: "理想のパートナーや友人について話してください", hint: "どんな人か・なぜそれが大切か。「My ideal partner/friend would be someone who...」" },
+    { text: "コロナ禍で変わったことを話してください", hint: "生活・働き方・価値観の変化。「Since the pandemic, I\'ve noticed that...」" },
+    { text: "もし宝くじで1億円当たったらどうしますか？", hint: "使い道・夢・優先順位。「If I won 100 million yen, the first thing I\'d do is...」" },
+    { text: "ペットを飼うことの良い点と悪い点を話してください", hint: "責任・癒し・費用など。「Having a pet has many benefits, like... but it also requires...」" },
+    { text: "最近学んだことや新しく始めたことを話してください", hint: "何を・いつから・感じたこと。「Recently, I started... because... So far, I\'ve learned...」" },
+    { text: "日本の食べ物で外国人に紹介したいものを話してください", hint: "何か・おいしさ・文化背景。「If I had to recommend Japanese food, I\'d suggest... because...」" },
+    { text: "夢の家について話してください", hint: "場所・間取り・こだわり。「My dream home would be... I\'d love to have... because...」" },
+    { text: "仕事とプライベートのバランスについて考えを話してください", hint: "現状・理想・大切にしていること。「I think work-life balance is... Personally, I try to...」" },
+    { text: "もし一週間休みがあったら何をしますか？", hint: "旅行・勉強・趣味など具体的に。「If I had a whole week off, I would...」" },
+    { text: "最近腹が立ったことや悔しかったことを話してください", hint: "何があったか・どう感じたか・どうしたか。「Recently, I felt frustrated when... because...」" },
+    { text: "運動や体を動かすことについての考えを話してください", hint: "好きか嫌いか・どんな運動か・理由。「When it comes to exercise, I... because...」" },
+    { text: "今の自分に満足していますか？", hint: "仕事・人間関係・生活全般について。「Overall, I think I\'m... One area I\'m proud of is...」" },
+    { text: "日本語と英語の違いで難しいと思う点を話してください", hint: "文法・発音・表現など。「One of the biggest challenges for Japanese learners is...」" },
+    { text: "最近感動したことや心が動いたことを話してください", hint: "何があったか・なぜ感動したか。「Something that moved me recently was... because...」" },
+    { text: "あなたの地元について紹介してください", hint: "どんな場所か・名物・観光地など。「I\'m from... It\'s known for... I love it because...」" },
+    { text: "働くことの意味について考えを話してください", hint: "なぜ働くか・お金以外の価値。「To me, work means... I think we work not just for money, but also...」" },
+    { text: "今の時代に生きる若者について思うことを話してください", hint: "チャンス・課題・自分の経験と比較して。「I think young people today have... but they also face...」" },
+    { text: "読書について話してください", hint: "本が好きか・どんなジャンル・おすすめ。「When it comes to reading, I... My favorite genre is... because...」" },
+    { text: "外国語を学ぶことの重要性について話してください", hint: "メリット・キャリア・異文化理解。「Learning a foreign language is important because...」" },
+    { text: "自分の強みと弱みについて話してください", hint: "具体的なエピソードを交えて。「One of my strengths is... For example,... My weakness is...」" },
+    { text: "将来の夢または目標を話してください", hint: "何を目指しているか・なぜか・今していること。「My dream is to... because... Right now, I\'m working toward that by...」" },
+    { text: "誰かのために何かしてあげた経験を話してください", hint: "誰に・何をしたか・相手の反応。「Once, I helped... by... It made me feel...」" },
+    { text: "もし違う職業に就くとしたら何を選びますか？", hint: "何か・なぜか・どんなスキルが必要か。「If I chose a different career, I\'d be a... because...」" },
+    { text: "日本の季節の中で好きな時期とその理由を話してください", hint: "どの季節か・何が好きか・思い出。「My favorite time of year in Japan is... because...」" },
+    { text: "心に残っているプレゼントや贈り物について話してください", hint: "何か・誰から・なぜ印象に残っているか。「One gift that really stayed with me was...」" },
+    { text: "好きなスポーツや観戦について話してください", hint: "何が好きか・なぜ・思い出。「When it comes to sports, I... My favorite is... because...」" },
+    { text: "自分の国（日本）に誇りを感じる点を話してください", hint: "文化・技術・人々など。「One thing I\'m proud of about Japan is...」" },
+    { text: "学校教育で学んでよかったと思うことを話してください", hint: "科目・経験・今に活きていること。「One thing I learned at school that I still value is...」" },
+    { text: "今の社会における礼儀やマナーの重要性について話してください", hint: "なぜ大切か・変わってきているか。「I think manners are important because... However, I also notice that...」" },
+    { text: "サステナビリティ（持続可能性）について自分の考えを話してください", hint: "日常での行動・社会への意識。「Sustainability matters to me because... I personally try to...」" },
+    { text: "リモートワークのメリットとデメリットを話してください", hint: "自由度・コミュニケーション・生産性など。「Remote work has many advantages like... but it also has drawbacks such as...」" },
+    { text: "異文化を理解するために大切なことを話してください", hint: "経験・姿勢・コミュニケーション。「To understand different cultures, I think it\'s important to...」" },
+    { text: "あなたが最もリラックスできる場所や状況を話してください", hint: "どこか・何をしているとき・なぜ。「I feel most relaxed when... because...」" },
+    { text: "あなたの人生に影響を与えた出来事や経験を話してください", hint: "何があったか・どう変わったか。「An event that really changed my life was...」" },
+    { text: "チームで何かを達成した経験を話してください", hint: "何をしたか・役割・達成感。「Once, I was part of a team that... My role was...」" },
+    { text: "孤独と一人の時間の大切さについて話してください", hint: "一人の時間をどう使うか・好きか嫌いか。「I think being alone is... I personally enjoy... because...」" },
+    { text: "最近の科学技術の進歩で一番印象的なものを話してください", hint: "何か・なぜ印象的か・社会への影響。「One technological advancement that impresses me is...」" },
+    { text: "食べ物と文化の関係について話してください", hint: "日本食と文化のつながり・食の多様性。「I think food and culture are closely linked because...」" },
+    { text: "あなたにとっての「成功」とは何かを話してください", hint: "お金か・幸福か・達成か・独自の定義。「To me, success means... It\'s not just about... but also...」" },
+    { text: "親からもらった一番大切な教えを話してください", hint: "何を教えてもらったか・今に活きているか。「The most valuable thing my parents taught me was...」" },
+    { text: "怒りをコントロールするためにしていることを話してください", hint: "具体的な方法・なぜそれが効果的か。「When I feel angry, I try to... because...」" },
+    { text: "もし過去に戻れるとしたらいつに戻りたいですか？", hint: "いつか・何をしたいか・なぜ。「If I could go back in time, I\'d go back to... because...」" },
+    { text: "言語の壁を感じた経験について話してください", hint: "どんな状況で・どう乗り越えたか。「I once experienced a language barrier when...」" },
+    { text: "一人旅と友達との旅行、どちらが好きですか？", hint: "理由・経験・メリットとデメリット。「I prefer... because... When I traveled alone/with friends, I felt...」" },
+    { text: "あなたにとって「家」とはどんな場所ですか？", hint: "物理的な場所か・心理的な安らぎか。「To me, home is... It\'s a place where...」" },
+    { text: "自分のコミュニケーションスタイルを話してください", hint: "どんな話し方か・長所・改善したい点。「I would describe my communication style as... I\'m good at... but I want to improve...」" },
+    { text: "メンタルヘルスについての考えを話してください", hint: "重要性・自分のケア方法・社会の認識。「Mental health is important because... I take care of mine by...」" },
+    { text: "もし一つだけスキルを極められるとしたら何を選びますか？", hint: "何か・なぜ・どう活かすか。「If I could master one skill, it would be... because...」" },
+  ];
 
-  var currentLevel = 'beginner';
+  function shuffleArray(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  var sessionTopics = [];
   var currentIndex = 0;
   var isStarted = false;
   var timerInterval = null;
@@ -370,38 +429,18 @@
   var memos = [];
   var timerRunning = false;
 
-  function setLevel(level) {
-    currentLevel = level;
-    document.getElementById('btn-beginner').classList.toggle('active', level === 'beginner');
-    document.getElementById('btn-intermediate').classList.toggle('active', level === 'intermediate');
-    document.getElementById('header-badge').textContent = level === 'beginner' ? '初級' : '中級';
-    if (isStarted) {
-      resetAndRestart();
-    }
-  }
-
-  function resetAndRestart() {
-    clearInterval(timerInterval);
-    timerRunning = false;
-    currentIndex = 0;
-    memos = [];
-    document.getElementById('complete-screen').classList.remove('show');
-    document.getElementById('practice-wrap').classList.add('show');
-    renderTopic();
-  }
-
   function startPractice() {
     isStarted = true;
     currentIndex = 0;
     memos = [];
+    sessionTopics = shuffleArray(ALL_TOPICS).slice(0, 10);
     document.getElementById('start-wrap').classList.add('hidden');
     document.getElementById('practice-wrap').classList.add('show');
     renderTopic();
   }
 
   function renderTopic() {
-    var topics = TOPICS[currentLevel];
-    var t = topics[currentIndex];
+    var t = sessionTopics[currentIndex];
 
     clearInterval(timerInterval);
     timerRunning = false;
@@ -410,8 +449,8 @@
     document.getElementById('topic-num').textContent = 'お題 ' + (currentIndex + 1);
     document.getElementById('topic-text').textContent = t.text;
     document.getElementById('topic-hint').textContent = '💡 ' + t.hint;
-    document.getElementById('progress-count').textContent = (currentIndex + 1) + ' / ' + topics.length;
-    document.getElementById('progress-bar').style.width = ((currentIndex + 1) / topics.length * 100) + '%';
+    document.getElementById('progress-count').textContent = (currentIndex + 1) + ' / ' + sessionTopics.length;
+    document.getElementById('progress-bar').style.width = ((currentIndex + 1) / sessionTopics.length * 100) + '%';
 
     updateTimerDisplay(60);
     document.getElementById('timer-status').textContent = 'スタートボタンを押して開始';
@@ -467,23 +506,22 @@
 
   function onTimerEnd() {
     document.getElementById('btn-stop-timer').style.display = 'none';
-    document.getElementById('timer-status').textContent = '時間終了！お疲れ様でした。';
+    document.getElementById('timer-status').textContent = 'ストップ！お疲れ様でした。';
     document.getElementById('memo-area').classList.add('show');
     document.getElementById('btn-next').style.display = 'block';
 
-    var isLast = currentIndex === TOPICS[currentLevel].length - 1;
+    var isLast = currentIndex === sessionTopics.length - 1;
     document.getElementById('btn-next').textContent = isLast ? '完了 ✓' : '次のお題へ →';
   }
 
   function nextTopic() {
     var memo = document.getElementById('memo-input').value.trim();
     memos.push({
-      topic: TOPICS[currentLevel][currentIndex].text,
+      topic: sessionTopics[currentIndex].text,
       memo: memo
     });
 
-    var topics = TOPICS[currentLevel];
-    if (currentIndex < topics.length - 1) {
+    if (currentIndex < sessionTopics.length - 1) {
       currentIndex++;
       renderTopic();
     } else {
@@ -505,7 +543,8 @@
       if (!m.memo) return '';
       return '<div class="memo-list-item">' +
         '<div class="memo-list-topic">お題 ' + (i + 1) + ': ' + m.topic + '</div>' +
-        '<div class="memo-list-text">' + m.memo.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>') + '</div>' +
+        '<div class="memo-list-text">' + m.memo.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/
+/g, '<br>') + '</div>' +
         '</div>';
     }).join('');
   }
@@ -515,6 +554,7 @@
     memos = [];
     clearInterval(timerInterval);
     timerRunning = false;
+    sessionTopics = shuffleArray(ALL_TOPICS).slice(0, 10);
     document.getElementById('complete-screen').classList.remove('show');
     document.getElementById('practice-wrap').classList.add('show');
     renderTopic();
