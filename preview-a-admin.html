@@ -232,11 +232,14 @@
 <div class="login-gate" id="login-gate">
   <div class="login-box">
     <div class="login-logo">英語コーチング</div>
-    <div class="login-sub">ADMIN PANEL</div>
-    <label class="login-label" for="login-pw">パスワード</label>
-    <input type="password" class="login-input" id="login-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
-    <div class="login-error" id="login-error"></div>
-    <button class="login-btn" onclick="doLogin()">ログイン</button>
+    <div class="login-sub" id="login-sub-msg">ADMIN PANEL</div>
+    <form onsubmit="doLogin();return false;" autocomplete="on">
+      <input type="text" name="username" autocomplete="username" value="admin" style="display:none;" aria-hidden="true">
+      <label class="login-label" for="login-pw">パスワード</label>
+      <input type="password" class="login-input" id="login-pw" name="password" autocomplete="current-password" placeholder="••••••••">
+      <div class="login-error" id="login-error"></div>
+      <button type="submit" class="login-btn">ログイン</button>
+    </form>
   </div>
 </div>
 
@@ -826,7 +829,7 @@
       });
       var gate = document.getElementById('login-gate');
       gate.classList.remove('hidden');
-      var sub = gate.querySelector('.login-sub');
+      var sub = document.getElementById('login-sub-msg');
       if (sub) sub.textContent = isAuto ? '60分操作がなかったためログアウトしました' : 'ADMIN PANEL';
       document.getElementById('login-pw').value = '';
       document.getElementById('login-error').textContent = '';
