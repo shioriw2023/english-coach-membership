@@ -2410,15 +2410,28 @@ function addMemo() {
     _inactivityTimer = setTimeout(function() { doLogout(true); }, _TIMEOUT_MS);
   }
 
-  function doLogout(isAuto) {
+  function _execLogout(isAuto) {
     clearTimeout(_inactivityTimer);
     ['click','keydown','mousemove','touchstart','scroll'].forEach(function(ev) {
       document.removeEventListener(ev, _resetTimer);
     });
-    if (isAuto) {
-      sessionStorage.setItem('logout_reason', 'timeout');
-    }
+    if (isAuto) { sessionStorage.setItem('logout_reason', 'timeout'); }
     window.location.href = 'preview-a.html';
+  }
+
+  function doLogout(isAuto) {
+    if (isAuto) { _execLogout(true); return; }
+    var ov = document.createElement('div');
+    ov.id = '_lo-ov';
+    ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:99999;display:flex;align-items:center;justify-content:center;';
+    ov.innerHTML = '<div style="background:#fff;border-radius:14px;padding:36px 32px;max-width:300px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.18);">'
+      + '<div style="font-size:15px;font-weight:600;color:#1A1419;margin-bottom:8px;">ログアウト</div>'
+      + '<div style="font-size:13px;color:#9A8890;margin-bottom:28px;">ログアウトしますか？</div>'
+      + '<div style="display:flex;gap:10px;">'
+      + '<button onclick="document.getElementById('_lo-ov').remove()" style="flex:1;padding:11px;border:1.5px solid rgba(0,0,0,0.12);border-radius:8px;background:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;color:#1A1419;">キャンセル</button>'
+      + '<button onclick="_execLogout(false)" style="flex:1;padding:11px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;">ログアウト</button>'
+      + '</div></div>';
+    document.body.appendChild(ov);
   }
 
   ['click','keydown','mousemove','touchstart','scroll'].forEach(function(ev) {
