@@ -1985,7 +1985,7 @@ function addMemo() {
         _prRecording = false;
         document.getElementById('pm-mic-btn').classList.remove('recording');
         if (_ps.spoken) {
-          document.getElementById('pm-mic-label').textContent = '✓ 録音完了';
+          document.getElementById('pm-mic-label').innerHTML = '✓ 録音完了<br><span style="font-size:9px;opacity:0.65;">タップでやり直す</span>';
           document.getElementById('pm-submit-btn').style.display = 'block';
         } else {
           document.getElementById('pm-mic-label').textContent = 'タップして録音';
