@@ -465,6 +465,64 @@
   </div>
 
   <script>
+    // ===== AUTH & AUTO-LOGOUT (Firebaseに依存しない) =====
+    var inactivityTimer = null;
+    var TIMEOUT_MS = 60 * 60 * 1000;
+
+    function resetInactivityTimer() {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(function() { doLogout(true); }, TIMEOUT_MS);
+    }
+
+    function startInactivityWatch() {
+      ['click','keydown','mousemove','touchstart','scroll'].forEach(function(ev) {
+        document.addEventListener(ev, resetInactivityTimer, { passive: true });
+      });
+      resetInactivityTimer();
+    }
+
+    function doLogin() {
+      var pw = document.getElementById('login-pw').value;
+      if (pw === 'coach2026') {
+        document.getElementById('login-gate').classList.add('hidden');
+        document.getElementById('login-error').textContent = '';
+        startInactivityWatch();
+      } else {
+        document.getElementById('login-error').textContent = 'パスワードが違います。もう一度お試しください。';
+        document.getElementById('login-pw').value = '';
+        document.getElementById('login-pw').focus();
+      }
+    }
+
+    function _execAdminLogout(isAuto) {
+      clearTimeout(inactivityTimer);
+      ['click','keydown','mousemove','touchstart','scroll'].forEach(function(ev) {
+        document.removeEventListener(ev, resetInactivityTimer);
+      });
+      var gate = document.getElementById('login-gate');
+      gate.classList.remove('hidden');
+      var sub = document.getElementById('login-sub-msg');
+      if (sub) sub.textContent = isAuto ? '60分操作がなかったためログアウトしました' : 'ADMIN PANEL';
+      document.getElementById('login-pw').value = '';
+      document.getElementById('login-error').textContent = '';
+      document.getElementById('login-pw').focus();
+    }
+
+    function doLogout(isAuto) {
+      if (isAuto) { _execAdminLogout(true); return; }
+      var ov = document.createElement('div');
+      ov.id = '_lo-ov';
+      ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:99999;display:flex;align-items:center;justify-content:center;';
+      ov.innerHTML = '<div style="background:#fff;border-radius:14px;padding:36px 32px;max-width:300px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.18);">'
+        + '<div style="font-size:15px;font-weight:600;color:#1A1419;margin-bottom:8px;">ログアウト</div>'
+        + '<div style="font-size:13px;color:#9A8890;margin-bottom:28px;">ログアウトしますか？</div>'
+        + '<div style="display:flex;gap:10px;">'
+        + '<button onclick="document.getElementById(\'_lo-ov\').remove()" style="flex:1;padding:11px;border:1.5px solid rgba(0,0,0,0.12);border-radius:8px;background:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;color:#1A1419;">キャンセル</button>'
+        + '<button onclick="_execAdminLogout(false)" style="flex:1;padding:11px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;">ログアウト</button>'
+        + '</div></div>';
+      document.body.appendChild(ov);
+    }
+
     function openAddModal() {
       document.getElementById('add-name').value = '';
       document.getElementById('add-email').value = '';
@@ -791,66 +849,6 @@
       appId: "1:22360558331:web:1a19fc67737e4236eb3e5e"
     };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-
-    // ===== AUTH & AUTO-LOGOUT =====
-    var inactivityTimer = null;
-    var TIMEOUT_MS = 60 * 60 * 1000; // 60分
-
-    function resetInactivityTimer() {
-      clearTimeout(inactivityTimer);
-      inactivityTimer = setTimeout(function() {
-        doLogout(true);
-      }, TIMEOUT_MS);
-    }
-
-    function startInactivityWatch() {
-      ['click','keydown','mousemove','touchstart','scroll'].forEach(function(ev) {
-        document.addEventListener(ev, resetInactivityTimer, { passive: true });
-      });
-      resetInactivityTimer();
-    }
-
-    function doLogin() {
-      var pw = document.getElementById('login-pw').value;
-      if (pw === 'coach2026') {
-        document.getElementById('login-gate').classList.add('hidden');
-        startInactivityWatch();
-      } else {
-        document.getElementById('login-error').textContent = 'パスワードが違います';
-        document.getElementById('login-pw').value = '';
-        document.getElementById('login-pw').focus();
-      }
-    }
-
-    function _execAdminLogout(isAuto) {
-      clearTimeout(inactivityTimer);
-      ['click','keydown','mousemove','touchstart','scroll'].forEach(function(ev) {
-        document.removeEventListener(ev, resetInactivityTimer);
-      });
-      var gate = document.getElementById('login-gate');
-      gate.classList.remove('hidden');
-      var sub = document.getElementById('login-sub-msg');
-      if (sub) sub.textContent = isAuto ? '60分操作がなかったためログアウトしました' : 'ADMIN PANEL';
-      document.getElementById('login-pw').value = '';
-      document.getElementById('login-error').textContent = '';
-      document.getElementById('login-pw').focus();
-    }
-
-    function doLogout(isAuto) {
-      if (isAuto) { _execAdminLogout(true); return; }
-      var ov = document.createElement('div');
-      ov.id = '_lo-ov';
-      ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:99999;display:flex;align-items:center;justify-content:center;';
-      ov.innerHTML = '<div style="background:#fff;border-radius:14px;padding:36px 32px;max-width:300px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.18);">'
-        + '<div style="font-size:15px;font-weight:600;color:#1A1419;margin-bottom:8px;">ログアウト</div>'
-        + '<div style="font-size:13px;color:#9A8890;margin-bottom:28px;">ログアウトしますか？</div>'
-        + '<div style="display:flex;gap:10px;">'
-        + '<button onclick="document.getElementById('_lo-ov').remove()" style="flex:1;padding:11px;border:1.5px solid rgba(0,0,0,0.12);border-radius:8px;background:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;color:#1A1419;">キャンセル</button>'
-        + '<button onclick="_execAdminLogout(false)" style="flex:1;padding:11px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;">ログアウト</button>'
-        + '</div></div>';
-      document.body.appendChild(ov);
-    }
-
     const db = firebase.firestore();
     loadStudents();
     loadReports();
