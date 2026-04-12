@@ -2519,6 +2519,54 @@ function addMemo() {
     };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-  </script>
+  
+  /* ===== MANUAL ACCORDION & SEARCH ===== */
+  function toggleManual(idx) {
+    var el = document.getElementById('m-item-' + idx);
+    el.classList.toggle('open');
+  }
+  function filterManual(query) {
+    var q = query.trim().toLowerCase();
+    var items = document.querySelectorAll('.m-item');
+    var anyVisible = false;
+    items.forEach(function(item) {
+      item.classList.remove('m-all-hidden');
+      var sections = item.querySelectorAll('.m-section');
+      var itemVisible = false;
+      sections.forEach(function(sec) {
+        restoreManualText(sec);
+        if (!q) { sec.classList.remove('m-hidden'); itemVisible = true; return; }
+        var text = sec.getAttribute('data-text') + ' ' + sec.textContent;
+        if (text.toLowerCase().includes(q)) {
+          sec.classList.remove('m-hidden');
+          highlightManual(sec, q);
+          itemVisible = true;
+        } else { sec.classList.add('m-hidden'); }
+      });
+      if (!q) { item.classList.remove('m-all-hidden'); }
+      else if (!itemVisible) { item.classList.add('m-all-hidden'); }
+      else { item.classList.remove('m-all-hidden'); item.classList.add('open'); }
+      if (itemVisible || !q) anyVisible = true;
+    });
+    var empty = document.getElementById('m-search-empty');
+    if (empty) empty.style.display = (!q || anyVisible) ? 'none' : 'block';
+  }
+  function highlightManual(container, q) {
+    var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+    var nodes = []; var node;
+    while (node = walker.nextNode()) { if (node.parentNode.tagName !== 'MARK') nodes.push(node); }
+    nodes.forEach(function(n) {
+      if (n.nodeValue.toLowerCase().indexOf(q) === -1) return;
+      var span = document.createElement('span');
+      span.innerHTML = n.nodeValue.replace(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi'), '<mark>$1</mark>');
+      n.parentNode.replaceChild(span, n);
+    });
+  }
+  function restoreManualText(container) {
+    container.querySelectorAll('mark').forEach(function(m) {
+      m.parentNode.replaceChild(document.createTextNode(m.textContent), m);
+    });
+  }
+</script>
 </body>
 </html>
