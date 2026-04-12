@@ -233,12 +233,12 @@
   <div class="login-box">
     <div class="login-logo">英語コーチング</div>
     <div class="login-sub" id="login-sub-msg">ADMIN PANEL</div>
-    <form onsubmit="doLogin();return false;" autocomplete="on">
+    <form action="javascript:void(0)" autocomplete="on">
       <input type="text" name="username" autocomplete="username" value="admin" style="display:none;" aria-hidden="true">
       <label class="login-label" for="login-pw">パスワード</label>
-      <input type="password" class="login-input" id="login-pw" name="password" autocomplete="current-password" placeholder="••••••••">
+      <input type="password" class="login-input" id="login-pw" name="password" autocomplete="current-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
       <div class="login-error" id="login-error"></div>
-      <button type="submit" class="login-btn">ログイン</button>
+      <button type="button" class="login-btn" onclick="doLogin()">ログイン</button>
     </form>
   </div>
 </div>
