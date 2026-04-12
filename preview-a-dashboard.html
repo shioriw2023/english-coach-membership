@@ -655,7 +655,7 @@
     </div>
     <div class="header-user">
       <span class="user-name">田中 花子さん</span>
-      <button class="btn-logout">ログアウト</button>
+      <button class="btn-logout" onclick="doLogout(false)">ログアウト</button>
     </div>
   </header>
 
@@ -2567,6 +2567,31 @@ function addMemo() {
       m.parentNode.replaceChild(document.createTextNode(m.textContent), m);
     });
   }
+
+  // ===== AUTO-LOGOUT (60分) =====
+  var _inactivityTimer = null;
+  var _TIMEOUT_MS = 60 * 60 * 1000;
+
+  function _resetTimer() {
+    clearTimeout(_inactivityTimer);
+    _inactivityTimer = setTimeout(function() { doLogout(true); }, _TIMEOUT_MS);
+  }
+
+  function doLogout(isAuto) {
+    clearTimeout(_inactivityTimer);
+    ['click','keydown','mousemove','touchstart','scroll'].forEach(function(ev) {
+      document.removeEventListener(ev, _resetTimer);
+    });
+    if (isAuto) {
+      sessionStorage.setItem('logout_reason', 'timeout');
+    }
+    window.location.href = 'preview-a.html';
+  }
+
+  ['click','keydown','mousemove','touchstart','scroll'].forEach(function(ev) {
+    document.addEventListener(ev, _resetTimer, { passive: true });
+  });
+  _resetTimer();
 </script>
 </body>
 </html>

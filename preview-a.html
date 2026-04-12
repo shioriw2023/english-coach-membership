@@ -265,6 +265,18 @@
       document.getElementById('setup-btn').style.display = 'none';
       document.getElementById('setup-success').style.display = 'block';
     }
+
+    // タイムアウトでリダイレクトされた場合にメッセージ表示
+    (function() {
+      if (sessionStorage.getItem('logout_reason') === 'timeout') {
+        sessionStorage.removeItem('logout_reason');
+        var err = document.getElementById('login-error');
+        if (err) {
+          err.textContent = '60分操作がなかったためログアウトしました。再度ログインしてください。';
+          err.classList.add('show');
+        }
+      }
+    })();
   </script>
 </body>
 </html>
