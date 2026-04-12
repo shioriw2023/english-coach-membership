@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1分間スピーキング</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F5F8F2;
+      --white: #FFFFFF;
+      --text: #1A1419;
+      --text-muted: #8A9A82;
+      --accent: #6B8C5A;
+      --accent-hover: #578048;
+      --accent-light: #EBF3E6;
+      --border: rgba(0,0,0,0.08);
+      --radius: 8px;
+      --radius-lg: 14px;
+      --shadow: 0 2px 12px rgba(0,0,0,0.07);
+      --red: #D95F4B;
+      --red-light: #FDECEA;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+    }
+
+    /* ===== HEADER ===== */
+    .app-header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px; height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .header-back {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--accent);
+      background: none; border: none; font-family: inherit;
+      cursor: pointer; text-decoration: none;
+    }
+    .header-title { font-size: 14px; font-weight: 600; color: var(--text); }
+    .header-badge {
+      font-size: 11px; background: var(--accent-light); color: var(--accent);
+      padding: 3px 10px; border-radius: 20px; font-weight: 500;
+    }
+
+    /* ===== LEVEL TOGGLE ===== */
+    .level-toggle-wrap { max-width: 600px; margin: 0 auto; padding: 20px 16px 0; }
+    .level-toggle {
+      display: flex; background: var(--white);
+      border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden;
+    }
+    .level-btn {
+      flex: 1; padding: 10px 0; font-size: 13px; font-weight: 600;
+      font-family: inherit; border: none; cursor: pointer;
+      background: none; color: var(--text-muted); transition: all 0.15s;
+    }
+    .level-btn.active { background: var(--accent); color: #fff; }
+
+    /* ===== MAIN WRAP ===== */
+    .main-wrap { max-width: 600px; margin: 0 auto; padding: 20px 16px 48px; }
+
+    /* ===== PROGRESS ===== */
+    .progress-section { margin-bottom: 20px; }
+    .progress-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .progress-label { font-size: 12px; color: var(--text-muted); }
+    .progress-count { font-size: 13px; font-weight: 700; color: var(--accent); }
+    .progress-bar-bg { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.3s ease; }
+
+    /* ===== TOPIC CARD ===== */
+    .topic-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 28px 24px;
+      margin-bottom: 16px;
+    }
+    .topic-num {
+      font-size: 11px; color: var(--text-muted); margin-bottom: 12px;
+    }
+    .topic-text {
+      font-size: 20px; font-weight: 700; color: var(--text);
+      line-height: 1.6; margin-bottom: 20px;
+    }
+    .topic-hint {
+      font-size: 12px; color: var(--text-muted); line-height: 1.7;
+      background: var(--bg); border-radius: var(--radius);
+      padding: 10px 14px;
+    }
+
+    /* ===== TIMER ===== */
+    .timer-area {
+      text-align: center; margin-bottom: 16px;
+    }
+    .timer-ring-wrap {
+      position: relative; display: inline-block;
+      width: 120px; height: 120px; margin-bottom: 12px;
+    }
+    .timer-ring-svg { transform: rotate(-90deg); }
+    .timer-ring-bg { fill: none; stroke: var(--border); stroke-width: 6; }
+    .timer-ring-fill {
+      fill: none; stroke: var(--accent); stroke-width: 6;
+      stroke-linecap: round;
+      stroke-dasharray: 314;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.5s linear, stroke 0.3s;
+    }
+    .timer-ring-fill.urgent { stroke: var(--red); }
+    .timer-num {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Inter', sans-serif;
+      font-size: 32px; font-weight: 700; color: var(--text);
+    }
+    .timer-num.urgent { color: var(--red); }
+    .timer-status {
+      font-size: 13px; color: var(--text-muted);
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-start {
+      width: 100%; padding: 14px;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: var(--radius);
+      font-size: 15px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .btn-start:hover { background: var(--accent-hover); }
+    .btn-stop {
+      width: 100%; padding: 14px;
+      background: var(--red); color: #fff;
+      border: none; border-radius: var(--radius);
+      font-size: 15px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: background 0.15s;
+      display: none;
+    }
+    .btn-stop:hover { background: #C04A38; }
+    .btn-next {
+      width: 100%; padding: 14px;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: var(--radius);
+      font-size: 15px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: background 0.15s;
+      display: none;
+    }
+    .btn-next:hover { background: var(--accent-hover); }
+
+    /* ===== MEMO AREA ===== */
+    .memo-area {
+      display: none;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+    .memo-area.show { display: block; }
+    .memo-label {
+      font-size: 12px; font-weight: 600; color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .memo-textarea {
+      width: 100%; min-height: 80px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 12px; font-size: 14px; font-family: inherit;
+      color: var(--text); background: var(--bg);
+      resize: vertical; line-height: 1.7;
+      transition: border-color 0.15s;
+    }
+    .memo-textarea:focus { outline: none; border-color: var(--accent); }
+    .memo-hint {
+      font-size: 11px; color: var(--text-muted); margin-top: 6px;
+    }
+
+    /* ===== START SCREEN ===== */
+    .start-wrap { text-align: center; }
+    .start-wrap.hidden { display: none; }
+
+    /* ===== COMPLETE SCREEN ===== */
+    .complete-screen {
+      display: none; text-align: center;
+      background: var(--white); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow); padding: 48px 24px;
+    }
+    .complete-screen.show { display: block; }
+    .complete-icon { font-size: 48px; margin-bottom: 16px; }
+    .complete-title { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .complete-sub { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 28px; }
+    .memo-list { text-align: left; margin-bottom: 28px; }
+    .memo-list-title {
+      font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .memo-list-item {
+      background: var(--bg); border-radius: var(--radius);
+      padding: 12px 16px; margin-bottom: 8px;
+    }
+    .memo-list-topic { font-size: 12px; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+    .memo-list-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+    .memo-list-empty { font-size: 13px; color: var(--text-muted); text-align: center; padding: 16px 0; }
+    .btn-retry {
+      display: inline-block; padding: 12px 32px;
+      border: 2px solid var(--accent); border-radius: var(--radius);
+      font-size: 14px; font-weight: 600; font-family: inherit;
+      color: var(--accent); background: none; cursor: pointer;
+      transition: all 0.15s; margin-right: 8px;
+    }
+    .btn-retry:hover { background: var(--accent-light); }
+    .btn-home-link {
+      display: inline-block; padding: 12px 32px;
+      background: var(--accent); border-radius: var(--radius);
+      font-size: 14px; font-weight: 600; font-family: inherit;
+      color: #fff; border: none; cursor: pointer;
+      text-decoration: none; transition: background 0.15s;
+    }
+    .btn-home-link:hover { background: var(--accent-hover); }
+
+    /* ===== PRACTICE WRAP ===== */
+    .practice-wrap { display: none; }
+    .practice-wrap.show { display: block; }
+  </style>
+</head>
+<body>
+
+<header class="app-header">
+  <a href="preview-c-dashboard.html" class="header-back">← タスク一覧に戻る</a>
+  <span class="header-title">1分間スピーキング</span>
+  <span class="header-badge" id="header-badge">初級</span>
+</header>
+
+<div class="level-toggle-wrap">
+  <div class="level-toggle">
+    <button class="level-btn active" id="btn-beginner" onclick="setLevel('beginner')">初級</button>
+    <button class="level-btn" id="btn-intermediate" onclick="setLevel('intermediate')">中級</button>
+  </div>
+</div>
+
+<div class="main-wrap">
+
+  <!-- スタート前 -->
+  <div class="start-wrap" id="start-wrap" style="padding-top:32px;">
+    <div style="font-size:36px;margin-bottom:16px;">🗣️</div>
+    <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px;">1分間スピーキング</div>
+    <div style="font-size:13px;color:var(--text-muted);line-height:1.8;margin-bottom:8px;">
+      お題を見て、英語で1分間話し続ける練習です。<br>
+      完璧でなくても OK！まず口を動かすことが大切です。<br>
+      話した内容や気づいたことをメモしておきましょう。
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:28px;">⏱ 目安 10分 / 全10お題</div>
+    <button class="btn-start" style="max-width:280px;margin:0 auto;" onclick="startPractice()">練習を始める</button>
+  </div>
+
+  <!-- 練習画面 -->
+  <div class="practice-wrap" id="practice-wrap">
+    <div class="progress-section">
+      <div class="progress-row">
+        <span class="progress-label">お題</span>
+        <span class="progress-count" id="progress-count">1 / 10</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-bar" style="width:10%"></div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-num" id="topic-num">お題 1</div>
+      <div class="topic-text" id="topic-text">—</div>
+      <div class="topic-hint" id="topic-hint"></div>
+    </div>
+
+    <div class="timer-area">
+      <div class="timer-ring-wrap">
+        <svg class="timer-ring-svg" width="120" height="120" viewBox="0 0 120 120">
+          <circle class="timer-ring-bg" cx="60" cy="60" r="50"/>
+          <circle class="timer-ring-fill" id="timer-ring" cx="60" cy="60" r="50"/>
+        </svg>
+        <div class="timer-num" id="timer-num">60</div>
+      </div>
+      <div class="timer-status" id="timer-status">スタートボタンを押して開始</div>
+    </div>
+
+    <div class="memo-area" id="memo-area">
+      <div class="memo-label">📝 メモ（使えた表現・気づいたこと）</div>
+      <textarea class="memo-textarea" id="memo-input" placeholder="例：I like summer because... と言えた / 「また」の英語が出てこなかった"></textarea>
+      <div class="memo-hint">メモが終わったら「次のお題へ」を押してください</div>
+    </div>
+
+    <button class="btn-start" id="btn-start-timer" onclick="startTimer()">▶ スタート</button>
+    <button class="btn-stop" id="btn-stop-timer" onclick="stopTimer()">■ 時間終了</button>
+    <button class="btn-next" id="btn-next" onclick="nextTopic()">次のお題へ →</button>
+  </div>
+
+  <!-- 完了画面 -->
+  <div class="complete-screen" id="complete-screen">
+    <div class="complete-icon">🎊</div>
+    <div class="complete-title">お疲れ様でした！</div>
+    <div class="complete-sub">10お題すべて完了！<br>毎日続けることで、英語で考える力がつきます。</div>
+    <div class="memo-list" id="memo-list">
+      <div class="memo-list-title">📝 今日のメモまとめ</div>
+      <div id="memo-list-content"></div>
+    </div>
+    <button class="btn-retry" onclick="retryPractice()">もう一度</button>
+    <a href="preview-c-dashboard.html" class="btn-home-link">タスク一覧へ</a>
+  </div>
+
+</div>
+
+<script>
+  var TOPICS = {
+    beginner: [
+      { text: "自己紹介をしてください", hint: "名前・出身・仕事・趣味など。\"My name is... I'm from... I enjoy...\" を使ってみましょう。" },
+      { text: "今日の朝ごはんについて話してください", hint: "何を食べたか、おいしかったかなど。\"I had... for breakfast. It was...\"" },
+      { text: "好きな季節とその理由を教えてください", hint: "\"My favorite season is... because...\" で理由を2〜3つ挙げましょう。" },
+      { text: "週末に何をしましたか？", hint: "過去形を使って話しましょう。\"Last weekend, I went to... / I stayed at home and...\"" },
+      { text: "好きな食べ物について話してください", hint: "何が好きか、どこで食べるか、誰と食べるか。\"I love... It's my favorite because...\"" },
+      { text: "毎日のルーティンを紹介してください", hint: "起きてから寝るまでの流れ。\"I usually wake up at... Then I...\"" },
+      { text: "趣味について話してください", hint: "いつ始めたか、なぜ好きか。\"One of my hobbies is... I started it because...\"" },
+      { text: "住んでいる場所（街）について話してください", hint: "どんな街か、好きなところ・不便なところ。\"I live in... It's a... place. I like it because...\"" },
+      { text: "好きなテレビ番組や映画について話してください", hint: "どんな内容か、なぜ好きかを紹介。\"My favorite show is... It's about... I like it because...\"" },
+      { text: "最近うれしかったことを話してください", hint: "いつ・何があったか・どんな気持ちだったか。\"Recently, I was really happy when...\"" },
+    ],
+    intermediate: [
+      { text: "SNSの良い点と悪い点について話してください", hint: "両面から話しましょう。\"On one hand... On the other hand... Personally, I think...\"" },
+      { text: "最近チャレンジしたことについて教えてください", hint: "何に挑戦したか、なぜ・結果はどうか。\"Recently, I challenged myself to... because...\"" },
+      { text: "理想の働き方について話してください", hint: "リモートか出社か、時間の使い方など。\"My ideal work style would be... because...\"" },
+      { text: "テクノロジーが日常生活に与える影響を話してください", hint: "便利になったこと・変わったこと。\"Technology has changed the way I... For example...\"" },
+      { text: "人生で大切にしていることを話してください", hint: "価値観・信念など。\"One thing I really value in life is... because...\"" },
+      { text: "日本の文化で外国人に紹介したいものを話してください", hint: "具体的に1〜2つ選んで説明。\"If I had to introduce Japanese culture, I'd talk about...\"" },
+      { text: "ストレス発散の方法について話してください", hint: "何をするか・なぜ効果的かを話しましょう。\"When I feel stressed, I usually... because...\"" },
+      { text: "理想の旅行先とその理由を話してください", hint: "どこへ行きたいか・何をしたいか・なぜか。\"If I could travel anywhere, I'd go to... because...\"" },
+      { text: "英語を学ぶ理由と目標について話してください", hint: "なぜ英語を学んでいるか、将来どう使いたいか。\"I'm learning English because... My goal is to...\"" },
+      { text: "もし1日だけ有名人になれるとしたら、誰になりたいですか？", hint: "誰か・なぜか・何をするかを話しましょう。\"If I could be a celebrity for one day, I'd choose... because...\"" },
+    ]
+  };
+
+  var currentLevel = 'beginner';
+  var currentIndex = 0;
+  var isStarted = false;
+  var timerInterval = null;
+  var timeLeft = 60;
+  var memos = [];
+  var timerRunning = false;
+
+  function setLevel(level) {
+    currentLevel = level;
+    document.getElementById('btn-beginner').classList.toggle('active', level === 'beginner');
+    document.getElementById('btn-intermediate').classList.toggle('active', level === 'intermediate');
+    document.getElementById('header-badge').textContent = level === 'beginner' ? '初級' : '中級';
+    if (isStarted) {
+      resetAndRestart();
+    }
+  }
+
+  function resetAndRestart() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    currentIndex = 0;
+    memos = [];
+    document.getElementById('complete-screen').classList.remove('show');
+    document.getElementById('practice-wrap').classList.add('show');
+    renderTopic();
+  }
+
+  function startPractice() {
+    isStarted = true;
+    currentIndex = 0;
+    memos = [];
+    document.getElementById('start-wrap').classList.add('hidden');
+    document.getElementById('practice-wrap').classList.add('show');
+    renderTopic();
+  }
+
+  function renderTopic() {
+    var topics = TOPICS[currentLevel];
+    var t = topics[currentIndex];
+
+    clearInterval(timerInterval);
+    timerRunning = false;
+    timeLeft = 60;
+
+    document.getElementById('topic-num').textContent = 'お題 ' + (currentIndex + 1);
+    document.getElementById('topic-text').textContent = t.text;
+    document.getElementById('topic-hint').textContent = '💡 ' + t.hint;
+    document.getElementById('progress-count').textContent = (currentIndex + 1) + ' / ' + topics.length;
+    document.getElementById('progress-bar').style.width = ((currentIndex + 1) / topics.length * 100) + '%';
+
+    updateTimerDisplay(60);
+    document.getElementById('timer-status').textContent = 'スタートボタンを押して開始';
+    document.getElementById('timer-ring').classList.remove('urgent');
+    document.getElementById('timer-num').classList.remove('urgent');
+
+    document.getElementById('memo-area').classList.remove('show');
+    document.getElementById('memo-input').value = '';
+    document.getElementById('btn-start-timer').style.display = 'block';
+    document.getElementById('btn-stop-timer').style.display = 'none';
+    document.getElementById('btn-next').style.display = 'none';
+  }
+
+  function updateTimerDisplay(sec) {
+    var ring = document.getElementById('timer-ring');
+    var num = document.getElementById('timer-num');
+    var circumference = 314;
+    var offset = circumference * (1 - sec / 60);
+    ring.style.strokeDashoffset = offset;
+    num.textContent = sec;
+    if (sec <= 10) {
+      ring.classList.add('urgent');
+      num.classList.add('urgent');
+    } else {
+      ring.classList.remove('urgent');
+      num.classList.remove('urgent');
+    }
+  }
+
+  function startTimer() {
+    if (timerRunning) return;
+    timerRunning = true;
+    document.getElementById('btn-start-timer').style.display = 'none';
+    document.getElementById('btn-stop-timer').style.display = 'block';
+    document.getElementById('timer-status').textContent = '話し続けましょう！';
+
+    timerInterval = setInterval(function() {
+      timeLeft--;
+      updateTimerDisplay(timeLeft);
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        onTimerEnd();
+      }
+    }, 1000);
+  }
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    onTimerEnd();
+  }
+
+  function onTimerEnd() {
+    document.getElementById('btn-stop-timer').style.display = 'none';
+    document.getElementById('timer-status').textContent = '時間終了！お疲れ様でした。';
+    document.getElementById('memo-area').classList.add('show');
+    document.getElementById('btn-next').style.display = 'block';
+
+    var isLast = currentIndex === TOPICS[currentLevel].length - 1;
+    document.getElementById('btn-next').textContent = isLast ? '完了 ✓' : '次のお題へ →';
+  }
+
+  function nextTopic() {
+    var memo = document.getElementById('memo-input').value.trim();
+    memos.push({
+      topic: TOPICS[currentLevel][currentIndex].text,
+      memo: memo
+    });
+
+    var topics = TOPICS[currentLevel];
+    if (currentIndex < topics.length - 1) {
+      currentIndex++;
+      renderTopic();
+    } else {
+      showComplete();
+    }
+  }
+
+  function showComplete() {
+    document.getElementById('practice-wrap').classList.remove('show');
+    document.getElementById('complete-screen').classList.add('show');
+
+    var content = document.getElementById('memo-list-content');
+    var hasMemo = memos.some(function(m) { return m.memo; });
+    if (!hasMemo) {
+      content.innerHTML = '<div class="memo-list-empty">メモはありませんでした</div>';
+      return;
+    }
+    content.innerHTML = memos.map(function(m, i) {
+      if (!m.memo) return '';
+      return '<div class="memo-list-item">' +
+        '<div class="memo-list-topic">お題 ' + (i + 1) + ': ' + m.topic + '</div>' +
+        '<div class="memo-list-text">' + m.memo.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>') + '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  function retryPractice() {
+    currentIndex = 0;
+    memos = [];
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('complete-screen').classList.remove('show');
+    document.getElementById('practice-wrap').classList.add('show');
+    renderTopic();
+  }
+</script>
+
+</body>
+</html>

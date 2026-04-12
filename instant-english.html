@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>瞬間英作文</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F5F8F2;
+      --white: #FFFFFF;
+      --text: #1A1419;
+      --text-muted: #8A9A82;
+      --accent: #6B8C5A;
+      --accent-hover: #578048;
+      --accent-light: #EBF3E6;
+      --border: rgba(0,0,0,0.08);
+      --radius: 8px;
+      --radius-lg: 14px;
+      --shadow: 0 2px 12px rgba(0,0,0,0.07);
+      --green: #4A9E6A;
+      --green-light: #E6F7EE;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+    }
+
+    /* ===== HEADER ===== */
+    .app-header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px; height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .header-back {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--accent);
+      background: none; border: none; font-family: inherit;
+      cursor: pointer; text-decoration: none;
+    }
+    .header-title { font-size: 14px; font-weight: 600; color: var(--text); }
+    .header-badge {
+      font-size: 11px; background: var(--accent-light); color: var(--accent);
+      padding: 3px 10px; border-radius: 20px; font-weight: 500;
+    }
+
+    /* ===== LEVEL TOGGLE ===== */
+    .level-toggle-wrap { max-width: 600px; margin: 0 auto; padding: 20px 16px 0; }
+    .level-toggle {
+      display: flex; background: var(--white);
+      border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden;
+    }
+    .level-btn {
+      flex: 1; padding: 10px 0; font-size: 13px; font-weight: 600;
+      font-family: inherit; border: none; cursor: pointer;
+      background: none; color: var(--text-muted); transition: all 0.15s;
+    }
+    .level-btn.active { background: var(--accent); color: #fff; }
+
+    /* ===== MAIN WRAP ===== */
+    .main-wrap { max-width: 600px; margin: 0 auto; padding: 20px 16px 48px; }
+
+    /* ===== PROGRESS ===== */
+    .progress-section { margin-bottom: 20px; }
+    .progress-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .progress-label { font-size: 12px; color: var(--text-muted); }
+    .progress-count { font-size: 13px; font-weight: 700; color: var(--accent); }
+    .progress-bar-bg { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.3s ease; }
+
+    /* ===== QUESTION CARD ===== */
+    .question-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 28px 24px;
+      margin-bottom: 16px;
+    }
+    .q-num { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; }
+    .q-ja {
+      font-size: 20px; font-weight: 700; color: var(--text);
+      line-height: 1.6; margin-bottom: 20px;
+    }
+
+    /* 答え */
+    .answer-area {
+      background: var(--accent-light);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      display: none;
+    }
+    .answer-area.show { display: block; }
+    .answer-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .answer-en {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px; font-weight: 500; color: var(--text);
+      line-height: 1.5;
+    }
+    .answer-note {
+      font-size: 12px; color: var(--text-muted); margin-top: 8px; line-height: 1.6;
+    }
+
+    /* 自己評価 */
+    .self-eval {
+      display: none; gap: 8px; margin-bottom: 4px;
+    }
+    .self-eval.show { display: flex; }
+    .eval-btn {
+      flex: 1; padding: 10px 6px; border-radius: var(--radius);
+      font-size: 12px; font-weight: 600; font-family: inherit;
+      border: 1.5px solid var(--border); background: var(--white);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .eval-btn.good { border-color: var(--green); color: var(--green); }
+    .eval-btn.good:hover, .eval-btn.good.selected { background: var(--green-light); }
+    .eval-btn.ok { border-color: #C8A84B; color: #9A7A1A; }
+    .eval-btn.ok:hover, .eval-btn.ok.selected { background: #FFF8E6; }
+    .eval-btn.retry { border-color: #C86464; color: #A83C3C; }
+    .eval-btn.retry:hover, .eval-btn.retry.selected { background: #FDECEA; }
+
+    /* ===== BUTTONS ===== */
+    .btn-reveal {
+      width: 100%; padding: 14px;
+      background: var(--white); color: var(--accent);
+      border: 2px solid var(--accent); border-radius: var(--radius);
+      font-size: 15px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .btn-reveal:hover { background: var(--accent-light); }
+    .btn-next {
+      width: 100%; padding: 14px;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: var(--radius);
+      font-size: 15px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: background 0.15s;
+      display: none;
+    }
+    .btn-next.show { display: block; }
+    .btn-next:hover { background: var(--accent-hover); }
+
+    /* ===== START SCREEN ===== */
+    .start-wrap { text-align: center; padding: 32px 0; }
+    .start-wrap.hidden { display: none; }
+
+    /* ===== COMPLETE SCREEN ===== */
+    .complete-screen {
+      display: none; text-align: center;
+      background: var(--white); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow); padding: 48px 24px;
+    }
+    .complete-screen.show { display: block; }
+    .complete-icon { font-size: 48px; margin-bottom: 16px; }
+    .complete-title { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .complete-sub { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 28px; }
+    .complete-stats { display: flex; justify-content: center; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
+    .stat-box {
+      background: var(--accent-light); border-radius: var(--radius);
+      padding: 14px 20px; text-align: center; min-width: 80px;
+    }
+    .stat-val { font-size: 24px; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .btn-retry {
+      display: inline-block; padding: 12px 32px;
+      border: 2px solid var(--accent); border-radius: var(--radius);
+      font-size: 14px; font-weight: 600; font-family: inherit;
+      color: var(--accent); background: none; cursor: pointer;
+      transition: all 0.15s; margin-right: 8px;
+    }
+    .btn-retry:hover { background: var(--accent-light); }
+    .btn-home-link {
+      display: inline-block; padding: 12px 32px;
+      background: var(--accent); border-radius: var(--radius);
+      font-size: 14px; font-weight: 600; font-family: inherit;
+      color: #fff; border: none; cursor: pointer;
+      text-decoration: none; transition: background 0.15s;
+    }
+    .btn-home-link:hover { background: var(--accent-hover); }
+
+    /* ===== PRACTICE WRAP ===== */
+    .practice-wrap { display: none; }
+    .practice-wrap.show { display: block; }
+  </style>
+</head>
+<body>
+
+<header class="app-header">
+  <a href="preview-c-dashboard.html" class="header-back">← タスク一覧に戻る</a>
+  <span class="header-title">瞬間英作文</span>
+  <span class="header-badge" id="header-badge">初級</span>
+</header>
+
+<div class="level-toggle-wrap">
+  <div class="level-toggle">
+    <button class="level-btn active" id="btn-beginner" onclick="setLevel('beginner')">初級</button>
+    <button class="level-btn" id="btn-intermediate" onclick="setLevel('intermediate')">中級</button>
+  </div>
+</div>
+
+<div class="main-wrap">
+
+  <!-- スタート前 -->
+  <div class="start-wrap" id="start-wrap" style="padding-top:32px;">
+    <div style="font-size:36px;margin-bottom:16px;">⚡</div>
+    <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px;">瞬間英作文</div>
+    <div style="font-size:13px;color:var(--text-muted);line-height:1.8;margin-bottom:8px;">
+      日本語を見て瞬時に英語に変換する練習です。<br>
+      まず自分で考えてから「答えを見る」を押してください。<br>
+      ◎できた・△もう少し・✕ の3段階で自己評価しましょう。
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:28px;">⏱ 目安 20分 / 全20問</div>
+    <button class="btn-next show" style="max-width:280px;margin:0 auto;" onclick="startPractice()">練習を始める</button>
+  </div>
+
+  <!-- 練習画面 -->
+  <div class="practice-wrap" id="practice-wrap">
+    <div class="progress-section">
+      <div class="progress-row">
+        <span class="progress-label">問題</span>
+        <span class="progress-count" id="progress-count">1 / 20</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-bar" style="width:5%"></div>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="q-num" id="q-num">Q1</div>
+      <div class="q-ja" id="q-ja">—</div>
+      <div class="answer-area" id="answer-area">
+        <div class="answer-label">答え</div>
+        <div class="answer-en" id="answer-en">—</div>
+        <div class="answer-note" id="answer-note"></div>
+      </div>
+      <div class="self-eval" id="self-eval">
+        <button class="eval-btn good" onclick="evalAndNext('good')">◎ できた</button>
+        <button class="eval-btn ok" onclick="evalAndNext('ok')">△ もう少し</button>
+        <button class="eval-btn retry" onclick="evalAndNext('retry')">✕ できなかった</button>
+      </div>
+    </div>
+
+    <button class="btn-reveal" id="btn-reveal" onclick="revealAnswer()">答えを見る</button>
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">次へ →</button>
+  </div>
+
+  <!-- 完了画面 -->
+  <div class="complete-screen" id="complete-screen">
+    <div class="complete-icon">🎉</div>
+    <div class="complete-title">お疲れ様でした！</div>
+    <div class="complete-sub">20問すべて完了しました！<br>自己評価を振り返って、苦手な文を繰り返し練習しましょう。</div>
+    <div class="complete-stats">
+      <div class="stat-box">
+        <div class="stat-val" id="stat-good">0</div>
+        <div class="stat-label">◎ できた</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="stat-ok">0</div>
+        <div class="stat-label">△ もう少し</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="stat-retry">0</div>
+        <div class="stat-label">✕ もう一度</div>
+      </div>
+    </div>
+    <button class="btn-retry" onclick="retryPractice()">もう一度</button>
+    <a href="preview-c-dashboard.html" class="btn-home-link">タスク一覧へ</a>
+  </div>
+
+</div>
+
+<script>
+  var QUESTIONS = {
+    beginner: [
+      { ja: "私は毎朝6時に起きます。", en: "I wake up at six every morning.", note: "「wake up」は「目が覚める」。get up でも OK。" },
+      { ja: "今日は仕事が忙しかったです。", en: "I was busy with work today.", note: "「busy with ～」で「～で忙しい」という表現。" },
+      { ja: "彼女は犬を2匹飼っています。", en: "She has two dogs.", note: "シンプルに has を使いましょう。owns でも可。" },
+      { ja: "今夜は家でゆっくりしたいです。", en: "I want to relax at home tonight.", note: "「relax」は「くつろぐ」。stay home でも自然。" },
+      { ja: "昨日、映画を見ました。", en: "I watched a movie yesterday.", note: "過去形は -ed を忘れずに。watched / saw どちらも OK。" },
+      { ja: "このスープはとてもおいしいです。", en: "This soup is really delicious.", note: "「delicious」の代わりに「very good」「amazing」も使えます。" },
+      { ja: "電車が5分遅れています。", en: "The train is five minutes late.", note: "「be late」で「遅れている」。「delayed」も使えます。" },
+      { ja: "週末に買い物に行きました。", en: "I went shopping on the weekend.", note: "「go shopping」で「買い物に行く」。「went」は go の過去形。" },
+      { ja: "もう少しゆっくり話してください。", en: "Please speak a little more slowly.", note: "「a little more」で「もう少し」という表現。丁寧な表現です。" },
+      { ja: "彼はとても親切な人です。", en: "He is a very kind person.", note: "「kind」は「親切な」。「nice」「friendly」も使えます。" },
+      { ja: "私はコーヒーよりお茶が好きです。", en: "I prefer tea to coffee.", note: "「prefer A to B」で「B より A が好き」。よく使う表現です。" },
+      { ja: "ここからは電車で10分かかります。", en: "It takes ten minutes from here by train.", note: "「It takes ～」で時間がかかる表現。「by train」で交通手段。" },
+      { ja: "今日は天気がいいですね。", en: "It's a nice day today, isn't it?", note: "付加疑問文で自然な雑談になります。「lovely」「beautiful」も◎。" },
+      { ja: "来週の月曜日は休みです。", en: "I have a day off next Monday.", note: "「have a day off」で「休日がある」。「off」がポイント。" },
+      { ja: "もしよければ一緒に行きませんか？", en: "Would you like to come with me, if you don't mind?", note: "「Would you like to ～」は丁寧な誘い方。自然な表現です。" },
+      { ja: "彼女は英語が上手です。", en: "She is good at English.", note: "「be good at ～」で「～が得意・上手」。very good at でも OK。" },
+      { ja: "今日は何を食べましたか？", en: "What did you eat today?", note: "疑問文の語順「What + did + 主語 + 動詞」を確認。" },
+      { ja: "私はその映画を見たことがありません。", en: "I have never seen that movie.", note: "現在完了の否定「have never + 過去分詞」。" },
+      { ja: "もっと練習する必要があります。", en: "I need to practice more.", note: "「need to ～」で「～する必要がある」。シンプルで使えます。" },
+      { ja: "今から出発します。", en: "I'm leaving now.", note: "現在進行形で「今まさに～するところ」のニュアンスが出せます。" },
+    ],
+    intermediate: [
+      { ja: "それについて少し考える時間が必要です。", en: "I need some time to think it over.", note: "「think it over」は「よく考える」というイディオム。" },
+      { ja: "彼女は私の気持ちをよく理解してくれます。", en: "She really understands how I feel.", note: "「how I feel」は「私の気持ち」を伝える自然な表現。" },
+      { ja: "この件については、後ほどご連絡します。", en: "I'll get back to you on this later.", note: "「get back to you」はビジネスでも日常でも使える便利な表現。" },
+      { ja: "彼はいつも期待以上の仕事をします。", en: "He always goes above and beyond.", note: "「go above and beyond」は「期待以上のことをする」慣用表現。" },
+      { ja: "率直に言うと、その計画には無理があると思います。", en: "To be frank, I think that plan is unrealistic.", note: "「To be frank」は「率直に言うと」。honest や blunt も使えます。" },
+      { ja: "この問題を解決するのに最善を尽くします。", en: "I'll do my best to solve this issue.", note: "「do my best to ～」で「～するために最善を尽くす」。" },
+      { ja: "先週から風邪気味で本調子が出ません。", en: "I've been feeling under the weather since last week.", note: "「under the weather」は「体調がすぐれない」というイディオム。" },
+      { ja: "彼女の言ったことが気になって仕方がありません。", en: "I can't stop thinking about what she said.", note: "「can't stop -ing」で「～が止められない」という自然な表現。" },
+      { ja: "その提案には賛成しかねます。", en: "I'm afraid I can't agree with that proposal.", note: "「I'm afraid」で遠回しに断る丁寧な表現。ビジネスで役立ちます。" },
+      { ja: "やってみるまでわかりません。", en: "You never know until you try.", note: "慣用表現。「You won't know if you don't try.」でも OK。" },
+      { ja: "その仕事は思ったより時間がかかりました。", en: "The task took longer than I expected.", note: "「take longer than ～」で「～より時間がかかる」。" },
+      { ja: "彼らは長年の友人です。", en: "They've been close friends for many years.", note: "「have been」で「ずっと～である」という継続を表します。" },
+      { ja: "新しい環境に慣れるのに少し時間が必要です。", en: "It takes a little time to get used to a new environment.", note: "「get used to ～」で「～に慣れる」。used to と混同しないように。" },
+      { ja: "あなたと一緒に働けて光栄です。", en: "It's an honor to work with you.", note: "「It's an honor to ～」は丁寧で格調ある表現。" },
+      { ja: "その映画は感動して涙が止まりませんでした。", en: "The movie was so moving that I couldn't stop crying.", note: "「so ～ that ...」で「とても～なので…」という結果を表す構文。" },
+      { ja: "彼女は何事も前向きに捉える才能があります。", en: "She has a talent for seeing the bright side of things.", note: "「see the bright side」は「物事の明るい面を見る」。ポジティブな表現。" },
+      { ja: "今夜中に仕上げるのは難しそうです。", en: "I doubt I can finish it by tonight.", note: "「I doubt ～」で「～は難しいと思う」という控えめな表現。" },
+      { ja: "もし時間が許せば、ぜひ参加したいです。", en: "I'd love to join if my schedule allows.", note: "「if my schedule allows」で「スケジュールが許せば」というフレーズ。" },
+      { ja: "その件については慎重に判断する必要があります。", en: "We need to approach that matter carefully.", note: "「approach」を動詞として「～に取り組む」という意味で使う表現。" },
+      { ja: "失敗から学ぶことが大切だと思います。", en: "I believe it's important to learn from our mistakes.", note: "「learn from mistakes」は「失敗から学ぶ」。よく使われる表現。" },
+    ]
+  };
+
+  var currentLevel = 'beginner';
+  var currentIndex = 0;
+  var isStarted = false;
+  var evalCounts = { good: 0, ok: 0, retry: 0 };
+
+  function setLevel(level) {
+    currentLevel = level;
+    document.getElementById('btn-beginner').classList.toggle('active', level === 'beginner');
+    document.getElementById('btn-intermediate').classList.toggle('active', level === 'intermediate');
+    document.getElementById('header-badge').textContent = level === 'beginner' ? '初級' : '中級';
+    if (isStarted) {
+      currentIndex = 0;
+      evalCounts = { good: 0, ok: 0, retry: 0 };
+      document.getElementById('complete-screen').classList.remove('show');
+      document.getElementById('practice-wrap').classList.add('show');
+      renderQuestion();
+    }
+  }
+
+  function startPractice() {
+    isStarted = true;
+    currentIndex = 0;
+    evalCounts = { good: 0, ok: 0, retry: 0 };
+    document.getElementById('start-wrap').classList.add('hidden');
+    document.getElementById('practice-wrap').classList.add('show');
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    var questions = QUESTIONS[currentLevel];
+    var total = questions.length;
+    var q = questions[currentIndex];
+
+    document.getElementById('q-num').textContent = 'Q' + (currentIndex + 1);
+    document.getElementById('q-ja').textContent = q.ja;
+    document.getElementById('answer-area').classList.remove('show');
+    document.getElementById('self-eval').classList.remove('show');
+    document.getElementById('btn-reveal').style.display = 'block';
+    document.getElementById('btn-next').classList.remove('show');
+    document.getElementById('progress-count').textContent = (currentIndex + 1) + ' / ' + total;
+    document.getElementById('progress-bar').style.width = ((currentIndex + 1) / total * 100) + '%';
+  }
+
+  function revealAnswer() {
+    var questions = QUESTIONS[currentLevel];
+    var q = questions[currentIndex];
+    document.getElementById('answer-en').textContent = q.en;
+    document.getElementById('answer-note').textContent = q.note || '';
+    document.getElementById('answer-area').classList.add('show');
+    document.getElementById('self-eval').classList.add('show');
+    document.getElementById('btn-reveal').style.display = 'none';
+  }
+
+  function evalAndNext(result) {
+    evalCounts[result]++;
+    var questions = QUESTIONS[currentLevel];
+    if (currentIndex < questions.length - 1) {
+      currentIndex++;
+      renderQuestion();
+    } else {
+      showComplete();
+    }
+  }
+
+  function nextQuestion() {
+    var questions = QUESTIONS[currentLevel];
+    if (currentIndex < questions.length - 1) {
+      currentIndex++;
+      renderQuestion();
+    } else {
+      showComplete();
+    }
+  }
+
+  function showComplete() {
+    document.getElementById('practice-wrap').classList.remove('show');
+    document.getElementById('complete-screen').classList.add('show');
+    document.getElementById('stat-good').textContent = evalCounts.good;
+    document.getElementById('stat-ok').textContent = evalCounts.ok;
+    document.getElementById('stat-retry').textContent = evalCounts.retry;
+  }
+
+  function retryPractice() {
+    currentIndex = 0;
+    evalCounts = { good: 0, ok: 0, retry: 0 };
+    document.getElementById('complete-screen').classList.remove('show');
+    document.getElementById('practice-wrap').classList.add('show');
+    renderQuestion();
+  }
+</script>
+
+</body>
+</html>

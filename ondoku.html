@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>音読練習</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F5F8F2;
+      --white: #FFFFFF;
+      --text: #1A1419;
+      --text-muted: #8A9A82;
+      --accent: #6B8C5A;
+      --accent-hover: #578048;
+      --accent-light: #EBF3E6;
+      --border: rgba(0,0,0,0.08);
+      --radius: 8px;
+      --radius-lg: 14px;
+      --shadow: 0 2px 12px rgba(0,0,0,0.07);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+    }
+
+    /* ===== HEADER ===== */
+    .app-header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .header-back {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--accent);
+      background: none; border: none; font-family: inherit;
+      cursor: pointer; text-decoration: none;
+    }
+    .header-title { font-size: 14px; font-weight: 600; color: var(--text); }
+    .header-badge {
+      font-size: 11px; background: var(--accent-light); color: var(--accent);
+      padding: 3px 10px; border-radius: 20px; font-weight: 500;
+    }
+
+    /* ===== LEVEL TOGGLE ===== */
+    .level-toggle-wrap {
+      max-width: 600px; margin: 0 auto;
+      padding: 20px 16px 0;
+    }
+    .level-toggle {
+      display: flex; background: var(--white);
+      border-radius: var(--radius); border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .level-btn {
+      flex: 1; padding: 10px 0; font-size: 13px; font-weight: 600;
+      font-family: inherit; border: none; cursor: pointer;
+      background: none; color: var(--text-muted);
+      transition: all 0.15s;
+    }
+    .level-btn.active { background: var(--accent); color: #fff; }
+
+    /* ===== MAIN WRAP ===== */
+    .main-wrap { max-width: 600px; margin: 0 auto; padding: 20px 16px 48px; }
+
+    /* ===== PROGRESS ===== */
+    .progress-section { margin-bottom: 20px; }
+    .progress-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 8px;
+    }
+    .progress-label { font-size: 12px; color: var(--text-muted); }
+    .progress-count { font-size: 13px; font-weight: 700; color: var(--accent); }
+    .progress-bar-bg {
+      height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; background: var(--accent); border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    /* ===== SENTENCE CARD ===== */
+    .sentence-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 28px 24px;
+      margin-bottom: 16px;
+    }
+    .set-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .sentence-num {
+      font-size: 11px; color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .sentence-en {
+      font-family: 'Inter', sans-serif;
+      font-size: 22px; font-weight: 500; color: var(--text);
+      line-height: 1.5; margin-bottom: 12px;
+      letter-spacing: 0.01em;
+    }
+    .sentence-ja {
+      font-size: 14px; color: var(--text-muted); line-height: 1.7;
+      margin-bottom: 14px; padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sentence-tip {
+      font-size: 12px; color: var(--accent);
+      display: flex; align-items: flex-start; gap: 6px; line-height: 1.6;
+    }
+    .tip-icon { flex-shrink: 0; }
+
+    /* ===== BUTTONS ===== */
+    .btn-next {
+      width: 100%; padding: 14px;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: var(--radius);
+      font-size: 15px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: background 0.15s;
+      letter-spacing: 0.03em;
+    }
+    .btn-next:hover { background: var(--accent-hover); }
+
+    /* ===== COMPLETE SCREEN ===== */
+    .complete-screen {
+      display: none; text-align: center;
+      background: var(--white); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow); padding: 48px 24px;
+    }
+    .complete-screen.show { display: block; }
+    .complete-icon { font-size: 48px; margin-bottom: 16px; }
+    .complete-title {
+      font-size: 22px; font-weight: 700; color: var(--text);
+      margin-bottom: 8px;
+    }
+    .complete-sub { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 28px; }
+    .complete-stats {
+      display: flex; justify-content: center; gap: 24px;
+      margin-bottom: 28px;
+    }
+    .stat-box {
+      background: var(--accent-light); border-radius: var(--radius);
+      padding: 14px 20px; text-align: center;
+    }
+    .stat-val { font-size: 24px; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .btn-retry {
+      display: inline-block; padding: 12px 32px;
+      border: 2px solid var(--accent); border-radius: var(--radius);
+      font-size: 14px; font-weight: 600; font-family: inherit;
+      color: var(--accent); background: none; cursor: pointer;
+      transition: all 0.15s; margin-right: 8px;
+    }
+    .btn-retry:hover { background: var(--accent-light); }
+    .btn-home-link {
+      display: inline-block; padding: 12px 32px;
+      background: var(--accent); border-radius: var(--radius);
+      font-size: 14px; font-weight: 600; font-family: inherit;
+      color: #fff; border: none; cursor: pointer;
+      text-decoration: none; transition: background 0.15s;
+    }
+    .btn-home-link:hover { background: var(--accent-hover); }
+
+    /* ===== PRACTICE SCREEN WRAP ===== */
+    .practice-wrap { display: none; }
+    .practice-wrap.show { display: block; }
+    .start-wrap { display: block; }
+    .start-wrap.hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<header class="app-header">
+  <a href="preview-c-dashboard.html" class="header-back">← タスク一覧に戻る</a>
+  <span class="header-title">音読練習</span>
+  <span class="header-badge" id="header-badge">初級</span>
+</header>
+
+<div class="level-toggle-wrap">
+  <div class="level-toggle">
+    <button class="level-btn active" id="btn-beginner" onclick="setLevel('beginner')">初級</button>
+    <button class="level-btn" id="btn-intermediate" onclick="setLevel('intermediate')">中級</button>
+  </div>
+</div>
+
+<div class="main-wrap">
+
+  <!-- スタート前 -->
+  <div class="start-wrap" id="start-wrap" style="text-align:center;padding:32px 0;">
+    <div style="font-size:36px;margin-bottom:16px;">📖</div>
+    <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px;">音読練習</div>
+    <div style="font-size:13px;color:var(--text-muted);line-height:1.8;margin-bottom:8px;">
+      1セット5文 × 3セット = 計15文<br>
+      英文・日本語訳・音読のポイントを確認しながら<br>
+      声に出して読みましょう。
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:28px;">⏱ 目安 15分</div>
+    <button class="btn-next" style="max-width:280px;margin:0 auto;" onclick="startPractice()">練習を始める</button>
+  </div>
+
+  <!-- 練習画面 -->
+  <div class="practice-wrap" id="practice-wrap">
+    <div class="progress-section">
+      <div class="progress-row">
+        <span class="progress-label" id="set-label-top">セット 1 / 3</span>
+        <span class="progress-count" id="progress-count">1 / 15</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-bar" style="width:6.7%"></div>
+      </div>
+    </div>
+
+    <div class="sentence-card" id="sentence-card">
+      <div class="set-label" id="set-label">SET 1</div>
+      <div class="sentence-num" id="sentence-num">1文目 / 5文</div>
+      <div class="sentence-en" id="sentence-en">—</div>
+      <div class="sentence-ja" id="sentence-ja">—</div>
+      <div class="sentence-tip">
+        <span class="tip-icon">💡</span>
+        <span id="sentence-tip">—</span>
+      </div>
+    </div>
+
+    <button class="btn-next" id="btn-next" onclick="nextSentence()">次へ →</button>
+  </div>
+
+  <!-- 完了画面 -->
+  <div class="complete-screen" id="complete-screen">
+    <div class="complete-icon">🎉</div>
+    <div class="complete-title">お疲れ様でした！</div>
+    <div class="complete-sub">15文すべて読み終えました。<br>毎日続けることで発音がぐんぐん上達します！</div>
+    <div class="complete-stats">
+      <div class="stat-box">
+        <div class="stat-val">15</div>
+        <div class="stat-label">文</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">3</div>
+        <div class="stat-label">セット</div>
+      </div>
+    </div>
+    <button class="btn-retry" onclick="retryPractice()">もう一度</button>
+    <a href="preview-c-dashboard.html" class="btn-home-link">タスク一覧へ</a>
+  </div>
+
+</div>
+
+<script>
+  var SENTENCES = {
+    beginner: [
+      { en: "Good morning! How are you?", ja: "おはようございます！お元気ですか？", tip: "「Good morning」の d は軽く、「are you」はつなげて自然に読みましょう。" },
+      { en: "I drink coffee every morning.", ja: "私は毎朝コーヒーを飲みます。", tip: "「drink」の dr は舌を巻かず前歯の裏から。「every」は2音節（エブリ）で。" },
+      { en: "What time is it now?", ja: "今、何時ですか？", tip: "「What time」をひとまとまりで。語尾を上げて質問らしく読みましょう。" },
+      { en: "I live in Tokyo.", ja: "私は東京に住んでいます。", tip: "「live」の i は短母音（リヴ）。「Tokyo」は英語では /toʊkioʊ/ と発音します。" },
+      { en: "My name is Yuki.", ja: "私の名前はゆきです。", tip: "シンプルな自己紹介文。名前の前に一瞬ポーズを置くと自然に聞こえます。" },
+      { en: "I like music very much.", ja: "私は音楽がとても好きです。", tip: "「music」は /mjuːzɪk/（ミュージック）。「very」の v を唇に注意。" },
+      { en: "She goes to school by bus.", ja: "彼女はバスで学校に通っています。", tip: "「goes」は /goʊz/。「school」の sch は /sk/ の音です。" },
+      { en: "Do you have a pen?", ja: "ペンを持っていますか？", tip: "「have a」はつなげて /hæv ə/ と。最後の e は発音しません。" },
+      { en: "It's a beautiful day today.", ja: "今日はとてもいい天気ですね。", tip: "「beautiful」は3音節（ビュー・ティ・フル）。「day today」のリズムを楽しんで。" },
+      { en: "I'm a little tired.", ja: "少し疲れています。", tip: "「little」の t は軽くはじく音。「tired」は /taɪərd/ の2音節で。" },
+      { en: "Can I help you?", ja: "何かお手伝いできますか？", tip: "「Can I」はつなげて /kænaɪ/ と。お店でよく聞くフレーズです。" },
+      { en: "Let's go to lunch together.", ja: "一緒にランチに行きましょう。", tip: "「together」の th は舌を前歯に軽く当てて。「lunch」の u は /ʌ/（ア）。" },
+      { en: "I study English every day.", ja: "私は毎日英語を勉強しています。", tip: "「study」の u は /ʌ/（ス**タ**ディ）。リズムよく読みましょう。" },
+      { en: "Turn left at the corner.", ja: "角を左に曲がってください。", tip: "「turn」は /tɜːrn/ と r を響かせて。「corner」も同様に -er を発音します。" },
+      { en: "See you tomorrow!", ja: "また明日！", tip: "「tomorrow」は3音節（トゥ・モ・ロウ）。明るく元気よく読んでみましょう！" },
+    ],
+    intermediate: [
+      { en: "I was wondering if you could help me with this.", ja: "これについて助けていただけないかと思っていたのですが。", tip: "「wondering」は3音節。全体的にゆったり、柔らかいトーンで読みましょう。" },
+      { en: "It's been a while since we last caught up.", ja: "最後に話してからしばらく経ちましたね。", tip: "「caught up」の t はほぼ省略。「a while」「caught up」を自然につなぎましょう。" },
+      { en: "Could you walk me through the process again?", ja: "もう一度そのプロセスを説明してもらえますか？", tip: "「walk me through」でリンキング。th は舌を前歯に軽く当てて。" },
+      { en: "I really appreciate everything you've done for me.", ja: "あなたがしてくれたことすべてに、本当に感謝しています。", tip: "「appreciate」は5音節（ア・プリー・シ・エイ・ト）。感謝の気持ちを込めて。" },
+      { en: "Let me know if there's anything I can do to help.", ja: "何か力になれることがあれば教えてください。", tip: "「let me know」でリンキング。自然な流れで一息に読んでみましょう。" },
+      { en: "I'm not sure I follow — could you elaborate a bit?", ja: "少し理解できていないのですが、もう少し詳しく説明してもらえますか？", tip: "「elaborate」は4音節（イ・ラ・ボ・レイト）。ダッシュの前に少しポーズ。" },
+      { en: "That sounds like a great idea, actually.", ja: "実は、それはとてもいいアイデアだと思います。", tip: "「actually」はコンマの後に置くことで「実は」のニュアンスが出ます。" },
+      { en: "We need to be on the same page before we move forward.", ja: "前に進む前に、認識をそろえておく必要があります。", tip: "「on the same page」はイディオム。「move forward」を強調して読みましょう。" },
+      { en: "Would it be possible to reschedule our meeting?", ja: "打ち合わせの日程を変更することは可能でしょうか？", tip: "「reschedule」は /riːˈʃedjuːl/（リ・スケ・ジュール）。丁寧なトーンで。" },
+      { en: "I've been meaning to get back to you sooner.", ja: "もっと早くご連絡しようと思っていたのですが。", tip: "「meaning to」はつなげて。現在完了進行形のリズムを意識しましょう。" },
+      { en: "To be honest, I wasn't expecting that outcome.", ja: "正直なところ、そういう結果になるとは思っていませんでした。", tip: "「honest」の h は発音しない（/ˈɒnɪst/）。文頭フレーズの後に少しポーズ。" },
+      { en: "It's a bit of a long story, but I'll try to keep it brief.", ja: "少し長い話になりますが、手短にまとめるようにします。", tip: "「a bit of a」が自然につながるよう練習。「brief」を少し強調して。" },
+      { en: "She tends to overthink things before making a decision.", ja: "彼女は決断する前に物事を考えすぎる傾向があります。", tip: "「overthink」の強勢は前半（O-ver-think）。「tends to」はつなげて読みます。" },
+      { en: "I'd say he's more of an introvert than an extrovert.", ja: "彼はどちらかというと内向的だと思います。", tip: "「introvert」/ˈɪntrəvɜːrt/「extrovert」/ˈɛkstrəvɜːrt/。語頭のアクセントに注意。" },
+      { en: "We finally wrapped up the project ahead of schedule.", ja: "私たちはついにプロジェクトを予定より早く終わらせました。", tip: "「wrapped up」はフレーズ動詞。「ahead of schedule」を自信をもって読んで。" },
+    ]
+  };
+
+  var currentLevel = 'beginner';
+  var currentIndex = 0;
+  var isStarted = false;
+
+  function setLevel(level) {
+    currentLevel = level;
+    document.getElementById('btn-beginner').classList.toggle('active', level === 'beginner');
+    document.getElementById('btn-intermediate').classList.toggle('active', level === 'intermediate');
+    document.getElementById('header-badge').textContent = level === 'beginner' ? '初級' : '中級';
+    if (isStarted) {
+      currentIndex = 0;
+      renderSentence();
+      document.getElementById('complete-screen').classList.remove('show');
+      document.getElementById('practice-wrap').classList.add('show');
+    }
+  }
+
+  function startPractice() {
+    isStarted = true;
+    currentIndex = 0;
+    document.getElementById('start-wrap').classList.add('hidden');
+    document.getElementById('practice-wrap').classList.add('show');
+    renderSentence();
+  }
+
+  function renderSentence() {
+    var sentences = SENTENCES[currentLevel];
+    var total = sentences.length;
+    var s = sentences[currentIndex];
+    var setNum = Math.floor(currentIndex / 5) + 1;
+    var posInSet = (currentIndex % 5) + 1;
+
+    document.getElementById('sentence-en').textContent = s.en;
+    document.getElementById('sentence-ja').textContent = s.ja;
+    document.getElementById('sentence-tip').textContent = s.tip;
+    document.getElementById('set-label').textContent = 'SET ' + setNum;
+    document.getElementById('sentence-num').textContent = posInSet + '文目 / 5文';
+    document.getElementById('progress-count').textContent = (currentIndex + 1) + ' / ' + total;
+    document.getElementById('set-label-top').textContent = 'セット ' + setNum + ' / 3';
+    document.getElementById('progress-bar').style.width = ((currentIndex + 1) / total * 100) + '%';
+
+    var isLast = currentIndex === total - 1;
+    document.getElementById('btn-next').textContent = isLast ? '完了 ✓' : '次へ →';
+  }
+
+  function nextSentence() {
+    var sentences = SENTENCES[currentLevel];
+    if (currentIndex < sentences.length - 1) {
+      currentIndex++;
+      renderSentence();
+    } else {
+      document.getElementById('practice-wrap').classList.remove('show');
+      document.getElementById('complete-screen').classList.add('show');
+    }
+  }
+
+  function retryPractice() {
+    currentIndex = 0;
+    document.getElementById('complete-screen').classList.remove('show');
+    document.getElementById('practice-wrap').classList.add('show');
+    renderSentence();
+  }
+</script>
+
+</body>
+</html>
