@@ -3,31 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>英語コーチング — リンク一覧</title>
+  <title>英語コーチング — まとめページ</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #FDF5F7; --white: #FFFFFF; --text: #1A1419;
       --text-muted: #9A8890; --accent: #D0748A;
       --accent-light: #FAE8EE; --border: rgba(0,0,0,0.08);
+      --green: #6B8C5A; --green-light: #EBF3E6; --green-bg: #F5F8F2;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 60px 40px; -webkit-font-smoothing: antialiased; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
 
-    .page-header { text-align: center; margin-bottom: 52px; }
+    /* ===== PAGE HEADER ===== */
+    .page-header { text-align: center; padding: 48px 40px 32px; }
     .eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 12px; }
     h1 { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 500; color: var(--text); }
     .page-sub { font-size: 14px; color: var(--text-muted); margin-top: 8px; }
 
+    /* ===== TABS ===== */
+    .tab-nav-wrap {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--white); border-bottom: 1px solid var(--border);
+    }
+    .tab-nav {
+      max-width: 900px; margin: 0 auto;
+      display: flex; padding: 0 24px;
+    }
+    .tab-btn {
+      padding: 14px 22px; font-size: 13px; font-weight: 600;
+      font-family: inherit; border: none; background: none;
+      color: var(--text-muted); cursor: pointer;
+      border-bottom: 2.5px solid transparent;
+      transition: all 0.15s; white-space: nowrap;
+    }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ===== TAB PANELS ===== */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ===== LINKS TAB ===== */
+    .links-content { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
     .section { margin-bottom: 44px; }
     .section-title {
       font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
       color: var(--text-muted); margin-bottom: 16px; padding-bottom: 10px;
       border-bottom: 1px solid var(--border);
     }
-
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-
     .card {
       background: var(--white); border-radius: 10px; padding: 22px 24px;
       border: 1px solid var(--border); text-decoration: none; color: inherit;
@@ -35,7 +59,6 @@
       transition: box-shadow 0.2s, transform 0.2s;
     }
     .card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.1); transform: translateY(-2px); }
-
     .card-badge {
       display: inline-flex; align-items: center; gap: 6px;
       font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
@@ -47,12 +70,9 @@
     .badge-c { background: #EBF3E6; color: #6B8C5A; }
     .badge-d { background: #F0E8FF; color: #8B6BAE; }
     .badge-e { background: #E8EFFF; color: #2C4A7E; }
-
     .card-name { font-size: 14px; font-weight: 600; color: var(--text); }
     .card-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
     .card-arrow { font-size: 12px; color: var(--accent); margin-top: 2px; }
-
-    /* リンクリスト */
     .link-list { display: flex; flex-direction: column; gap: 10px; }
     .link-row { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
     .link-label { font-size: 13px; font-weight: 600; color: var(--text); min-width: 180px; flex-shrink: 0; }
@@ -61,133 +81,695 @@
     .btn-copy:hover { background: var(--accent); color: #fff; }
     .btn-copy.copied { background: #E8F5ED; color: #4A8C62; border-color: rgba(74,140,98,0.3); }
 
-    /* デザインプレビュースウォッチ */
-    .design-swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; max-width: 600px; }
-    .swatch { height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; }
-    .sw-a { background: linear-gradient(135deg,#FDF5F7,#FAE8EE); color: #D0748A; }
-    .sw-b { background: linear-gradient(135deg,#1A1420,#2E2540); color: #D4B896; }
-    .sw-c { background: linear-gradient(135deg,#F5F8F2,#EBF3E6); color: #6B8C5A; }
-    .sw-d { background: linear-gradient(135deg,#F8F5FF,#F0E8FF); color: #8B6BAE; }
-    .sw-e { background: linear-gradient(135deg,#F2F5FA,#E8EFFF); color: #2C4A7E; }
+    /* ===== MANUAL TAB ===== */
+    .manual-content { max-width: 740px; margin: 0 auto; padding: 28px 24px 60px; background: var(--green-bg); min-height: 100vh; }
+
+    /* Search */
+    .manual-search-wrap { margin-bottom: 24px; }
+    .manual-search-box {
+      width: 100%; padding: 12px 16px 12px 44px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: inherit; font-size: 14px; color: var(--text);
+      background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%239A8890' stroke-width='2' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 14px center;
+      transition: border-color 0.15s;
+      outline: none;
+    }
+    .manual-search-box:focus { border-color: var(--green); }
+    .search-empty { text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 14px; display: none; }
+
+    /* Accordion item */
+    .manual-item { background: var(--white); border-radius: 12px; border: 1px solid var(--border); margin-bottom: 12px; overflow: hidden; }
+    .manual-item-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 18px 20px; cursor: pointer;
+      user-select: none; transition: background 0.15s;
+    }
+    .manual-item-header:hover { background: #fafafa; }
+    .manual-item-icon { font-size: 22px; flex-shrink: 0; }
+    .manual-item-title { font-size: 15px; font-weight: 600; color: var(--text); flex: 1; }
+    .manual-item-count { font-size: 11px; color: var(--text-muted); background: #f3f3f3; padding: 2px 9px; border-radius: 20px; }
+    .manual-item-arrow {
+      font-size: 16px; color: var(--text-muted);
+      transition: transform 0.25s; line-height: 1;
+    }
+    .manual-item.open .manual-item-arrow { transform: rotate(180deg); }
+
+    /* Accordion body */
+    .manual-item-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .manual-item.open .manual-item-body { max-height: 4000px; }
+    .manual-item-inner { padding: 0 20px 20px; }
+
+    /* Section inside accordion */
+    .manual-section { margin-bottom: 20px; }
+    .manual-section:last-child { margin-bottom: 0; }
+    .manual-section-title {
+      font-size: 13px; font-weight: 700; color: var(--green);
+      padding: 10px 0 8px;
+      border-bottom: 1px solid var(--green-light);
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .manual-steps { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .manual-step {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 13px; line-height: 1.7; color: var(--text);
+    }
+    .step-num {
+      flex-shrink: 0; width: 22px; height: 22px;
+      background: var(--green-light); color: var(--green);
+      border-radius: 50%; font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+    .manual-tip {
+      margin-top: 8px; padding: 8px 12px;
+      background: var(--green-light); border-radius: 7px;
+      font-size: 12px; color: #4A6B3A; line-height: 1.6;
+    }
+
+    /* Highlight */
+    mark { background: #FFF59D; color: inherit; border-radius: 2px; padding: 0 1px; }
+
+    /* Hidden sections in search */
+    .manual-section.hidden { display: none; }
+    .manual-item.all-hidden { display: none; }
+
+    @media (max-width: 600px) {
+      .page-header { padding: 36px 20px 24px; }
+      h1 { font-size: 26px; }
+      .tab-btn { padding: 12px 14px; font-size: 12px; }
+      .links-content, .manual-content { padding-left: 16px; padding-right: 16px; }
+      .link-label { min-width: 120px; }
+      .link-url { display: none; }
+    }
   </style>
 </head>
 <body>
+
   <div class="page-header">
-    <span class="eyebrow">Preview Links</span>
-    <h1>英語コーチング<br>デザインプレビュー</h1>
-    <p class="page-sub">受講生は設定タブから自分でデザインを選択できます</p>
+    <span class="eyebrow">English Coaching</span>
+    <h1>英語コーチング<br>まとめページ</h1>
+    <p class="page-sub">受講生・管理者向けのリンクとマニュアルをまとめています</p>
   </div>
 
-  <!-- 管理者 -->
-  <div class="section">
-    <div class="section-title">管理者ページ</div>
-    <div class="grid">
-      <a href="preview-a-admin.html" class="card">
-        <span class="card-badge badge-admin">Admin</span>
-        <div class="card-name">管理者パネル</div>
-        <div class="card-desc">受講生管理・グルコンURL・成果報告一覧</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
+  <!-- タブナビ -->
+  <div class="tab-nav-wrap">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('links', this)">🔗 リンク一覧</button>
+      <button class="tab-btn" onclick="switchTab('manual', this)">📖 マニュアル</button>
     </div>
   </div>
 
-  <!-- 受講生デザインプレビュー -->
-  <div class="section">
-    <div class="section-title">受講生マイページ — デザイン 5 パターン</div>
-    <div class="grid">
-      <a href="preview-a-dashboard.html" class="card" onclick="localStorage.setItem('preferred_design','A')">
-        <span class="card-badge badge-a">Pattern A</span>
-        <div class="card-name">上品・ナチュラル</div>
-        <div class="card-desc">ピンク×ベージュ / Cormorant Garamond</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
-      <a href="preview-b-dashboard.html" class="card" onclick="localStorage.setItem('preferred_design','B')">
-        <span class="card-badge badge-b">Pattern B</span>
-        <div class="card-name">海外風・スタイリッシュ</div>
-        <div class="card-desc">ダーク×ゴールド / Playfair Display</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
-      <a href="preview-c-dashboard.html" class="card" onclick="localStorage.setItem('preferred_design','C')">
-        <span class="card-badge badge-c">Pattern C</span>
-        <div class="card-name">ナチュラル・グリーン</div>
-        <div class="card-desc">セージグリーン×ホワイト / Cormorant Garamond</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
-      <a href="preview-d-dashboard.html" class="card" onclick="localStorage.setItem('preferred_design','D')">
-        <span class="card-badge badge-d">Pattern D</span>
-        <div class="card-name">ラベンダー・ソフト</div>
-        <div class="card-desc">ラベンダー×ホワイト / Cormorant Garamond</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
-      <a href="preview-e-dashboard.html" class="card" onclick="localStorage.setItem('preferred_design','E')">
-        <span class="card-badge badge-e">Pattern E</span>
-        <div class="card-name">ネイビー・クール</div>
-        <div class="card-desc">ネイビー×ライトグレー / Playfair Display</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
+  <!-- ===== リンク一覧タブ ===== -->
+  <div id="tab-links" class="tab-panel active">
+    <div class="links-content">
+
+      <div class="section">
+        <div class="section-title">管理者ページ</div>
+        <div class="grid">
+          <a href="preview-a-admin.html" class="card">
+            <span class="card-badge badge-admin">Admin</span>
+            <div class="card-name">管理者パネル</div>
+            <div class="card-desc">受講生管理・グルコンURL・成果報告一覧</div>
+            <div class="card-arrow">→ 開く</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">受講生マイページ — デザイン 5 パターン</div>
+        <div class="grid">
+          <a href="preview-a-dashboard.html" class="card" onclick="localStorage.setItem('preferred_design','A')">
+            <span class="card-badge badge-a">Pattern A</span>
+            <div class="card-name">上品・ナチュラル</div>
+            <div class="card-desc">ピンク×ベージュ / Cormorant Garamond</div>
+            <div class="card-arrow">→ 開く</div>
+          </a>
+          <a href="preview-b-dashboard.html" class="card" onclick="localStorage.setItem('preferred_design','B')">
+            <span class="card-badge badge-b">Pattern B</span>
+            <div class="card-name">海外風・スタイリッシュ</div>
+            <div class="card-desc">ダーク×ゴールド / Playfair Display</div>
+            <div class="card-arrow">→ 開く</div>
+          </a>
+          <a href="preview-c-dashboard.html" class="card" onclick="localStorage.setItem('preferred_design','C')">
+            <span class="card-badge badge-c">Pattern C</span>
+            <div class="card-name">ナチュラル・グリーン</div>
+            <div class="card-desc">セージグリーン×ホワイト / Cormorant Garamond</div>
+            <div class="card-arrow">→ 開く</div>
+          </a>
+          <a href="preview-d-dashboard.html" class="card" onclick="localStorage.setItem('preferred_design','D')">
+            <span class="card-badge badge-d">Pattern D</span>
+            <div class="card-name">ラベンダー・ソフト</div>
+            <div class="card-desc">ラベンダー×ホワイト / Cormorant Garamond</div>
+            <div class="card-arrow">→ 開く</div>
+          </a>
+          <a href="preview-e-dashboard.html" class="card" onclick="localStorage.setItem('preferred_design','E')">
+            <span class="card-badge badge-e">Pattern E</span>
+            <div class="card-name">ネイビー・クール</div>
+            <div class="card-desc">ネイビー×ライトグレー / Playfair Display</div>
+            <div class="card-arrow">→ 開く</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">ログインページ</div>
+        <div class="grid">
+          <a href="preview-a.html" class="card">
+            <span class="card-badge badge-a">Pattern A</span>
+            <div class="card-name">受講生ログイン</div>
+            <div class="card-arrow">→ 開く</div>
+          </a>
+          <a href="pronunciation-a.html" class="card">
+            <span class="card-badge badge-a">Pattern A</span>
+            <div class="card-name">発音チェック</div>
+            <div class="card-arrow">→ 開く</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">🔗 公開リンク（GitHub Pages）</div>
+        <div class="link-list">
+          <div class="link-row">
+            <span class="link-label">まとめページ</span>
+            <span class="link-url">https://shioriw2023.github.io/english-coach-membership/links.html</span>
+            <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/links.html')">コピー</button>
+          </div>
+          <div class="link-row">
+            <span class="link-label">管理者ページ A</span>
+            <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-a-admin.html</span>
+            <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-a-admin.html')">コピー</button>
+          </div>
+          <div class="link-row">
+            <span class="link-label">受講生マイページ A</span>
+            <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-a-dashboard.html</span>
+            <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-a-dashboard.html')">コピー</button>
+          </div>
+          <div class="link-row">
+            <span class="link-label">受講生マイページ B</span>
+            <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-b-dashboard.html</span>
+            <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-b-dashboard.html')">コピー</button>
+          </div>
+          <div class="link-row">
+            <span class="link-label">受講生マイページ C</span>
+            <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-c-dashboard.html</span>
+            <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-c-dashboard.html')">コピー</button>
+          </div>
+          <div class="link-row">
+            <span class="link-label">受講生マイページ D</span>
+            <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-d-dashboard.html</span>
+            <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-d-dashboard.html')">コピー</button>
+          </div>
+          <div class="link-row">
+            <span class="link-label">受講生マイページ E</span>
+            <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-e-dashboard.html</span>
+            <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-e-dashboard.html')">コピー</button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <!-- ログインページ -->
-  <div class="section">
-    <div class="section-title">ログインページ</div>
-    <div class="grid">
-      <a href="preview-a.html" class="card">
-        <span class="card-badge badge-a">Pattern A</span>
-        <div class="card-name">受講生ログイン</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
-      <a href="pronunciation-a.html" class="card">
-        <span class="card-badge badge-a">Pattern A</span>
-        <div class="card-name">発音チェック</div>
-        <div class="card-arrow">→ 開く</div>
-      </a>
-    </div>
-  </div>
+  <!-- ===== マニュアルタブ ===== -->
+  <div id="tab-manual" class="tab-panel">
+    <div class="manual-content">
 
-  <!-- 公開リンク -->
-  <div class="section">
-    <div class="section-title">🔗 公開リンク（GitHub Pages）</div>
-    <div class="link-list">
-      <div class="link-row">
-        <span class="link-label">まとめページ</span>
-        <span class="link-url">https://shioriw2023.github.io/english-coach-membership/links.html</span>
-        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/links.html')">コピー</button>
+      <!-- 検索 -->
+      <div class="manual-search-wrap">
+        <input type="text" class="manual-search-box" id="manual-search" placeholder="キーワードで検索（例：ログイン、通知、画面共有）" oninput="filterManual(this.value)">
       </div>
-      <div class="link-row">
-        <span class="link-label">管理者ページ A</span>
-        <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-a-admin.html</span>
-        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-a-admin.html')">コピー</button>
+      <div class="search-empty" id="search-empty">該当する内容が見つかりませんでした</div>
+
+      <!-- 1. 会員サイト -->
+      <div class="manual-item" id="manual-item-0">
+        <div class="manual-item-header" onclick="toggleManual(0)">
+          <span class="manual-item-icon">🖥️</span>
+          <span class="manual-item-title">会員サイトの使い方</span>
+          <span class="manual-item-count">6セクション</span>
+          <span class="manual-item-arrow">▾</span>
+        </div>
+        <div class="manual-item-body">
+          <div class="manual-item-inner">
+
+            <div class="manual-section" data-text="ログイン方法 メールアドレス パスワード ログインボタン ログアウト">
+              <div class="manual-section-title">🔑 ログイン方法</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>ブラウザで会員サイトのURLを開きます。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>メールアドレスとパスワードを入力します。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>「ログイン」ボタンをクリックしてください。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>ダッシュボードが表示されたらログイン完了です。</span></li>
+              </ul>
+              <div class="manual-tip">💡 ブラウザの「パスワードを保存」機能を使うと次回から楽になります。</div>
+            </div>
+
+            <div class="manual-section" data-text="今日のタスク 使い方 チェック 完了 タスク一覧 学習">
+              <div class="manual-section-title">✅ 今日のタスクの使い方</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>ダッシュボード上部の「今日のタスク」セクションを確認します。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>各タスクカードをクリックすると詳細ページが開きます。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>練習を完了したらチェックボタンを押して記録します。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>完了したタスクはグリーンのチェックマークで表示されます。</span></li>
+              </ul>
+              <div class="manual-tip">💡 毎日タスクをこなすことで学習ストリークが記録されます。</div>
+            </div>
+
+            <div class="manual-section" data-text="学習時間 記録 タイマー スタート ストップ 時間">
+              <div class="manual-section-title">⏱ 学習時間の記録方法</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>ダッシュボードの「学習時間」カードを確認します。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>各練習ページ（音読・スピーキングなど）を開いて学習を進めます。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>練習完了後、自動的に学習ログが更新されます。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>週間・月間の累計時間がグラフで確認できます。</span></li>
+              </ul>
+              <div class="manual-tip">💡 1日の目標時間は設定画面から変更できます。</div>
+            </div>
+
+            <div class="manual-section" data-text="発音添削 録音 送信 フィードバック 音声">
+              <div class="manual-section-title">🎙️ 発音添削の使い方</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>ダッシュボードの「発音添削」タスクをクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>お手本音声を聞き、英文を確認します。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>「録音」ボタンを押して声を録音します（マイクの許可が必要です）。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>録音を確認し、問題なければ「送信」ボタンを押します。</span></li>
+                <li class="manual-step"><span class="step-num">5</span><span>コーチからのフィードバックを通知で受け取れます。</span></li>
+              </ul>
+              <div class="manual-tip">💡 静かな環境で録音するとフィードバックの精度が上がります。</div>
+            </div>
+
+            <div class="manual-section" data-text="成果報告 投稿 コメント 写真 報告">
+              <div class="manual-section-title">📣 成果報告の投稿方法</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>ダッシュボードの「成果報告」セクションを開きます。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>テキストエリアに今日の学習内容や気づきを入力します。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>「投稿する」ボタンをクリックして送信します。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>管理者・他の受講生からのコメントが届きます。</span></li>
+              </ul>
+              <div class="manual-tip">💡 短い文でも OK！「今日は○○を練習しました」などシンプルな報告で大丈夫です。</div>
+            </div>
+
+            <div class="manual-section" data-text="設定 パスワード変更 メールアドレス プロフィール アカウント">
+              <div class="manual-section-title">⚙️ 設定・パスワード変更</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>右上またはメニューから「設定」アイコンをクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>「パスワード変更」を選択します。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>現在のパスワードと新しいパスワードを入力します。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>「保存」ボタンで変更完了です。</span></li>
+              </ul>
+              <div class="manual-tip">💡 パスワードを忘れた場合はログイン画面の「パスワードを忘れた方」から再設定できます。</div>
+            </div>
+
+          </div>
+        </div>
       </div>
-      <div class="link-row">
-        <span class="link-label">受講生マイページ A</span>
-        <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-a-dashboard.html</span>
-        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-a-dashboard.html')">コピー</button>
+
+      <!-- 2. Discord -->
+      <div class="manual-item" id="manual-item-1">
+        <div class="manual-item-header" onclick="toggleManual(1)">
+          <span class="manual-item-icon">💬</span>
+          <span class="manual-item-title">Discordの使い方</span>
+          <span class="manual-item-count">7セクション</span>
+          <span class="manual-item-arrow">▾</span>
+        </div>
+        <div class="manual-item-body">
+          <div class="manual-item-inner">
+
+            <div class="manual-section" data-text="アカウント作成 Discord 登録 メール 認証 ユーザー名">
+              <div class="manual-section-title">👤 アカウント作成方法</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>discord.com にアクセスし「Discordを開く」をクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>「登録」をクリックし、メールアドレス・ユーザー名・パスワードを入力します。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>生年月日を入力して「完了」をクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>登録したメールアドレスに届いた確認メールを開き「メールアドレスを認証する」をクリックします。</span></li>
+              </ul>
+              <div class="manual-tip">💡 ユーザー名は後から変更できるので、まずは仮の名前でも大丈夫です。</div>
+            </div>
+
+            <div class="manual-section" data-text="サーバー 参加 招待リンク 参加方法">
+              <div class="manual-section-title">🚪 サーバーへの参加方法</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>コーチから送られた招待リンク（discord.gg/〇〇）を開きます。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>「招待を受ける」または「サーバーに参加する」をクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>左側のサイドバーにサーバーアイコンが追加されれば参加完了です。</span></li>
+              </ul>
+              <div class="manual-tip">💡 招待リンクには有効期限があります。届いたらなるべく早めに参加しましょう。</div>
+            </div>
+
+            <div class="manual-section" data-text="チャンネル 見方 使い方 テキスト ボイス カテゴリ">
+              <div class="manual-section-title">📋 チャンネルの見方・使い方</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>サーバーを開くと左側にチャンネル一覧が表示されます。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>「#」マークはテキストチャンネル、「🔊」マークはボイスチャンネルです。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>チャンネル名をクリックすると内容を見たり書き込んだりできます。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>チャンネルはカテゴリでグループ分けされています（例：#お知らせ、#雑談）。</span></li>
+              </ul>
+              <div class="manual-tip">💡 最初は「#はじめに」や「#自己紹介」チャンネルから確認するとわかりやすいです。</div>
+            </div>
+
+            <div class="manual-section" data-text="テキスト メッセージ 送り方 入力 送信 絵文字 返信">
+              <div class="manual-section-title">✉️ テキストメッセージの送り方</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>テキストチャンネルをクリックして開きます。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>画面下部の入力欄にメッセージを入力します。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>Enterキーを押すか、送信ボタンをクリックして送信します。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>メッセージにカーソルを当てると絵文字リアクションや返信ができます。</span></li>
+              </ul>
+              <div class="manual-tip">💡 Shift+Enter で改行できます。Enterだけだと送信されてしまいます。</div>
+            </div>
+
+            <div class="manual-section" data-text="ボイスチャンネル 入り方 音声 マイク スピーカー 参加">
+              <div class="manual-section-title">🎙️ ボイスチャンネルへの入り方</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>左側のチャンネル一覧から「🔊」マークのボイスチャンネルをクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>マイクとスピーカーの使用許可を求められたら「許可」を選択します。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>チャンネルに入ると画面下部に音声コントロールが表示されます。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>退出するときは下部の「切断（赤い受話器アイコン）」を押します。</span></li>
+              </ul>
+              <div class="manual-tip">💡 入室時はマイクがONになっています。話す前に周囲の雑音を確認しましょう。</div>
+            </div>
+
+            <div class="manual-section" data-text="スマホ アプリ モバイル iPhone Android インストール">
+              <div class="manual-section-title">📱 スマホアプリでの使い方</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>App Store（iPhone）または Google Play（Android）で「Discord」を検索します。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>アプリをインストールしてログインします。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>左端のアイコン一覧からサーバーを選択します。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>操作方法はPCとほぼ同じです。</span></li>
+              </ul>
+              <div class="manual-tip">💡 スマホのDiscordはバッテリー消費が多いため、長時間使うときはPCをおすすめします。</div>
+            </div>
+
+            <div class="manual-section" data-text="通知 設定 カスタマイズ 通知オフ ミュート バッジ">
+              <div class="manual-section-title">🔔 通知設定のカスタマイズ</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>通知を変えたいサーバー名を右クリック（スマホは長押し）します。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>「通知設定」を選択します。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>「すべてのメッセージ」「@メンションのみ」「何も通知しない」から選びます。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>特定のチャンネルだけ通知をオフにすることもできます。</span></li>
+              </ul>
+              <div class="manual-tip">💡 学習に集中したいときは「@メンションのみ」に設定するのがおすすめです。</div>
+            </div>
+
+          </div>
+        </div>
       </div>
-      <div class="link-row">
-        <span class="link-label">受講生マイページ B</span>
-        <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-b-dashboard.html</span>
-        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-b-dashboard.html')">コピー</button>
+
+      <!-- 3. Quizlet -->
+      <div class="manual-item" id="manual-item-2">
+        <div class="manual-item-header" onclick="toggleManual(2)">
+          <span class="manual-item-icon">📚</span>
+          <span class="manual-item-title">Quizletの使い方</span>
+          <span class="manual-item-count">7セクション</span>
+          <span class="manual-item-arrow">▾</span>
+        </div>
+        <div class="manual-item-body">
+          <div class="manual-item-inner">
+
+            <div class="manual-section" data-text="アカウント作成 Quizlet 登録 メール サインアップ">
+              <div class="manual-section-title">👤 アカウント作成方法</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>quizlet.com にアクセスし「サインアップ」をクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>Googleアカウントで登録するか、メールアドレスとパスワードを入力します。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>生年月日を入力してアカウントを作成します。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>メール認証が届いた場合はリンクをクリックして認証します。</span></li>
+              </ul>
+              <div class="manual-tip">💡 Googleアカウントで登録すると手間が省けて便利です。</div>
+            </div>
+
+            <div class="manual-section" data-text="単語セット 探し方 検索 クラス 共有">
+              <div class="manual-section-title">🔍 単語セットの探し方</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>画面上部の検索窓にキーワード（例：TOEIC、英検）を入力します。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>検索結果からセットを選んでクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>コーチから共有されたセットのURLを直接開くこともできます。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>よく使うセットは「スター」でお気に入り登録できます。</span></li>
+              </ul>
+              <div class="manual-tip">💡 コーチが作成したセットのURLはDiscordで共有されます。見逃さないようにしましょう。</div>
+            </div>
+
+            <div class="manual-section" data-text="単語セット 作り方 作成 追加 インポート 単語">
+              <div class="manual-section-title">✏️ 単語セットの作り方</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>画面右上の「＋ 作成」ボタンをクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>セットのタイトルを入力します（例：英検2級 頻出単語）。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>単語（表）と意味（裏）を入力していきます。「＋追加」で行を増やせます。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>「作成」ボタンをクリックして保存します。</span></li>
+              </ul>
+              <div class="manual-tip">💡 テキストをそのままコピーして「インポート」機能でまとめて追加することもできます。</div>
+            </div>
+
+            <div class="manual-section" data-text="フラッシュカード 学ぶ 表示 めくる 単語カード">
+              <div class="manual-section-title">🃏 フラッシュカードで学ぶ方法</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>単語セットを開き「フラッシュカード」を選択します。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>カードをクリックすると表と裏が切り替わります。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>「→」で次のカード、「←」で前のカードに移動します。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>スターマークを押すと「わからなかった単語」に印がつきます。</span></li>
+              </ul>
+              <div class="manual-tip">💡 「シャッフル」にチェックを入れるとランダムな順序で学べます。</div>
+            </div>
+
+            <div class="manual-section" data-text="テストモード 使い方 問題 採点 正解 スコア">
+              <div class="manual-section-title">📝 テストモードの使い方</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>単語セットを開き「テスト」を選択します。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>問題の形式（記述・選択・一致・正誤）と問題数を設定します。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>「テストを作成」ボタンをクリックして開始します。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>回答後「採点する」を押すとスコアと正解が確認できます。</span></li>
+              </ul>
+              <div class="manual-tip">💡 間違えた問題だけを集めて再テストする機能もあります。苦手単語の克服に活用しましょう。</div>
+            </div>
+
+            <div class="manual-section" data-text="スマホ アプリ モバイル iPhone Android">
+              <div class="manual-section-title">📱 スマホアプリでの使い方</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>App Store または Google Play で「Quizlet」を検索してインストールします。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>アカウントにログインします。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>「ライブラリ」から保存したセットにアクセスできます。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>オフラインでも学習できます（事前にセットをダウンロードしてください）。</span></li>
+              </ul>
+              <div class="manual-tip">💡 スキマ時間に電車の中でフラッシュカードをめくるだけでも語彙力が上がります。</div>
+            </div>
+
+            <div class="manual-section" data-text="学習記録 確認方法 進捗 達成 統計">
+              <div class="manual-section-title">📊 学習記録の確認方法</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>右上のプロフィールアイコンをクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>「プロフィール」を選択すると学習統計が表示されます。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>各セットの学習ページでは習熟度（%）が確認できます。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>毎日ログインするとストリーク（連続学習日数）が記録されます。</span></li>
+              </ul>
+              <div class="manual-tip">💡 習熟度100%を目指してコツコツ続けましょう！</div>
+            </div>
+
+          </div>
+        </div>
       </div>
-      <div class="link-row">
-        <span class="link-label">受講生マイページ C</span>
-        <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-c-dashboard.html</span>
-        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-c-dashboard.html')">コピー</button>
+
+      <!-- 4. Zoom -->
+      <div class="manual-item" id="manual-item-3">
+        <div class="manual-item-header" onclick="toggleManual(3)">
+          <span class="manual-item-icon">📹</span>
+          <span class="manual-item-title">Zoomの使い方</span>
+          <span class="manual-item-count">8セクション</span>
+          <span class="manual-item-arrow">▾</span>
+        </div>
+        <div class="manual-item-body">
+          <div class="manual-item-inner">
+
+            <div class="manual-section" data-text="インストール アプリ ダウンロード Zoom インストール方法">
+              <div class="manual-section-title">💾 アプリのインストール方法</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>zoom.us にアクセスし「ダウンロード」ページを開きます。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>「Zoomデスクトップクライアント」の「ダウンロード」をクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>ダウンロードされたファイルを開いてインストールを完了します。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>インストール後、Zoomアプリが自動で起動します。</span></li>
+              </ul>
+              <div class="manual-tip">💡 ブラウザだけでも参加できますが、アプリ版の方が機能が充実しています。</div>
+            </div>
+
+            <div class="manual-section" data-text="アカウント作成 ログイン Zoom サインアップ メール">
+              <div class="manual-section-title">👤 アカウント作成・ログイン</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>zoom.us で「サインアップは無料です」をクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>メールアドレスを入力し、届いた確認メールのリンクを開きます。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>名前とパスワードを設定してアカウント作成完了です。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>Zoomアプリを開き、メールアドレスとパスワードでログインします。</span></li>
+              </ul>
+              <div class="manual-tip">💡 Googleアカウントでもサインアップできます。</div>
+            </div>
+
+            <div class="manual-section" data-text="ミーティング 参加方法 URL リンク ミーティングID">
+              <div class="manual-section-title">🚪 ミーティングへの参加方法</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>コーチから送られたZoomリンク（zoom.us/j/〇〇）をクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>「Zoomミーティングを開く」を選択します。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>パスコードが必要な場合は入力します。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>「コンピューターオーディオに参加する」を選択して入室します。</span></li>
+              </ul>
+              <div class="manual-tip">💡 開始5分前には準備を済ませておくとスムーズです。</div>
+            </div>
+
+            <div class="manual-section" data-text="カメラ マイク オン オフ ミュート ビデオ">
+              <div class="manual-section-title">📷 カメラ・マイクのオン／オフ</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>画面左下に「マイク」と「ビデオ」のアイコンがあります。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>アイコンをクリックすると赤い斜線が入り、OFF（ミュート・カメラオフ）になります。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>もう一度クリックするとONに戻ります。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>話すときだけミュートを解除するとハウリング防止になります。</span></li>
+              </ul>
+              <div class="manual-tip">💡 スペースキーを長押しすると一時的にミュート解除できます。</div>
+            </div>
+
+            <div class="manual-section" data-text="画面共有 やり方 シェア スクリーン 資料">
+              <div class="manual-section-title">🖥️ 画面共有のやり方</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>ツールバーの「画面を共有」ボタンをクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>共有したい画面またはウィンドウを選択します。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>「共有」ボタンをクリックすると参加者に画面が見えます。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>終了するときは「共有の停止」をクリックします。</span></li>
+              </ul>
+              <div class="manual-tip">💡 共有前にプライベートな通知が届かないよう「おやすみモード」にしておくと安心です。</div>
+            </div>
+
+            <div class="manual-section" data-text="チャット 機能 使い方 メッセージ テキスト">
+              <div class="manual-section-title">💬 チャット機能の使い方</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>ツールバーの「チャット」ボタンをクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>画面右側にチャット欄が表示されます。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>送信先（全員または個人）を選択してメッセージを入力します。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>Enterキーを押して送信します。</span></li>
+              </ul>
+              <div class="manual-tip">💡 URLや資料リンクをチャットで共有すると参加者が開きやすくなります。</div>
+            </div>
+
+            <div class="manual-section" data-text="背景 バーチャル背景 変更 ぼかし 設定">
+              <div class="manual-section-title">🌅 背景設定の変更方法</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>ビデオアイコンの横の「▲」をクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>「バーチャル背景を選択」をクリックします。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>用意された背景を選ぶか、「＋」から自分の画像を追加します。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>「ぼかし」を選ぶと実際の背景をぼかすことができます。</span></li>
+              </ul>
+              <div class="manual-tip">💡 グリーンスクリーン（緑の布）があると背景合成がより綺麗に仕上がります。</div>
+            </div>
+
+            <div class="manual-section" data-text="スマホ モバイル iPhone Android アプリ 参加">
+              <div class="manual-section-title">📱 スマホからの参加方法</div>
+              <ul class="manual-steps">
+                <li class="manual-step"><span class="step-num">1</span><span>App Store または Google Play で「Zoom」をインストールします。</span></li>
+                <li class="manual-step"><span class="step-num">2</span><span>アプリを開いてログインします。</span></li>
+                <li class="manual-step"><span class="step-num">3</span><span>コーチから届いたZoomリンクをタップするとアプリが自動で開きます。</span></li>
+                <li class="manual-step"><span class="step-num">4</span><span>マイク・カメラの許可を求められたら「許可」を選択します。</span></li>
+              </ul>
+              <div class="manual-tip">💡 スマホはスタンドなどで固定すると両手が使えて便利です。Wi-Fi環境でのご参加を推奨します。</div>
+            </div>
+
+          </div>
+        </div>
       </div>
-      <div class="link-row">
-        <span class="link-label">受講生マイページ D</span>
-        <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-d-dashboard.html</span>
-        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-d-dashboard.html')">コピー</button>
-      </div>
-      <div class="link-row">
-        <span class="link-label">受講生マイページ E</span>
-        <span class="link-url">https://shioriw2023.github.io/english-coach-membership/preview-e-dashboard.html</span>
-        <button class="btn-copy" onclick="copyLink(this, 'https://shioriw2023.github.io/english-coach-membership/preview-e-dashboard.html')">コピー</button>
-      </div>
+
     </div>
   </div>
 
   <script>
+    /* ===== TAB SWITCH ===== */
+    function switchTab(id, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    /* ===== ACCORDION ===== */
+    function toggleManual(idx) {
+      var el = document.getElementById('manual-item-' + idx);
+      el.classList.toggle('open');
+    }
+
+    /* ===== SEARCH & HIGHLIGHT ===== */
+    function filterManual(query) {
+      var q = query.trim().toLowerCase();
+      var items = document.querySelectorAll('.manual-item');
+      var anyVisible = false;
+
+      items.forEach(function(item) {
+        if (item.classList.contains('all-hidden')) item.classList.remove('all-hidden');
+        var sections = item.querySelectorAll('.manual-section');
+        var itemVisible = false;
+
+        sections.forEach(function(sec) {
+          // Restore original text before re-highlighting
+          restoreText(sec);
+
+          if (!q) {
+            sec.classList.remove('hidden');
+            itemVisible = true;
+            return;
+          }
+
+          var text = sec.getAttribute('data-text') + ' ' + sec.textContent;
+          if (text.toLowerCase().includes(q)) {
+            sec.classList.remove('hidden');
+            highlightText(sec, q);
+            itemVisible = true;
+          } else {
+            sec.classList.add('hidden');
+          }
+        });
+
+        if (!q) {
+          item.classList.remove('all-hidden');
+        } else if (!itemVisible) {
+          item.classList.add('all-hidden');
+        } else {
+          item.classList.remove('all-hidden');
+          item.classList.add('open');
+        }
+        if (itemVisible || !q) anyVisible = true;
+      });
+
+      document.getElementById('search-empty').style.display = (!q || anyVisible) ? 'none' : 'block';
+    }
+
+    function highlightText(container, q) {
+      var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+      var nodes = [];
+      var node;
+      while (node = walker.nextNode()) {
+        if (node.parentNode.tagName === 'MARK') continue;
+        nodes.push(node);
+      }
+      nodes.forEach(function(n) {
+        var idx = n.nodeValue.toLowerCase().indexOf(q);
+        if (idx === -1) return;
+        var span = document.createElement('span');
+        span.innerHTML = n.nodeValue.replace(new RegExp('(' + escapeReg(q) + ')', 'gi'), '<mark>$1</mark>');
+        n.parentNode.replaceChild(span, n);
+      });
+    }
+
+    function restoreText(container) {
+      container.querySelectorAll('mark').forEach(function(m) {
+        var text = document.createTextNode(m.textContent);
+        m.parentNode.replaceChild(text, m);
+      });
+      container.querySelectorAll('span').forEach(function(s) {
+        if (s.childNodes.length === 1 && s.childNodes[0].nodeType === 3) {
+          s.parentNode.replaceChild(s.childNodes[0], s);
+        }
+      });
+    }
+
+    function escapeReg(s) {
+      return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    /* ===== COPY ===== */
     function copyLink(btn, url) {
       navigator.clipboard.writeText(url).then(() => {
         btn.textContent = '✓ コピー済み';
