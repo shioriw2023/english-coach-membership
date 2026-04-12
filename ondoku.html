@@ -205,7 +205,7 @@
     <div style="font-size:36px;margin-bottom:16px;">📖</div>
     <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px;">音読練習</div>
     <div style="font-size:13px;color:var(--text-muted);line-height:1.8;margin-bottom:8px;">
-      1セット5文 × 3セット = 計15文<br>
+      1セット5文 × 6セット = 計30文<br>
       英文・日本語訳・音読のポイントを確認しながら<br>
       声に出して読みましょう。
     </div>
@@ -217,7 +217,7 @@
   <div class="practice-wrap" id="practice-wrap">
     <div class="progress-section">
       <div class="progress-row">
-        <span class="progress-label" id="set-label-top">セット 1 / 3</span>
+        <span class="progress-label" id="set-label-top">セット 1 / 6</span>
         <span class="progress-count" id="progress-count">1 / 15</span>
       </div>
       <div class="progress-bar-bg">
@@ -243,14 +243,14 @@
   <div class="complete-screen" id="complete-screen">
     <div class="complete-icon">🎉</div>
     <div class="complete-title">お疲れ様でした！</div>
-    <div class="complete-sub">15文すべて読み終えました。<br>毎日続けることで発音がぐんぐん上達します！</div>
+    <div class="complete-sub">30文すべて読み終えました。<br>毎日続けることで発音がぐんぐん上達します！</div>
     <div class="complete-stats">
       <div class="stat-box">
-        <div class="stat-val">15</div>
+        <div class="stat-val">30</div>
         <div class="stat-label">文</div>
       </div>
       <div class="stat-box">
-        <div class="stat-val">3</div>
+        <div class="stat-val">6</div>
         <div class="stat-label">セット</div>
       </div>
     </div>
@@ -278,6 +278,21 @@
       { en: "I study English every day.", ja: "私は毎日英語を勉強しています。", tip: "「study」の u は /ʌ/（ス**タ**ディ）。リズムよく読みましょう。" },
       { en: "Turn left at the corner.", ja: "角を左に曲がってください。", tip: "「turn」は /tɜːrn/ と r を響かせて。「corner」も同様に -er を発音します。" },
       { en: "See you tomorrow!", ja: "また明日！", tip: "「tomorrow」は3音節（トゥ・モ・ロウ）。明るく元気よく読んでみましょう！" },
+      { en: "Nice to meet you!", ja: "はじめまして！", tip: "「nice to meet you」 は会ったときの定番表現。you の前の t を軽くはじいて。" },
+      { en: "How was your day?", ja: "今日はどうでしたか？", tip: "挨拶として自然に使えます。語尾を上げ気味に読みましょう。" },
+      { en: "I'm looking forward to the weekend.", ja: "週末が楽しみです。", tip: "「look forward to ～」 は「～を楽しみにする」。to の後は名詞か動名詞。" },
+      { en: "Could you say that again, please?", ja: "もう一度おっしゃっていただけますか？", tip: "丁寧なお願い。「Could you」 のリズムを掴みましょう。" },
+      { en: "I usually take a walk after dinner.", ja: "私は夕食後によく散歩します。", tip: "「take a walk」 でひとまとまり。「usually」 は副詞の位置に注意。" },
+      { en: "The meeting starts at nine o'clock.", ja: "会議は9時に始まります。", tip: "「o'clock」 は時間に使う表現。/əˈklɒk/ と発音します。" },
+      { en: "I'd like a cup of green tea, please.", ja: "緑茶を一杯お願いします。", tip: "「I'd like」 は 「I would like」 の短縮。丁寧な注文表現です。" },
+      { en: "It's getting cold these days.", ja: "最近寒くなってきましたね。", tip: "「getting + 形容詞」 で「だんだん〜になる」という変化を表します。" },
+      { en: "He works at a hospital.", ja: "彼は病院で働いています。", tip: "「work at ～」 で「〜で働く」。「work for」 は会社名に使います。" },
+      { en: "Is there a convenience store nearby?", ja: "近くにコンビニはありますか？", tip: "「Is there ～?」 で「〜はありますか？」という質問表現。" },
+      { en: "I forgot to bring my umbrella.", ja: "傘を持ってくるのを忘れました。", tip: "「forget to ～」 で「〜するのを忘れる」。「forgot」 は forget の過去形。" },
+      { en: "She has been learning English for two years.", ja: "彼女は2年間英語を学んでいます。", tip: "現在完了進行形。「for + 期間」 で継続を表します。" },
+      { en: "Could I take a day off tomorrow?", ja: "明日お休みをいただいてもよいですか？", tip: "「take a day off」 で「休日を取る」。丁寧な依頼の形です。" },
+      { en: "The train was crowded this morning.", ja: "今朝の電車は混んでいました。", tip: "「crowded」 は「混雑している」。「packed」 も同じ意味で使えます。" },
+      { en: "Have a great weekend!", ja: "素敵な週末を！", tip: "別れ際の定番フレーズ。「great」 を元気よく読みましょう！" },
     ],
     intermediate: [
       { en: "I was wondering if you could help me with this.", ja: "これについて助けていただけないかと思っていたのですが。", tip: "「wondering」は3音節。全体的にゆったり、柔らかいトーンで読みましょう。" },
@@ -295,6 +310,21 @@
       { en: "She tends to overthink things before making a decision.", ja: "彼女は決断する前に物事を考えすぎる傾向があります。", tip: "「overthink」の強勢は前半（O-ver-think）。「tends to」はつなげて読みます。" },
       { en: "I'd say he's more of an introvert than an extrovert.", ja: "彼はどちらかというと内向的だと思います。", tip: "「introvert」/ˈɪntrəvɜːrt/「extrovert」/ˈɛkstrəvɜːrt/。語頭のアクセントに注意。" },
       { en: "We finally wrapped up the project ahead of schedule.", ja: "私たちはついにプロジェクトを予定より早く終わらせました。", tip: "「wrapped up」はフレーズ動詞。「ahead of schedule」を自信をもって読んで。" },
+      { en: "I'm really looking forward to catching up with everyone.", ja: "皆さんと話せるのをとても楽しみにしています。", tip: "「catch up with」 は「近況を話し合う」。自然な会話表現です。" },
+      { en: "It turns out the project was more complex than we thought.", ja: "そのプロジェクトは思ったより複雑だということがわかりました。", tip: "「It turns out ～」 は「〜だとわかった」。よく使う口語表現。" },
+      { en: "She has a way of making everyone feel comfortable.", ja: "彼女は誰でもリラックスさせてしまう才能があります。", tip: "「have a way of -ing」 で「〜する才能がある」という表現。" },
+      { en: "I'd like to take this opportunity to thank you all.", ja: "この機会に皆さんに感謝を伝えたいと思います。", tip: "「take this opportunity to ～」 は丁寧なスピーチでよく使います。" },
+      { en: "Could you let me know when you're available to meet?", ja: "都合のいい時間を教えていただけますか？", tip: "「let me know」 は「教えてください」。ビジネスで便利な表現。" },
+      { en: "He tends to leave things to the last minute.", ja: "彼は何でも直前まで後回しにする傾向があります。", tip: "「leave things to the last minute」 はギリギリまで先延ばしするイディオム。" },
+      { en: "I was completely caught off guard by that news.", ja: "そのニュースには完全に不意をつかれました。", tip: "「caught off guard」 は「不意をつかれた」という慣用句。" },
+      { en: "We've made a lot of progress, but there's still room for improvement.", ja: "大きく進歩しましたが、まだ改善の余地があります。", tip: "「room for improvement」 は「改善の余地」。ビジネスでよく使う表現。" },
+      { en: "I can't believe how quickly the year has gone by.", ja: "一年がこんなに早く過ぎてしまったとは信じられません。", tip: "「go by」 は時間が「過ぎる」という意味。感嘆の気持ちを込めて。" },
+      { en: "As far as I know, everything is going according to plan.", ja: "私が知る限り、すべて計画通りに進んでいます。", tip: "「As far as I know」 は「私の知る限り」。謙虚な言い方ができます。" },
+      { en: "It's easier said than done, but we should at least try.", ja: "言うは易く行うは難しですが、少なくとも挑戦すべきです。", tip: "「easier said than done」 は有名なことわざ。自然に使えると◎。" },
+      { en: "She came across as very professional during the interview.", ja: "彼女は面接でとても専門的な印象を与えました。", tip: "「come across as ～」 は「〜という印象を与える」という表現。" },
+      { en: "I'm not in a position to make that decision on my own.", ja: "私一人でその決断を下せる立場にはありません。", tip: "「not in a position to ～」 で「〜できる立場にない」という丁寧な断り方。" },
+      { en: "We need to think outside the box to solve this problem.", ja: "この問題を解決するには型にはまらない考え方が必要です。", tip: "「think outside the box」 は「固定概念に縛られず考える」という慣用句。" },
+      { en: "It was a pleasure working with all of you on this project.", ja: "このプロジェクトで皆さんと一緒に仕事ができて光栄でした。", tip: "「It was a pleasure -ing」 は丁寧な締めの言葉として使えます。" },
     ]
   };
 
@@ -336,7 +366,7 @@
     document.getElementById('set-label').textContent = 'SET ' + setNum;
     document.getElementById('sentence-num').textContent = posInSet + '文目 / 5文';
     document.getElementById('progress-count').textContent = (currentIndex + 1) + ' / ' + total;
-    document.getElementById('set-label-top').textContent = 'セット ' + setNum + ' / 3';
+    document.getElementById('set-label-top').textContent = 'セット ' + setNum + ' / 6';
     document.getElementById('progress-bar').style.width = ((currentIndex + 1) / total * 100) + '%';
 
     var isLast = currentIndex === total - 1;

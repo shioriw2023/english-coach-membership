@@ -255,7 +255,7 @@
       完璧でなくても OK！まず口を動かすことが大切です。<br>
       話した内容や気づいたことをメモしておきましょう。
     </div>
-    <div style="font-size:12px;color:var(--text-muted);margin-bottom:28px;">⏱ 目安 10分 / 全10お題</div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:28px;">⏱ 目安 20分 / 全20お題</div>
     <button class="btn-start" style="max-width:280px;margin:0 auto;" onclick="startPractice()">練習を始める</button>
   </div>
 
@@ -303,7 +303,7 @@
   <div class="complete-screen" id="complete-screen">
     <div class="complete-icon">🎊</div>
     <div class="complete-title">お疲れ様でした！</div>
-    <div class="complete-sub">10お題すべて完了！<br>毎日続けることで、英語で考える力がつきます。</div>
+    <div class="complete-sub">20お題すべて完了！<br>毎日続けることで、英語で考える力がつきます。</div>
     <div class="memo-list" id="memo-list">
       <div class="memo-list-title">📝 今日のメモまとめ</div>
       <div id="memo-list-content"></div>
@@ -317,28 +317,48 @@
 <script>
   var TOPICS = {
     beginner: [
-      { text: "自己紹介をしてください", hint: "名前・出身・仕事・趣味など。\"My name is... I'm from... I enjoy...\" を使ってみましょう。" },
-      { text: "今日の朝ごはんについて話してください", hint: "何を食べたか、おいしかったかなど。\"I had... for breakfast. It was...\"" },
-      { text: "好きな季節とその理由を教えてください", hint: "\"My favorite season is... because...\" で理由を2〜3つ挙げましょう。" },
-      { text: "週末に何をしましたか？", hint: "過去形を使って話しましょう。\"Last weekend, I went to... / I stayed at home and...\"" },
-      { text: "好きな食べ物について話してください", hint: "何が好きか、どこで食べるか、誰と食べるか。\"I love... It's my favorite because...\"" },
-      { text: "毎日のルーティンを紹介してください", hint: "起きてから寝るまでの流れ。\"I usually wake up at... Then I...\"" },
-      { text: "趣味について話してください", hint: "いつ始めたか、なぜ好きか。\"One of my hobbies is... I started it because...\"" },
-      { text: "住んでいる場所（街）について話してください", hint: "どんな街か、好きなところ・不便なところ。\"I live in... It's a... place. I like it because...\"" },
-      { text: "好きなテレビ番組や映画について話してください", hint: "どんな内容か、なぜ好きかを紹介。\"My favorite show is... It's about... I like it because...\"" },
-      { text: "最近うれしかったことを話してください", hint: "いつ・何があったか・どんな気持ちだったか。\"Recently, I was really happy when...\"" },
+      { text: "自己紹介をしてください", hint: "名前・出身・仕事・趣味など。「My name is... I'm from... I enjoy...」 を使ってみましょう。" },
+      { text: "今日の朝ごはんについて話してください", hint: "何を食べたか、おいしかったかなど。「I had... for breakfast. It was...」" },
+      { text: "好きな季節とその理由を教えてください", hint: "「My favorite season is... because...」 で理由を2〜3つ挙げましょう。" },
+      { text: "週末に何をしましたか？", hint: "過去形を使って話しましょう。「Last weekend, I went to... / I stayed at home and...」" },
+      { text: "好きな食べ物について話してください", hint: "何が好きか、どこで食べるか、誰と食べるか。「I love... It's my favorite because...」" },
+      { text: "毎日のルーティンを紹介してください", hint: "起きてから寝るまでの流れ。「I usually wake up at... Then I...」" },
+      { text: "趣味について話してください", hint: "いつ始めたか、なぜ好きか。「One of my hobbies is... I started it because...」" },
+      { text: "住んでいる場所（街）について話してください", hint: "どんな街か、好きなところ・不便なところ。「I live in... It's a... place. I like it because...」" },
+      { text: "好きなテレビ番組や映画について話してください", hint: "どんな内容か、なぜ好きかを紹介。「My favorite show is... It's about... I like it because...」" },
+      { text: "最近うれしかったことを話してください", hint: "いつ・何があったか・どんな気持ちだったか。「Recently, I was really happy when...」" },
+      { text: "家族について教えてください", hint: "何人家族か、仲は良いか、どんな人たちか。「I have a family of... My mom is...」" },
+      { text: "今住んでいる家（部屋）について話してください", hint: "場所・広さ・好きな点など。「I live in a... apartment. It's located in...」" },
+      { text: "好きな音楽とその理由を話してください", hint: "ジャンル・アーティスト・いつ聴くか。「I love... music because... My favorite artist is...」" },
+      { text: "苦手なことや克服したいことを話してください", hint: "何が苦手か、なぜか、どうしたいか。「One thing I'm not good at is... I'd like to improve because...」" },
+      { text: "最近おすすめしたいものやサービスを紹介してください", hint: "何か、なぜ良いか、誰に勧めたいか。「Recently, I've been really into... I recommend it because...」" },
+      { text: "小学生のころのことを話してください", hint: "好きだったこと・思い出・どんな子だったか。「When I was in elementary school, I used to...」" },
+      { text: "今ハマっているものや気になっていることを話してください", hint: "最近の関心事・始めたきっかけなど。「Lately, I've been really into... I got into it when...」" },
+      { text: "昨日何をしたか話してください", hint: "朝から夜まで時系列で。「Yesterday, I woke up at... Then I... After that...」" },
+      { text: "友達との思い出を話してください", hint: "どんな友達か、どんな経験をしたか。「One of my best friends is... We once...」" },
+      { text: "これからやってみたいことを話してください", hint: "夢・目標・挑戦したいこと。「One thing I'd really like to try is... because...」" },
     ],
     intermediate: [
-      { text: "SNSの良い点と悪い点について話してください", hint: "両面から話しましょう。\"On one hand... On the other hand... Personally, I think...\"" },
-      { text: "最近チャレンジしたことについて教えてください", hint: "何に挑戦したか、なぜ・結果はどうか。\"Recently, I challenged myself to... because...\"" },
-      { text: "理想の働き方について話してください", hint: "リモートか出社か、時間の使い方など。\"My ideal work style would be... because...\"" },
-      { text: "テクノロジーが日常生活に与える影響を話してください", hint: "便利になったこと・変わったこと。\"Technology has changed the way I... For example...\"" },
-      { text: "人生で大切にしていることを話してください", hint: "価値観・信念など。\"One thing I really value in life is... because...\"" },
-      { text: "日本の文化で外国人に紹介したいものを話してください", hint: "具体的に1〜2つ選んで説明。\"If I had to introduce Japanese culture, I'd talk about...\"" },
-      { text: "ストレス発散の方法について話してください", hint: "何をするか・なぜ効果的かを話しましょう。\"When I feel stressed, I usually... because...\"" },
-      { text: "理想の旅行先とその理由を話してください", hint: "どこへ行きたいか・何をしたいか・なぜか。\"If I could travel anywhere, I'd go to... because...\"" },
-      { text: "英語を学ぶ理由と目標について話してください", hint: "なぜ英語を学んでいるか、将来どう使いたいか。\"I'm learning English because... My goal is to...\"" },
-      { text: "もし1日だけ有名人になれるとしたら、誰になりたいですか？", hint: "誰か・なぜか・何をするかを話しましょう。\"If I could be a celebrity for one day, I'd choose... because...\"" },
+      { text: "SNSの良い点と悪い点について話してください", hint: "両面から話しましょう。「On one hand... On the other hand... Personally, I think...」" },
+      { text: "最近チャレンジしたことについて教えてください", hint: "何に挑戦したか、なぜ・結果はどうか。「Recently, I challenged myself to... because...」" },
+      { text: "理想の働き方について話してください", hint: "リモートか出社か、時間の使い方など。「My ideal work style would be... because...」" },
+      { text: "テクノロジーが日常生活に与える影響を話してください", hint: "便利になったこと・変わったこと。「Technology has changed the way I... For example...」" },
+      { text: "人生で大切にしていることを話してください", hint: "価値観・信念など。「One thing I really value in life is... because...」" },
+      { text: "日本の文化で外国人に紹介したいものを話してください", hint: "具体的に1〜2つ選んで説明。「If I had to introduce Japanese culture, I'd talk about...」" },
+      { text: "ストレス発散の方法について話してください", hint: "何をするか・なぜ効果的かを話しましょう。「When I feel stressed, I usually... because...」" },
+      { text: "理想の旅行先とその理由を話してください", hint: "どこへ行きたいか・何をしたいか・なぜか。「If I could travel anywhere, I'd go to... because...」" },
+      { text: "英語を学ぶ理由と目標について話してください", hint: "なぜ英語を学んでいるか、将来どう使いたいか。「I'm learning English because... My goal is to...」" },
+      { text: "もし1日だけ有名人になれるとしたら、誰になりたいですか？", hint: "誰か・なぜか・何をするかを話しましょう。「If I could be a celebrity for one day, I'd choose... because...」" },
+      { text: "教育の在り方について考えを話してください", hint: "学校教育・詰め込み vs 思考力育成など。「I think education should focus on... because...」" },
+      { text: "環境問題について、自分が取り組んでいることを話してください", hint: "普段の行動・心がけていること。「When it comes to the environment, I try to...」" },
+      { text: "お金と幸せの関係について話してください", hint: "お金があれば幸せか、大切なものは何か。「In my opinion, money and happiness are... because...」" },
+      { text: "グローバル化が社会に与える影響を話してください", hint: "良い点・悪い点、自分への影響。「Globalization has brought... but on the other hand...」" },
+      { text: "リーダーシップに必要な資質について話してください", hint: "どんな能力が大切か、理想のリーダー像。「I believe a good leader needs to have... For example...」" },
+      { text: "子どものころの自分と今の自分について話してください", hint: "何が変わったか、変わっていないことは。「When I was young, I was... Now I'm... but one thing that hasn't changed is...」" },
+      { text: "失敗から学んだ大切な教訓を話してください", hint: "どんな失敗をしたか、何を学んだか。「One of the biggest lessons I've learned from failure is...」" },
+      { text: "人工知能（AI）の可能性と課題について話してください", hint: "便利になること・懸念点・自分の見方。「AI has the potential to... However, I'm concerned about...」" },
+      { text: "日本社会が抱える問題の中で最も重要だと思うものを話してください", hint: "少子化・格差・働き方など。「I think one of the most serious issues in Japan today is... because...」" },
+      { text: "10年後の自分はどうなっていたいかを話してください", hint: "キャリア・生活・なりたい自分。「In ten years, I hope to be... I want to achieve... because...」" },
     ]
   };
 

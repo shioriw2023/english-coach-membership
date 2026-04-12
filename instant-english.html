@@ -219,7 +219,7 @@
       まず自分で考えてから「答えを見る」を押してください。<br>
       ◎できた・△もう少し・✕ の3段階で自己評価しましょう。
     </div>
-    <div style="font-size:12px;color:var(--text-muted);margin-bottom:28px;">⏱ 目安 20分 / 全20問</div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:28px;">⏱ 目安 30分 / 全40問</div>
     <button class="btn-next show" style="max-width:280px;margin:0 auto;" onclick="startPractice()">練習を始める</button>
   </div>
 
@@ -258,7 +258,7 @@
   <div class="complete-screen" id="complete-screen">
     <div class="complete-icon">🎉</div>
     <div class="complete-title">お疲れ様でした！</div>
-    <div class="complete-sub">20問すべて完了しました！<br>自己評価を振り返って、苦手な文を繰り返し練習しましょう。</div>
+    <div class="complete-sub">40問すべて完了しました！<br>自己評価を振り返って、苦手な文を繰り返し練習しましょう。</div>
     <div class="complete-stats">
       <div class="stat-box">
         <div class="stat-val" id="stat-good">0</div>
@@ -302,6 +302,26 @@
       { ja: "私はその映画を見たことがありません。", en: "I have never seen that movie.", note: "現在完了の否定「have never + 過去分詞」。" },
       { ja: "もっと練習する必要があります。", en: "I need to practice more.", note: "「need to ～」で「～する必要がある」。シンプルで使えます。" },
       { ja: "今から出発します。", en: "I'm leaving now.", note: "現在進行形で「今まさに～するところ」のニュアンスが出せます。" },
+      { ja: "今日は頭が痛いです。", en: "I have a headache today.", note: "「have a headache」で頭痛を表します。stomachache, backache なども同形。" },
+      { ja: "彼女は毎晩10時に寝ます。", en: "She goes to bed at ten every night.", note: "「go to bed」が自然な表現。「sleep」より具体的な就寝動作を表します。" },
+      { ja: "この本は面白いですか？", en: "Is this book interesting?", note: "形容詞を使った質問。「interesting」と「interested」の使い分けに注意。" },
+      { ja: "私には姉が一人います。", en: "I have an older sister.", note: "「older sister」が英語での「姉」の言い方。「elder sister」も使えます。" },
+      { ja: "ここに座ってもいいですか？", en: "May I sit here?", note: "「May I ～?」は丁寧な許可の求め方。「Can I」より正式な表現です。" },
+      { ja: "明日の天気はどうですか？", en: "What will the weather be like tomorrow?", note: "「What will ～ be like?」で状態を尋ねる表現。天気でよく使います。" },
+      { ja: "私は運動するのが好きではありません。", en: "I don't like exercising.", note: "「like + 動名詞」で習慣的な行為への好みを表します。" },
+      { ja: "彼はとても上手に泳ぎます。", en: "He swims very well.", note: "副詞「well」の位置は動詞の後。「good」でなく「well」を使うことに注意。" },
+      { ja: "今週末は何か予定がありますか？", en: "Do you have any plans for this weekend?", note: "「have plans for ～」で予定を尋ねる自然な表現です。" },
+      { ja: "この電車は東京駅に止まりますか？", en: "Does this train stop at Tokyo Station?", note: "「stop at ～」で「～に停車する」。三単現の s を忘れずに。" },
+      { ja: "窓を開けてもいいですか？", en: "Could I open the window?", note: "「Could I ～?」は許可を求める丁寧な表現。「Can I」より soft。" },
+      { ja: "私はまだ昼ごはんを食べていません。", en: "I haven't had lunch yet.", note: "「yet」は否定文で「まだ」。現在完了形を使います。" },
+      { ja: "どこで日本語を勉強したのですか？", en: "Where did you learn Japanese?", note: "「learn + 言語」で言語を習得した経緯を聞く表現。" },
+      { ja: "今日は早く帰りたいです。", en: "I want to go home early today.", note: "「go home」で「帰宅する」。「go to home」とは言いません。" },
+      { ja: "その話を聞いてとても驚きました。", en: "I was very surprised to hear that.", note: "「be surprised to ～」で「〜を知って驚く」。感情の受動表現。" },
+      { ja: "彼女はとても忙しそうに見えます。", en: "She looks really busy.", note: "「look + 形容詞」で外見からの判断を表します。seem も同様。" },
+      { ja: "もっと野菜を食べるように心がけています。", en: "I try to eat more vegetables.", note: "「try to ～」で「〜しようとしている、心がけている」という努力の表現。" },
+      { ja: "財布をどこかに忘れてきてしまいました。", en: "I left my wallet somewhere.", note: "「leave ～ somewhere」で「〜をどこかに置き忘れた」という表現。" },
+      { ja: "新しい仕事にだんだん慣れてきました。", en: "I'm gradually getting used to my new job.", note: "「get used to ～」で「〜に慣れる」。gradually で段階的な変化を表現。" },
+      { ja: "また近いうちに会いましょう。", en: "Let's catch up again soon.", note: "「catch up」は「近況を話す」。別れ際の自然なフレーズです。" },
     ],
     intermediate: [
       { ja: "それについて少し考える時間が必要です。", en: "I need some time to think it over.", note: "「think it over」は「よく考える」というイディオム。" },
@@ -324,6 +344,26 @@
       { ja: "もし時間が許せば、ぜひ参加したいです。", en: "I'd love to join if my schedule allows.", note: "「if my schedule allows」で「スケジュールが許せば」というフレーズ。" },
       { ja: "その件については慎重に判断する必要があります。", en: "We need to approach that matter carefully.", note: "「approach」を動詞として「～に取り組む」という意味で使う表現。" },
       { ja: "失敗から学ぶことが大切だと思います。", en: "I believe it's important to learn from our mistakes.", note: "「learn from mistakes」は「失敗から学ぶ」。よく使われる表現。" },
+      { ja: "彼の言い方はちょっときつかったと思います。", en: "I think the way he said it was a bit harsh.", note: "「the way ～」で「〜の言い方・やり方」を表す自然な構文。" },
+      { ja: "最終的にはあなたの判断に任せます。", en: "Ultimately, I'll leave it up to you.", note: "「leave it up to you」で「あなたに任せる」というイディオム。" },
+      { ja: "思ったより早く終わってよかったです。", en: "I'm glad it finished sooner than expected.", note: "「sooner than expected」で「予想より早く」という表現。" },
+      { ja: "彼女はいつも細かいところに気がつきます。", en: "She always pays attention to the details.", note: "「pay attention to ～」で「〜に注意を払う」。details が重要。" },
+      { ja: "今回の件については反省しています。", en: "I regret how I handled the situation this time.", note: "「regret how ～」で「〜の仕方を反省している」という丁寧な表現。" },
+      { ja: "そのプロジェクトに関しては、まだ不確かな点が多いです。", en: "There are still many uncertainties regarding that project.", note: "「regarding ～」はビジネスでよく使う「〜に関して」という前置詞。" },
+      { ja: "彼は何でも自分でやろうとする傾向があります。", en: "He tends to take everything into his own hands.", note: "「take ～ into one's own hands」で「自ら引き受ける」というイディオム。" },
+      { ja: "あの件はうまく解決できてよかったと思います。", en: "I'm relieved that we managed to resolve that issue.", note: "「be relieved that ～」で「〜でほっとした」という感情表現。" },
+      { ja: "正直、その選択には驚かされました。", en: "Honestly, I was taken aback by that choice.", note: "「be taken aback」は「驚かされる」というフォーマルなイディオム。" },
+      { ja: "こちらの都合に合わせてくれてありがとうございます。", en: "Thank you for being so flexible with your schedule.", note: "「flexible with ～」で「〜に融通をきかせる」という表現。" },
+      { ja: "その経験が今の自分を作ったと思っています。", en: "I believe that experience has shaped who I am today.", note: "「shape who I am」は「自分という人間を形成した」という深い表現。" },
+      { ja: "一度決めたことは最後までやり通す性格です。", en: "Once I make up my mind, I see things through to the end.", note: "「make up my mind」決断する、「see through」やり遂げる。2つのイディオム。" },
+      { ja: "そのアイデアには賛成ですが、タイミングが難しいと思います。", en: "I agree with the idea, but I think the timing is tricky.", note: "「tricky」は「難しい・厄介な」という口語的な表現。よく使います。" },
+      { ja: "長い目で見ると、それが最善の選択だったと思います。", en: "In the long run, I think that was the best decision.", note: "「in the long run」は「長期的に見ると」という定番フレーズ。" },
+      { ja: "状況が変わったら、またご連絡いただけますか？", en: "Could you get in touch with me again if the situation changes?", note: "「get in touch with ～」で「〜に連絡する」。ビジネスで便利。" },
+      { ja: "彼女はどんな状況でも冷静さを保てる人です。", en: "She's someone who can stay calm under any circumstances.", note: "「under any circumstances」で「どんな状況でも」という表現。" },
+      { ja: "思っていたよりずっと難しい課題でした。", en: "It turned out to be a much harder task than I anticipated.", note: "「turn out to be ～」は結果的に〜だとわかった。「anticipated」は想定した。" },
+      { ja: "そのことについて、もう少し詳しく教えてもらえますか？", en: "Could you give me a bit more detail on that?", note: "「give me more detail on ～」は「〜についてもっと詳しく教えて」という実用表現。" },
+      { ja: "失敗を恐れていては、成長できないと思います。", en: "I don't think you can grow if you're afraid of failure.", note: "「be afraid of ～」で「〜を恐れている」。論理的な主張に使える構文。" },
+      { ja: "いつかこの経験を笑い話にできるといいですね。", en: "Hopefully, we'll be able to look back on this and laugh.", note: "「look back on ～ and laugh」は「〜を振り返って笑える」という表現。" },
     ]
   };
 
