@@ -2199,160 +2199,7 @@ function addMemo() {
         alert('送信に失敗しました: ' + err.message);
       });
     }
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCGowlHLBb-dg9bpmo1oDb0PEe-pGiJol8",
-      authDomain: "english-coaching-member-a3c67.firebaseapp.com",
-      projectId: "english-coaching-member-a3c67",
-      storageBucket: "english-coaching-member-a3c67.firebasestorage.app",
-      messagingSenderId: "22360558331",
-      appId: "1:22360558331:web:1a19fc67737e4236eb3e5e"
-    };
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
 
-    function loadPastReports() {
-      const s = getUserSettings();
-      const email = s.email || '';
-      if (!email) return;
-      const container = document.querySelector('.past-reports');
-      if (!container) return;
-      db.collection('reports').where('email', '==', email)
-        .orderBy('submittedAt', 'desc').limit(10).get()
-        .then(snap => {
-          if (snap.empty) return;
-          const items = snap.docs.map(doc => {
-            const d = doc.data();
-            const sub = d.submittedAt ? d.submittedAt.toDate().toLocaleDateString('ja-JP') : '';
-            return `<div class="past-report-item">
-              <div class="past-report-head">
-                <span class="past-report-period">${d.dateStart} 〜 ${d.dateEnd}</span>
-                <span class="past-report-date">提出日：${sub}</span>
-              </div>
-              <div class="past-report-body">${d.effort}</div>
-            </div>`;
-          });
-          container.innerHTML = items.join('');
-        }).catch(() => {});
-    }
-    // ---- 発音添削モーダル ----
-    var _ps = { phrase:'', ja:'', spoken:'', feedback:'' };
-    var _pr = null, _prRecording = false;
-    var _synthVoices = [];
-    if (window.speechSynthesis) {
-      window.speechSynthesis.onvoiceschanged = function() { _synthVoices = window.speechSynthesis.getVoices(); };
-      _synthVoices = window.speechSynthesis.getVoices();
-    }
-
-    function playDemoAudio(gender) {
-      if (!window.speechSynthesis) return;
-      window.speechSynthesis.cancel();
-      var btnId = gender === 'female' ? 'pm-demo-female' : 'pm-demo-male';
-      var btn = document.getElementById(btnId);
-      if (btn) { btn.disabled = true; }
-      var u = new SpeechSynthesisUtterance(_ps.phrase);
-      var voices = _synthVoices.length ? _synthVoices : window.speechSynthesis.getVoices();
-      if (gender === 'female') {
-        u.lang = 'en-GB'; u.pitch = 1.1; u.rate = 0.85;
-        var v = voices.find(function(v){ return v.name.includes('Kate') || v.name.includes('Martha'); })
-               || voices.find(function(v){ return v.lang === 'en-GB'; });
-        if (v) u.voice = v;
-      } else {
-        u.lang = 'en-US'; u.pitch = 0.9; u.rate = 0.85;
-        var v = voices.find(function(v){ return v.name.includes('Daniel') || v.name.includes('Fred') || (v.lang === 'en-US' && v.name.toLowerCase().includes('male')); })
-               || voices.find(function(v){ return v.lang === 'en-US'; });
-        if (v) u.voice = v;
-      }
-      u.onend = function() { if (btn) { btn.disabled = false; } };
-      window.speechSynthesis.speak(u);
-    }
-
-    function openPronunModal(en, ja) {
-      _ps.phrase = en; _ps.ja = ja; _ps.spoken = ''; _ps.feedback = '';
-      document.getElementById('pm-phrase-en').textContent = en;
-      document.getElementById('pm-phrase-ja').textContent = ja;
-      document.getElementById('pm-recognized').style.display = 'none';
-      document.getElementById('pm-recognized-text').textContent = '';
-      document.getElementById('pm-submit-btn').style.display = 'none';
-      document.getElementById('pm-feedback-area').style.display = 'none';
-      document.getElementById('pm-record-area').style.display = 'flex';
-      document.getElementById('pm-mic-btn').className = 'pronun-mic-btn';
-      document.getElementById('pm-mic-label').textContent = 'タップして録音';
-      document.getElementById('pronun-overlay').classList.add('open');
-    }
-    function closePronunModal(e) {
-      if (e && e.target !== document.getElementById('pronun-overlay')) return;
-      _stopPronunRec();
-      document.getElementById('pronun-overlay').classList.remove('open');
-    }
-    function togglePronunRecording() {
-      if (_prRecording) _stopPronunRec(); else _startPronunRec();
-    }
-    function _startPronunRec() {
-      var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SR) { alert('音声認識はChromeブラウザでご利用ください。'); return; }
-      _pr = new SR(); _pr.lang = 'en-US'; _pr.continuous = false; _pr.interimResults = true;
-      _prRecording = true;
-      document.getElementById('pm-mic-btn').classList.add('recording');
-      document.getElementById('pm-mic-label').textContent = '録音中… タップで停止';
-      _pr.onresult = function(e) {
-        var t = ''; for (var i=0;i<e.results.length;i++) t+=e.results[i][0].transcript;
-        _ps.spoken=t; document.getElementById('pm-recognized-text').textContent=t; document.getElementById('pm-recognized').style.display='block';
-      };
-      _pr.onend = function() {
-        _prRecording=false; document.getElementById('pm-mic-btn').classList.remove('recording');
-        if(_ps.spoken){document.getElementById('pm-mic-label').innerHTML='✓ 録音完了<br><span style="font-size:9px;opacity:0.65;">タップでやり直す</span>';document.getElementById('pm-submit-btn').style.display='block';}
-        else{document.getElementById('pm-mic-label').textContent='タップして録音';}
-      };
-      _pr.onerror = function(ev) {
-        _prRecording=false; document.getElementById('pm-mic-btn').classList.remove('recording');
-        document.getElementById('pm-mic-label').textContent='タップして録音';
-        if(ev.error!=='no-speech') alert('エラー: '+ev.error);
-      };
-      _pr.start();
-    }
-    function _stopPronunRec() { _prRecording=false; if(_pr){try{_pr.stop();}catch(e){}} }
-    function submitPronunReview() {
-      var r=_analyzePronun(_ps.phrase,_ps.spoken); _ps.feedback=r.feedbackText;
-      document.getElementById('pm-record-area').style.display='none';
-      document.getElementById('pm-submit-btn').style.display='none';
-      document.getElementById('pm-feedback-area').style.display='block';
-      document.getElementById('pm-score').textContent=String(r.score);
-      var g=document.getElementById('pm-grade'); g.textContent=r.grade; g.className='pronun-grade grade-'+r.grade.toLowerCase();
-      document.getElementById('pm-feedback-text').textContent=r.feedbackText;
-    }
-    function _analyzePronun(target,spoken) {
-      var norm=function(s){return s.toLowerCase().replace(/[.,!?'";:]/g,'').trim();};
-      var tw=norm(target).split(/\s+/),sw=norm(spoken).split(/\s+/),match=0,missed=[];
-      tw.forEach(function(w){var ok=sw.some(function(s){return s===w||s.indexOf(w)===0||w.indexOf(s)===0;});if(ok)match++;else missed.push(w);});
-      var score=Math.round(match/tw.length*100),grade,feedbackText;
-      if(score>=90){grade='S';feedbackText='素晴らしい！とても自然な発音です。フレーズ全体を流暢に話せています。このまま自信を持って練習を続けてください！';}
-      else if(score>=75){grade='A';feedbackText='良い発音です！全体的によく聞き取れています。';if(missed.length)feedbackText+='「'+missed.join('」「')+'」の部分をもう少しはっきり発音するとさらに良くなります。';}
-      else if(score>=50){grade='B';feedbackText='基本的な発音はできています。';if(missed.length)feedbackText+='特に「'+missed.join('」「')+'」の発音を丁寧に確認してみてください。';feedbackText+='ゆっくり一語一語練習してから通しで言ってみましょう。';}
-      else{grade='C';feedbackText='もう少し練習が必要です。まずはお手本の音声をよく聴いて、一語一語確認しながらゆっくり練習してみましょう。繰り返し練習することで必ず上達します！';}
-      return{score:score,grade:grade,feedbackText:feedbackText};
-    }
-    function playPronunFeedback() {
-      if(!window.speechSynthesis)return; window.speechSynthesis.cancel();
-      var u=new SpeechSynthesisUtterance(_ps.feedback); u.lang='ja-JP'; u.rate=0.88; window.speechSynthesis.speak(u);
-    }
-    function retryPronunRecording() {
-      _ps.spoken='';_ps.feedback='';
-      document.getElementById('pm-recognized').style.display='none';
-      document.getElementById('pm-recognized-text').textContent='';
-      document.getElementById('pm-submit-btn').style.display='none';
-      document.getElementById('pm-feedback-area').style.display='none';
-      document.getElementById('pm-record-area').style.display='flex';
-      document.getElementById('pm-mic-btn').className='pronun-mic-btn';
-      document.getElementById('pm-mic-label').textContent='タップして録音';
-    }
-
-    loadPastReports();
-  
   /* ===== MANUAL ACCORDION & SEARCH ===== */
   function toggleManual(idx) {
     var el = document.getElementById('m-item-' + idx);
@@ -2401,7 +2248,7 @@ function addMemo() {
     });
   }
 
-  // ===== AUTO-LOGOUT (60分) =====
+  /* ===== AUTO-LOGOUT & LOGOUT ===== */
   var _inactivityTimer = null;
   var _TIMEOUT_MS = 60 * 60 * 1000;
 
@@ -2438,6 +2285,22 @@ function addMemo() {
     document.addEventListener(ev, _resetTimer, { passive: true });
   });
   _resetTimer();
-</script>
+
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCGowlHLBb-dg9bpmo1oDb0PEe-pGiJol8",
+      authDomain: "english-coaching-member-a3c67.firebaseapp.com",
+      projectId: "english-coaching-member-a3c67",
+      storageBucket: "english-coaching-member-a3c67.firebasestorage.app",
+      messagingSenderId: "22360558331",
+      appId: "1:22360558331:web:1a19fc67737e4236eb3e5e"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
 </body>
 </html>

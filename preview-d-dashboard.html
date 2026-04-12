@@ -2504,22 +2504,7 @@ function addMemo() {
 
     // ページ読み込み時に過去の報告を取得
     loadPastReports();
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCGowlHLBb-dg9bpmo1oDb0PEe-pGiJol8",
-      authDomain: "english-coaching-member-a3c67.firebaseapp.com",
-      projectId: "english-coaching-member-a3c67",
-      storageBucket: "english-coaching-member-a3c67.firebasestorage.app",
-      messagingSenderId: "22360558331",
-      appId: "1:22360558331:web:1a19fc67737e4236eb3e5e"
-    };
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-  
+
   /* ===== MANUAL ACCORDION & SEARCH ===== */
   function toggleManual(idx) {
     var el = document.getElementById('m-item-' + idx);
@@ -2568,7 +2553,7 @@ function addMemo() {
     });
   }
 
-  // ===== AUTO-LOGOUT (60分) =====
+  /* ===== AUTO-LOGOUT & LOGOUT ===== */
   var _inactivityTimer = null;
   var _TIMEOUT_MS = 60 * 60 * 1000;
 
@@ -2605,6 +2590,22 @@ function addMemo() {
     document.addEventListener(ev, _resetTimer, { passive: true });
   });
   _resetTimer();
-</script>
+
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCGowlHLBb-dg9bpmo1oDb0PEe-pGiJol8",
+      authDomain: "english-coaching-member-a3c67.firebaseapp.com",
+      projectId: "english-coaching-member-a3c67",
+      storageBucket: "english-coaching-member-a3c67.firebasestorage.app",
+      messagingSenderId: "22360558331",
+      appId: "1:22360558331:web:1a19fc67737e4236eb3e5e"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
 </body>
 </html>
